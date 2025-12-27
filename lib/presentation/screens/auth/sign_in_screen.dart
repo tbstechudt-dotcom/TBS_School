@@ -6,8 +6,29 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/common/app_button.dart';
-import '../../widgets/common/app_text_field.dart';
+
+class CountryCode {
+  final String flag;
+  final String code;
+  final String country;
+
+  const CountryCode({
+    required this.flag,
+    required this.code,
+    required this.country,
+  });
+}
+
+const _countryCodes = [
+  CountryCode(flag: '🇮🇳', code: '+91', country: 'India'),
+  CountryCode(flag: '🇺🇸', code: '+1', country: 'United States'),
+  CountryCode(flag: '🇬🇧', code: '+44', country: 'United Kingdom'),
+  CountryCode(flag: '🇦🇪', code: '+971', country: 'UAE'),
+  CountryCode(flag: '🇸🇦', code: '+966', country: 'Saudi Arabia'),
+  CountryCode(flag: '🇦🇺', code: '+61', country: 'Australia'),
+  CountryCode(flag: '🇨🇦', code: '+1', country: 'Canada'),
+  CountryCode(flag: '🇸🇬', code: '+65', country: 'Singapore'),
+];
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -20,12 +41,23 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _mobileController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _mobileFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
   bool _isLoading = false;
+  bool _showPassword = false;
+  int _selectedCountryIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
     _mobileController.dispose();
     _passwordController.dispose();
+    _mobileFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -59,121 +91,486 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  void _showCountryPicker() {
+    showModalBottomSheet(
+      context: context,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.s6),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Welcome Back',
-                  style: TextStyle(
-                    fontSize: AppSizes.text2xl,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: AppSizes.s2),
-                const Text(
-                  'Sign in to continue',
-                  style: TextStyle(
-                    fontSize: AppSizes.textBase,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-
-                const SizedBox(height: AppSizes.s8),
-
-                AppTextField(
-                  controller: _mobileController,
-                  label: 'Mobile Number',
-                  hint: 'Enter your 10-digit mobile number',
-                  keyboardType: TextInputType.phone,
-                  prefixIcon: Icons.phone_android_rounded,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your mobile number';
-                    }
-                    if (value.length != 10) {
-                      return 'Please enter a valid 10-digit mobile number';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSizes.s4),
-
-                AppTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hint: 'Enter your password',
-                  isPassword: true,
-                  prefixIcon: Icons.lock_rounded,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSizes.s2),
-
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // TODO: Implement forgot password
-                    },
-                    child: const Text('Forgot Password?'),
-                  ),
-                ),
-
-                const SizedBox(height: AppSizes.s6),
-
-                AppButton(
-                  text: 'Sign In',
-                  onPressed: _handleSignIn,
-                  isLoading: _isLoading,
-                  isFullWidth: true,
-                ),
-
-                const SizedBox(height: AppSizes.s6),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Don\'t have an account? ',
-                      style: TextStyle(
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.gray300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Select Country',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1F2933),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _countryCodes.length,
+                itemBuilder: (context, index) {
+                  final country = _countryCodes[index];
+                  return ListTile(
+                    leading: Text(
+                      country.flag,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                    title: Text(
+                      country.country,
+                      style: const TextStyle(
+                        fontSize: AppSizes.textSm,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    trailing: Text(
+                      country.code,
+                      style: const TextStyle(
+                        fontSize: AppSizes.textSm,
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () => context.push(Routes.signUp),
-                      child: const Text('Sign Up'),
+                    onTap: () {
+                      setState(() => _selectedCountryIndex = index);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: AppSizes.s4),
+
+                        // Back Button
+                        _buildBackButton(),
+
+                        const SizedBox(height: AppSizes.s6),
+
+                        // Header with title and illustration
+                        _buildHeader(),
+
+                        const SizedBox(height: AppSizes.s10),
+
+                        // Mobile Number Field
+                        _buildMobileField(),
+
+                        const SizedBox(height: AppSizes.s4),
+
+                        // Password Field
+                        _buildPasswordField(),
+
+                        const SizedBox(height: AppSizes.s2),
+
+                        // Forgot Password
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              // TODO: Implement forgot password
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: const Text(
+                              'Forgot Password ?',
+                              style: TextStyle(
+                                fontSize: AppSizes.textSm,
+                                color: AppColors.accent,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: AppSizes.s8),
+
+                        // Sign In Button
+                        _buildSignInButton(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Sign Up Link at bottom
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSizes.s6),
+              child: _buildSignUpLink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () => context.pop(),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              blurRadius: 1,
+              offset: Offset.zero,
+            ),
+            BoxShadow(
+              color: const Color(0xFFE5E7EB).withValues(alpha: 0.8),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Icon(
+          Icons.arrow_back_rounded,
+          size: 20,
+          color: Color(0xFF1F2933),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title and subtitle
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Sign In',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1F2933),
+                  height: 1.27,
+                ),
+              ),
+              SizedBox(height: AppSizes.s2),
+              Text(
+                'Welcome back !',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF6B7280),
+                  height: 1.47,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Illustration
+        SizedBox(
+          width: 120,
+          height: 120,
+          child: Image.asset(
+            'assets/Authendication gif/Tablet login.gif',
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Mobile No.',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF1F2933),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _mobileController,
+          focusNode: _mobileFocusNode,
+          keyboardType: TextInputType.phone,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF1F2933),
+          ),
+          decoration: InputDecoration(
+            hintText: 'Enter mobile number',
+            hintStyle: const TextStyle(
+              fontSize: 15,
+              color: Color(0xFF9CA3AF),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+            prefixIcon: GestureDetector(
+              onTap: _showCountryPicker,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _countryCodes[_selectedCountryIndex].flag,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 18,
+                      color: Color(0xFF6B7280),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _countryCodes[_selectedCountryIndex].code,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF1F2933),
+                      ),
                     ),
                   ],
                 ),
-              ],
+              ),
+            ),
+          ),
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(10),
+          ],
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your mobile number';
+            }
+            if (value.length != 10) {
+              return 'Please enter a valid 10-digit number';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Password',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF1F2933),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _passwordController,
+          focusNode: _passwordFocusNode,
+          obscureText: !_showPassword,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF1F2933),
+          ),
+          decoration: InputDecoration(
+            hintText: 'Enter your password',
+            hintStyle: const TextStyle(
+              fontSize: 15,
+              color: Color(0xFF9CA3AF),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+            prefixIcon: const Icon(
+              Icons.lock_outline_rounded,
+              size: 22,
+              color: Color(0xFF6B7280),
+            ),
+            suffixIcon: GestureDetector(
+              onTap: () => setState(() => _showPassword = !_showPassword),
+              child: Icon(
+                _showPassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                size: 22,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your password';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignInButton() {
+    return GestureDetector(
+      onTap: _isLoading ? null : _handleSignIn,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        decoration: BoxDecoration(
+          color: AppColors.accent,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3D75FC).withValues(alpha: 0.24),
+              blurRadius: 1,
+              offset: Offset.zero,
+            ),
+            const BoxShadow(
+              color: Color(0xFFE5E7EB),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_isLoading)
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            else ...[
+              const Text(
+                'Sign In',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.login_rounded,
+                size: 24,
+                color: Colors.white,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpLink() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "Don't have an Account ?",
+          style: TextStyle(
+            fontSize: 15,
+            color: Color(0xFF6B7280),
+          ),
+        ),
+        const SizedBox(width: 4),
+        GestureDetector(
+          onTap: () => context.push(Routes.signUp),
+          child: const Text(
+            'Sign up',
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.accent,
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

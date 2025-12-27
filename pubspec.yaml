@@ -66,6 +66,7 @@ flutter:
     - assets/icons/
     - assets/fonts/
     - assets/Onboard and Welcome Screen Gif/
+    - assets/Authendication gif/
 
   fonts:
     - family: Inter
