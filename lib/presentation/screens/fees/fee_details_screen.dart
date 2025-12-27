@@ -32,7 +32,7 @@ class FeeDetailsScreen extends ConsumerWidget {
           );
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.s4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

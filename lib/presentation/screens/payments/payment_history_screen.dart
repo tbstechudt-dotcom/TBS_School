@@ -35,7 +35,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(AppSizes.s4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
             itemCount: payments.length,
             separatorBuilder: (_, __) => const SizedBox(height: AppSizes.s3),
             itemBuilder: (context, index) {
