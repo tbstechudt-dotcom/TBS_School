@@ -23,7 +23,7 @@ class ProfileScreen extends ConsumerWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.s4),
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
         child: Column(
           children: [
             _buildProfileHeader(currentUser?.phone ?? '', selectedStudent?.name ?? ''),

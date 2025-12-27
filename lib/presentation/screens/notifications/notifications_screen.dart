@@ -41,7 +41,7 @@ class NotificationsScreen extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(AppSizes.s4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
             itemCount: notifications.length,
             separatorBuilder: (_, __) => const SizedBox(height: AppSizes.s2),
             itemBuilder: (context, index) {

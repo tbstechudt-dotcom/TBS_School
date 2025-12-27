@@ -44,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 child: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.all(AppSizes.s4),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -105,7 +105,7 @@ class HomeScreen extends ConsumerWidget {
           ),
 
           SliverPadding(
-            padding: const EdgeInsets.all(AppSizes.s4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 feeSummaryAsync.when(
