@@ -169,7 +169,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: AppSizes.s4),
+                        const SizedBox(height: AppSizes.s2),
 
                         // Back Button
                         _buildBackButton(),

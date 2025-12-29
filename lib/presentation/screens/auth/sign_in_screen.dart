@@ -177,7 +177,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: AppSizes.s4),
+                        const SizedBox(height: AppSizes.s2),
 
                         // Back Button
                         _buildBackButton(),
