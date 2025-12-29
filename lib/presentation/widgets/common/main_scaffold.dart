@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
+import '../../../core/constants/app_colors.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget child;
@@ -22,10 +24,13 @@ class MainScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = _calculateSelectedIndex(context);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -34,52 +39,99 @@ class MainScaffold extends StatelessWidget {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _calculateSelectedIndex(context),
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                context.go(Routes.home);
-                break;
-              case 1:
-                context.go(Routes.fees);
-                break;
-              case 2:
-                context.go(Routes.paymentHistory);
-                break;
-              case 3:
-                context.go(Routes.notifications);
-                break;
-              case 4:
-                context.go(Routes.profile);
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              activeIcon: Icon(Icons.home_rounded),
-              label: 'Home',
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  context: context,
+                  index: 0,
+                  selectedIndex: selectedIndex,
+                  label: 'Home',
+                  strokeIcon: 'assets/nav bar icons/home stroke.svg',
+                  filledIcon: 'assets/nav bar icons/home filled.svg',
+                  route: Routes.home,
+                ),
+                _buildNavItem(
+                  context: context,
+                  index: 1,
+                  selectedIndex: selectedIndex,
+                  label: 'Fees',
+                  strokeIcon: 'assets/nav bar icons/fees stroke.svg',
+                  filledIcon: 'assets/nav bar icons/fees filled.svg',
+                  route: Routes.fees,
+                ),
+                _buildNavItem(
+                  context: context,
+                  index: 2,
+                  selectedIndex: selectedIndex,
+                  label: 'History',
+                  strokeIcon: 'assets/nav bar icons/history stroke.svg',
+                  filledIcon: 'assets/nav bar icons/history filled.svg',
+                  route: Routes.paymentHistory,
+                ),
+                _buildNavItem(
+                  context: context,
+                  index: 3,
+                  selectedIndex: selectedIndex,
+                  label: 'Alerts',
+                  strokeIcon: 'assets/nav bar icons/alerts stroke.svg',
+                  filledIcon: 'assets/nav bar icons/alerts filled.svg',
+                  route: Routes.notifications,
+                ),
+                _buildNavItem(
+                  context: context,
+                  index: 4,
+                  selectedIndex: selectedIndex,
+                  label: 'Profile',
+                  strokeIcon: 'assets/nav bar icons/profile stroke.svg',
+                  filledIcon: 'assets/nav bar icons/profile filled.svg',
+                  route: Routes.profile,
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet_outlined),
-              activeIcon: Icon(Icons.account_balance_wallet_rounded),
-              label: 'Fees',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required BuildContext context,
+    required int index,
+    required int selectedIndex,
+    required String label,
+    required String strokeIcon,
+    required String filledIcon,
+    required String route,
+  }) {
+    final isSelected = index == selectedIndex;
+    final color = isSelected ? AppColors.primary : AppColors.textSecondary;
+
+    return GestureDetector(
+      onTap: () => context.go(route),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              isSelected ? filledIcon : strokeIcon,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history_outlined),
-              activeIcon: Icon(Icons.history_rounded),
-              label: 'History',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_outlined),
-              activeIcon: Icon(Icons.notifications_rounded),
-              label: 'Alerts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline_rounded),
-              activeIcon: Icon(Icons.person_rounded),
-              label: 'Profile',
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: color,
+              ),
             ),
           ],
         ),
