@@ -115,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     await prefs.setBool('hasSeenOnboarding', true);
 
     if (mounted) {
-      context.go(Routes.welcome);
+      context.go(Routes.home);
     }
   }
 
@@ -217,35 +217,36 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   Widget _buildBackButton() {
+    // Hide completely on first page
+    if (_currentPage == 0) {
+      return const SizedBox(width: 44, height: 44);
+    }
+
     return GestureDetector(
-      onTap: _currentPage > 0 ? _previousPage : null,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 200),
-        opacity: _currentPage > 0 ? 1.0 : 0.5,
-        child: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFAFAFA),
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                blurRadius: 1,
-                offset: Offset.zero,
-              ),
-              BoxShadow(
-                color: const Color(0xFFE5E7EB).withValues(alpha: 0.8),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.arrow_back_rounded,
-            size: 20,
-            color: Color(0xFF1F2933),
-          ),
+      onTap: _previousPage,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFAFAFA),
+          borderRadius: BorderRadius.circular(50),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              blurRadius: 1,
+              offset: Offset.zero,
+            ),
+            BoxShadow(
+              color: const Color(0xFFE5E7EB).withValues(alpha: 0.8),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Icon(
+          Icons.arrow_back_rounded,
+          size: 20,
+          color: Color(0xFF1F2933),
         ),
       ),
     );
