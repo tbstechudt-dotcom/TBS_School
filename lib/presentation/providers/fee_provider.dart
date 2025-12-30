@@ -1,44 +1,77 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/fee_model.dart';
-import '../../data/dummy_data.dart';
 import 'auth_provider.dart';
 import 'student_provider.dart';
 
+/// Fetch fees for currently selected student from Supabase 'feedemand' table
 final feesProvider = FutureProvider<List<FeeModel>>((ref) async {
   final student = ref.watch(selectedStudentProvider);
+  final client = ref.watch(supabaseClientProvider);
 
   if (student == null) return [];
 
-  // Use dummy data for development/testing
-  if (useDummyData) {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return DummyData.getFeesForStudent(student.id);
+  try {
+    final response = await client
+        .from('feedemand')
+        .select('*')
+        .eq('stu_id', student.stuId)
+        .eq('activestatus', 1)
+        .order('createdat', ascending: false);
+
+    return (response as List<dynamic>)
+        .map((e) => FeeModel.fromJson(e))
+        .toList();
+  } catch (e) {
+    debugPrint('Error fetching fees: $e');
+    return [];
   }
-
-  final client = ref.watch(supabaseClientProvider);
-
-  final response = await client.from('student_fees').select('''
-        *,
-        fee_types (
-          name,
-          is_mandatory
-        )
-      ''').eq('student_id', student.id).order('due_date', ascending: true);
-
-  return (response as List<dynamic>).map((e) => FeeModel.fromJson(e)).toList();
 });
 
+/// Fetch fees by student ID
+final feesByStudentIdProvider = FutureProvider.family<List<FeeModel>, int>((ref, stuId) async {
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    final response = await client
+        .from('feedemand')
+        .select('*')
+        .eq('stu_id', stuId)
+        .eq('activestatus', 1)
+        .order('createdat', ascending: false);
+
+    return (response as List<dynamic>)
+        .map((e) => FeeModel.fromJson(e))
+        .toList();
+  } catch (e) {
+    debugPrint('Error fetching fees by student ID: $e');
+    return [];
+  }
+});
+
+/// Fetch pending (unpaid) fees for selected student
 final pendingFeesProvider = Provider<List<FeeModel>>((ref) {
   final feesAsync = ref.watch(feesProvider);
   return feesAsync.maybeWhen(
     data: (fees) => fees
-        .where((f) =>
-            f.status == FeeStatus.pending || f.status == FeeStatus.overdue)
+        .where((f) => f.paidstatus == 'U')
         .toList(),
     orElse: () => [],
   );
 });
 
+/// Fetch paid fees for selected student
+final paidFeesProvider = Provider<List<FeeModel>>((ref) {
+  final feesAsync = ref.watch(feesProvider);
+  return feesAsync.maybeWhen(
+    data: (fees) => fees
+        .where((f) => f.paidstatus == 'P')
+        .toList(),
+    orElse: () => [],
+  );
+});
+
+/// Calculate fee summary for selected student
 final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
   final fees = await ref.watch(feesProvider.future);
 
@@ -47,21 +80,14 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
   double totalPending = 0;
   int pendingCount = 0;
   int overdueCount = 0;
-  DateTime? nextDueDate;
 
   for (final fee in fees) {
-    totalDue += fee.totalAmount;
-    totalPaid += fee.paidAmount;
-    totalPending += fee.balanceAmount;
+    totalDue += fee.feeamount - fee.conamount;
+    totalPaid += fee.paidamount;
+    totalPending += fee.balancedue;
 
-    if (fee.status == FeeStatus.pending || fee.status == FeeStatus.partial) {
+    if (fee.paidstatus == 'U') {
       pendingCount++;
-      if (nextDueDate == null || fee.dueDate.isBefore(nextDueDate)) {
-        nextDueDate = fee.dueDate;
-      }
-    }
-    if (fee.status == FeeStatus.overdue) {
-      overdueCount++;
     }
   }
 
@@ -71,6 +97,52 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
     totalPending: totalPending,
     pendingCount: pendingCount,
     overdueCount: overdueCount,
-    nextDueDate: nextDueDate,
+    nextDueDate: null,
   );
+});
+
+/// Fetch a single fee demand by ID
+final feeByIdProvider = FutureProvider.family<FeeModel?, int>((ref, demId) async {
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    final response = await client
+        .from('feedemand')
+        .select('*')
+        .eq('dem_id', demId)
+        .maybeSingle();
+
+    if (response != null) {
+      return FeeModel.fromJson(response);
+    }
+    return null;
+  } catch (e) {
+    debugPrint('Error fetching fee by ID: $e');
+    return null;
+  }
+});
+
+/// Fetch fees by year
+final feesByYearProvider = FutureProvider.family<List<FeeModel>, int>((ref, yrId) async {
+  final student = ref.watch(selectedStudentProvider);
+  final client = ref.watch(supabaseClientProvider);
+
+  if (student == null) return [];
+
+  try {
+    final response = await client
+        .from('feedemand')
+        .select('*')
+        .eq('stu_id', student.stuId)
+        .eq('yr_id', yrId)
+        .eq('activestatus', 1)
+        .order('createdat', ascending: false);
+
+    return (response as List<dynamic>)
+        .map((e) => FeeModel.fromJson(e))
+        .toList();
+  } catch (e) {
+    debugPrint('Error fetching fees by year: $e');
+    return [];
+  }
 });
