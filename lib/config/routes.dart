@@ -20,7 +20,7 @@ import '../presentation/screens/support/support_screen.dart';
 import '../presentation/screens/paid/paid_screen.dart';
 import '../presentation/screens/pending/pending_screen.dart';
 import '../presentation/widgets/common/main_scaffold.dart';
-import '../presentation/providers/auth_provider.dart';
+import '../presentation/providers/auth_provider.dart' show parentAuthStateProvider;
 import '../presentation/providers/student_provider.dart';
 
 /// Route names
@@ -49,7 +49,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  final parentAuthState = ref.watch(parentAuthStateProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -67,7 +67,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
-      final isLoggedIn = authState.valueOrNull != null;
+      final isLoggedIn = parentAuthState.valueOrNull?.isAuthenticated ?? false;
       final isOnAuthPage = state.matchedLocation == Routes.signIn ||
           state.matchedLocation == Routes.signUp ||
           state.matchedLocation == Routes.otpVerification ||

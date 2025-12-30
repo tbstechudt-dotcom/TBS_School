@@ -16,7 +16,7 @@ class PaymentReceiptScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final paymentAsync = ref.watch(paymentByIdProvider(paymentId));
+    final paymentAsync = ref.watch(paymentByIdProvider(int.tryParse(paymentId) ?? 0));
     final selectedStudent = ref.watch(selectedStudentProvider);
 
     return Scaffold(
