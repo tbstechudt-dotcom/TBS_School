@@ -15,7 +15,7 @@ class StudentSelectionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final studentsAsync = ref.watch(studentsProvider);
+    final studentsAsync = ref.watch(studentsByParentProvider);
 
     return Scaffold(
       backgroundColor: AppColors.bgSecondary,
@@ -34,7 +34,7 @@ class StudentSelectionScreen extends ConsumerWidget {
           loading: () => const LoadingIndicator(),
           error: (error, stack) => AppErrorWidget(
             message: error.toString(),
-            onRetry: () => ref.refresh(studentsProvider),
+            onRetry: () => ref.refresh(studentsByParentProvider),
           ),
           data: (students) {
             if (students.isEmpty) {
