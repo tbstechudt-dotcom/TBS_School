@@ -9,47 +9,8 @@ class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
 
   @override
-  ConsumerState<StudentSelectionScreen> createState() =>
-      _StudentSelectionScreenState();
-}
-
-class _StudentSelectionScreenState
-    extends ConsumerState<StudentSelectionScreen> {
-  int? _selectedStudentId;
-
-  // Mock data for students matching React design
-  final List<Map<String, dynamic>> _mockStudents = [
-    {
-      'id': 1,
-      'admissionNo': '3562756',
-      'name': 'Robert',
-      'class': '10-B',
-      'status': 'Pending',
-    },
-    {
-      'id': 2,
-      'admissionNo': '9003237',
-      'name': 'Cody Fisher',
-      'class': '8-C',
-      'status': 'Paid',
-    },
-    {
-      'id': 3,
-      'admissionNo': '8656436',
-      'name': 'Juile',
-      'class': '6-A',
-      'status': 'Paid',
-    },
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    // Select first student by default
-    if (_mockStudents.isNotEmpty) {
-      _selectedStudentId = _mockStudents[0]['id'];
-    }
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final studentsAsync = ref.watch(studentsByParentProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -119,48 +80,12 @@ class _StudentSelectionScreenState
           const SizedBox(width: 44),
         ],
       ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title and Subtitle
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Select Student',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: AppSizes.fontSemibold,
-                    color: Color(0xFF1F2933),
-                    height: 1.27,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Welcome back !',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    color: AppColors.textSecondary,
-                    height: 1.43,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Illustration Image
-          Image.asset(
-            'assets/images/select_student_illustration.png',
-            width: 133,
-            height: 133,
-            fit: BoxFit.cover,
+      body: SafeArea(
+        child: studentsAsync.when(
+          loading: () => const LoadingIndicator(),
+          error: (error, stack) => AppErrorWidget(
+            message: error.toString(),
+            onRetry: () => ref.refresh(studentsByParentProvider),
           ),
         ],
       ),

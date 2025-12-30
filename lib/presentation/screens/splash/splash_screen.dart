@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
-import '../../providers/auth_provider.dart';
+import '../../providers/auth_provider.dart' show parentAuthStateProvider;
 import '../../providers/student_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -122,11 +122,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       return;
     }
 
-    final authState = ref.read(authStateProvider);
+    // Check parent auth state
+    final parentAuthState = ref.read(parentAuthStateProvider);
+    final isLoggedIn = parentAuthState.valueOrNull?.isAuthenticated ?? false;
 
     if (!mounted) return;
 
-    if (authState.valueOrNull != null) {
+    if (isLoggedIn) {
       context.go(Routes.studentSelection);
     } else if (hasSeenOnboarding) {
       context.go(Routes.welcome);
