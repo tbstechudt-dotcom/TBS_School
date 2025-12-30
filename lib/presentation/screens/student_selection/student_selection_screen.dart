@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
+import '../../../data/models/student_model.dart';
+import '../../providers/student_provider.dart';
 
 class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
@@ -13,32 +15,7 @@ class StudentSelectionScreen extends ConsumerStatefulWidget {
 }
 
 class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen> {
-  String? _selectedStudentId;
-
-  // Mock student data for preview
-  final List<Map<String, dynamic>> _mockStudents = [
-    {
-      'id': '1',
-      'admissionNo': '24568790',
-      'name': 'Robert',
-      'class': '10-B',
-      'status': 'Pending',
-    },
-    {
-      'id': '2',
-      'admissionNo': '24568791',
-      'name': 'Emma Johnson',
-      'class': '10-B',
-      'status': 'Paid',
-    },
-    {
-      'id': '3',
-      'admissionNo': '24568792',
-      'name': 'James Wilson',
-      'class': '8-A',
-      'status': 'Pending',
-    },
-  ];
+  int? _selectedStudentId;
 
   @override
   Widget build(BuildContext context) {
@@ -156,25 +133,48 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
   }
 
   Widget _buildStudentList() {
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      itemCount: _mockStudents.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        final student = _mockStudents[index];
-        final isSelected = _selectedStudentId == student['id'];
-        return _buildStudentCard(student, isSelected);
+    final studentsAsync = ref.watch(studentsByParentProvider);
+
+    return studentsAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Text('Error loading students: $error'),
+      ),
+      data: (students) {
+        if (students.isEmpty) {
+          return const Center(
+            child: Text(
+              'No students found for this parent',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF6B7280),
+              ),
+            ),
+          );
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          itemCount: students.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final student = students[index];
+            final isSelected = _selectedStudentId == student.stuId;
+            return _buildStudentCard(student, isSelected);
+          },
+        );
       },
     );
   }
 
-  Widget _buildStudentCard(Map<String, dynamic> student, bool isSelected) {
-    final isPending = student['status'] == 'Pending';
+  Widget _buildStudentCard(StudentModel student, bool isSelected) {
+    // TODO: Determine payment status from fee data - for now showing as Pending
+    final isPending = true;
 
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedStudentId = student['id'];
+          _selectedStudentId = student.stuId;
         });
       },
       child: Container(
@@ -267,7 +267,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    student['admissionNo'],
+                    student.stuadmno,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.normal,
@@ -290,7 +290,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        student['name'],
+                        student.stuname,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
@@ -318,7 +318,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        student['class'],
+                        student.stuclass,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
@@ -341,7 +341,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                student['status'],
+                isPending ? 'Pending' : 'Paid',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: AppSizes.fontSemibold,
@@ -362,6 +362,14 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
       child: GestureDetector(
         onTap: _selectedStudentId != null
             ? () {
+                // Get the selected student and save to provider
+                final studentsAsync = ref.read(studentsByParentProvider);
+                studentsAsync.whenData((students) {
+                  final selectedStudent = students.firstWhere(
+                    (s) => s.stuId == _selectedStudentId,
+                  );
+                  ref.read(selectedStudentProvider.notifier).state = selectedStudent;
+                });
                 // Navigate to home screen
                 context.go(Routes.home);
               }
