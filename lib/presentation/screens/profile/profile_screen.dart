@@ -71,18 +71,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final studentData = selectedStudent != null
         ? {
             'name': selectedStudent.name,
-            'class': '${selectedStudent.className ?? 'N/A'}-${selectedStudent.section ?? ''}',
+            'class': selectedStudent.className,
             'rollNo': 'N/A',
             'adminNo': selectedStudent.admissionNumber,
-            'gender': selectedStudent.gender ?? 'N/A',
-            'dob': selectedStudent.dateOfBirth != null
-                ? _formatDate(selectedStudent.dateOfBirth!)
-                : 'N/A',
-            'blood': 'N/A',
+            'gender': selectedStudent.gender,
+            'dob': _formatDate(selectedStudent.dateOfBirth),
+            'blood': selectedStudent.stubloodgrp ?? 'N/A',
             'parent': 'N/A',
-            'mobile': 'N/A',
-            'email': 'N/A',
-            'address': 'N/A',
+            'mobile': selectedStudent.mobile,
+            'email': selectedStudent.email ?? 'N/A',
+            'address': selectedStudent.fullAddress.isNotEmpty ? selectedStudent.fullAddress : 'N/A',
           }
         : _currentStudent;
 

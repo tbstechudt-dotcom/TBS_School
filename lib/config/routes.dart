@@ -49,8 +49,6 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final parentAuthState = ref.watch(parentAuthStateProvider);
-
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: Routes.splash,
@@ -67,6 +65,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
+      // Read auth state directly for most up-to-date value
+      final parentAuthState = ref.read(parentAuthStateProvider);
       final isLoggedIn = parentAuthState.valueOrNull?.isAuthenticated ?? false;
       final isOnAuthPage = state.matchedLocation == Routes.signIn ||
           state.matchedLocation == Routes.signUp ||
@@ -74,9 +74,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == Routes.setPassword;
       final isOnOnboarding = state.matchedLocation == Routes.onboarding;
       final isOnWelcome = state.matchedLocation == Routes.welcome;
+      final isOnStudentSelection = state.matchedLocation == Routes.studentSelection;
 
       // Allow onboarding and welcome without auth
       if (isOnOnboarding || isOnWelcome) {
+        return null;
+      }
+
+      // Allow student selection when coming from login or if authenticated
+      final extra = state.extra;
+      final fromLogin = extra is Map && extra['fromLogin'] == true;
+      if (isOnStudentSelection && (isLoggedIn || fromLogin)) {
         return null;
       }
 
