@@ -1,54 +1,514 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../config/routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
+import '../../../data/models/payment_model.dart';
 import '../../providers/payment_provider.dart';
-import '../../providers/student_provider.dart';
-import '../../widgets/common/loading_indicator.dart';
-import '../../widgets/common/error_widget.dart';
-import '../../widgets/payment/payment_card.dart';
 
-class PaymentHistoryScreen extends ConsumerWidget {
+class PaymentHistoryScreen extends ConsumerStatefulWidget {
   const PaymentHistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PaymentHistoryScreen> createState() => _PaymentHistoryScreenState();
+}
+
+class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
+  String _activeFilter = 'All';
+  final List<String> _filters = ['All', 'Term 1', 'Term 2', 'Term 3'];
+
+  // Mock data for preview (remove when real data is available)
+  List<PaymentModel> get _mockPayments => [
+    PaymentModel(
+      id: '1',
+      paymentNumber: 'PAY-001',
+      studentId: 'mock-student',
+      parentId: 'mock-parent',
+      amount: 15500,
+      paymentMethod: 'Visa **** 9918',
+      status: PaymentStatus.success,
+      paidAt: DateTime(2025, 7, 10, 18, 0),
+      createdAt: DateTime(2025, 7, 10, 18, 0),
+      details: [
+        PaymentDetailModel(
+          id: 'd1',
+          paymentId: '1',
+          studentFeeId: 'sf1',
+          amount: 15500,
+          feeName: 'Tuition Fee',
+        ),
+      ],
+    ),
+    PaymentModel(
+      id: '2',
+      paymentNumber: 'PAY-002',
+      studentId: 'mock-student',
+      parentId: 'mock-parent',
+      amount: 10000,
+      paymentMethod: 'Visa **** 9918',
+      status: PaymentStatus.success,
+      paidAt: DateTime(2025, 7, 10, 18, 0),
+      createdAt: DateTime(2025, 7, 10, 18, 0),
+      details: [
+        PaymentDetailModel(
+          id: 'd2',
+          paymentId: '2',
+          studentFeeId: 'sf2',
+          amount: 10000,
+          feeName: 'Bus Fee',
+        ),
+      ],
+    ),
+    PaymentModel(
+      id: '3',
+      paymentNumber: 'PAY-003',
+      studentId: 'mock-student',
+      parentId: 'mock-parent',
+      amount: 1000,
+      paymentMethod: 'Visa **** 9918',
+      status: PaymentStatus.failed,
+      createdAt: DateTime(2025, 7, 10, 18, 0),
+      details: [
+        PaymentDetailModel(
+          id: 'd3',
+          paymentId: '3',
+          studentFeeId: 'sf3',
+          amount: 1000,
+          feeName: 'Library Fee',
+        ),
+      ],
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     final paymentsAsync = ref.watch(paymentsProvider);
-    final selectedStudent = ref.watch(selectedStudentProvider);
 
     return Scaffold(
       backgroundColor: AppColors.bgSecondary,
-      appBar: AppBar(
-        title: Text(selectedStudent?.name ?? 'Payment History'),
-        centerTitle: true,
-      ),
-      body: paymentsAsync.when(
-        loading: () => const LoadingIndicator(),
-        error: (error, stack) => AppErrorWidget(
-          message: error.toString(),
-          onRetry: () => ref.refresh(paymentsProvider),
-        ),
-        data: (payments) {
-          if (payments.isEmpty) {
-            return _buildEmptyState();
-          }
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            // Custom Header
+            _buildHeader(context),
+            const SizedBox(height: 24),
+            // Filter Tabs
+            _buildFilterTabs(),
+            const SizedBox(height: 24),
+            // Transaction List
+            Expanded(
+              child: paymentsAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Text('Error: $error'),
+                ),
+                data: (payments) {
+                  // Use mock data if no real payments exist
+                  final displayPayments = payments.isEmpty ? _mockPayments : payments;
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
-            itemCount: payments.length,
-            separatorBuilder: (_, __) => const SizedBox(height: AppSizes.s3),
-            itemBuilder: (context, index) {
-              final payment = payments[index];
-              return PaymentCard(
-                payment: payment,
-                onTap: () => context.push('/payment-history/${payment.id}'),
-              );
-            },
-          );
-        },
+                  // Filter payments based on active filter
+                  final filteredPayments = _filterPayments(displayPayments);
+
+                  if (filteredPayments.isEmpty) {
+                    return _buildEmptyState();
+                  }
+
+                  return ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    itemCount: filteredPayments.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      return _buildTransactionCard(filteredPayments[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  List<PaymentModel> _filterPayments(List<PaymentModel> payments) {
+    if (_activeFilter == 'All') return payments;
+    // For mock data, we'll filter by index to simulate terms
+    // In real implementation, you'd filter by actual term data
+    return payments;
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Menu Button
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF808087).withValues(alpha: 0.1),
+                  blurRadius: 40,
+                  offset: const Offset(0, 5),
+                ),
+                BoxShadow(
+                  color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                  blurRadius: 1,
+                  offset: Offset.zero,
+                ),
+              ],
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                'assets/images/menu.svg',
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFF1F2933),
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+
+          // Title
+          const Text(
+            'History',
+            style: TextStyle(
+              fontSize: AppSizes.sectionTitle,
+              fontWeight: AppSizes.fontSemibold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+
+          // Notification Button
+          GestureDetector(
+            onTap: () => context.push(Routes.notifications),
+            child: Stack(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF808087).withValues(alpha: 0.1),
+                        blurRadius: 40,
+                        offset: const Offset(0, 5),
+                      ),
+                      BoxShadow(
+                        color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                        blurRadius: 1,
+                        offset: Offset.zero,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/images/notification.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF1F2933),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  left: 24,
+                  child: Container(
+                    width: 9,
+                    height: 9,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterTabs() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: _filters.map((filter) {
+          final isActive = _activeFilter == filter;
+          return Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _activeFilter = filter;
+                });
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isActive ? const Color(0xFF1F2933) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isActive ? Colors.transparent : AppColors.textSecondary,
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  filter,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isActive ? AppSizes.fontMedium : AppSizes.fontNormal,
+                    color: isActive ? const Color(0xFFFAFAFA) : AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildTransactionCard(PaymentModel payment) {
+    final isPaid = payment.status == PaymentStatus.success;
+    final statusColor = isPaid ? AppColors.success : AppColors.error;
+    final feeName = payment.details.isNotEmpty
+        ? payment.details.first.feeName ?? 'Fee Payment'
+        : 'Fee Payment';
+
+    return GestureDetector(
+      onTap: () => context.push('/payment-history/${payment.id}'),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF808087).withValues(alpha: 0.1),
+              blurRadius: 40,
+              offset: const Offset(0, 5),
+            ),
+            BoxShadow(
+              color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+              blurRadius: 1,
+              offset: Offset.zero,
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Top Row: Icon, Fee Name, Card Info | Status, Amount
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon
+                _buildTransactionIcon(feeName, isPaid),
+                const SizedBox(width: 10),
+                // Fee Name and Card Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        feeName,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: AppSizes.fontNormal,
+                          color: AppColors.textPrimary,
+                          height: 1.47,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          // Visa icon placeholder
+                          Container(
+                            width: 34,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1A1F71),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'VISA',
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            payment.paymentMethod ?? '**** 9918',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: AppSizes.fontNormal,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Status and Amount
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      isPaid ? 'Paid' : 'Failed',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: AppSizes.fontSemibold,
+                        color: statusColor,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '₹ ${_formatAmount(payment.amount)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: AppSizes.fontSemibold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Bottom Row: Date, Time | Arrow
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Date and Time
+                Row(
+                  children: [
+                    Text(
+                      _formatDate(payment.paidAt ?? payment.createdAt),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: AppSizes.fontNormal,
+                        color: AppColors.textSecondary,
+                        height: 1.47,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      width: 4,
+                      height: 4,
+                      decoration: const BoxDecoration(
+                        color: AppColors.textSecondary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _formatTime(payment.paidAt ?? payment.createdAt),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: AppSizes.fontNormal,
+                        color: AppColors.textSecondary,
+                        height: 1.47,
+                      ),
+                    ),
+                  ],
+                ),
+                // Arrow Icon
+                Transform.rotate(
+                  angle: 3.14159, // 180 degrees
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    size: 20,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTransactionIcon(String feeName, bool isPaid) {
+    final bgColor = isPaid ? AppColors.success : AppColors.error;
+    IconData icon;
+
+    if (feeName.toLowerCase().contains('tuition')) {
+      icon = Icons.description_outlined;
+    } else if (feeName.toLowerCase().contains('bus')) {
+      icon = Icons.directions_bus_outlined;
+    } else if (feeName.toLowerCase().contains('library')) {
+      icon = Icons.close;
+    } else {
+      icon = Icons.receipt_outlined;
+    }
+
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        icon,
+        size: 24,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  String _formatAmount(double amount) {
+    if (amount == 0) return '0';
+    final parts = amount.toStringAsFixed(0).split('');
+    final result = <String>[];
+    for (int i = 0; i < parts.length; i++) {
+      if (i > 0) {
+        final posFromEnd = parts.length - i;
+        if (posFromEnd == 3 || (posFromEnd > 3 && (posFromEnd - 3) % 2 == 0)) {
+          result.add(',');
+        }
+      }
+      result.add(parts[i]);
+    }
+    return result.join('');
+  }
+
+  String _formatDate(DateTime date) {
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
+  String _formatTime(DateTime date) {
+    final hour = date.hour > 12 ? date.hour - 12 : date.hour;
+    final period = date.hour >= 12 ? 'pm' : 'am';
+    final minute = date.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $period';
   }
 
   Widget _buildEmptyState() {

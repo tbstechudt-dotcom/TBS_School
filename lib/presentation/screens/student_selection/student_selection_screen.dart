@@ -4,29 +4,80 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/student_provider.dart';
-import '../../widgets/common/loading_indicator.dart';
-import '../../widgets/common/error_widget.dart';
-import '../../widgets/student/student_card.dart';
 
-class StudentSelectionScreen extends ConsumerWidget {
+class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final studentsAsync = ref.watch(studentsByParentProvider);
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgSecondary,
-      appBar: AppBar(
-        title: const Text('Select Student'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            onPressed: () => _showLogoutDialog(context, ref),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            // Top Navigation - Back Button
+            _buildTopNavigation(),
+            const SizedBox(height: 32),
+            // Header with Title and Illustration
+            _buildHeader(),
+            const SizedBox(height: 56),
+            // Student List
+            Expanded(
+              child: _buildStudentList(),
+            ),
+            // Continue Button
+            _buildContinueButton(),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopNavigation() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Back Button
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF3D75FC).withValues(alpha: 0.24),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                  const BoxShadow(
+                    color: Color(0xFFE5E7EB),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 20,
+                  color: Color(0xFF1F2933),
+                ),
+              ),
+            ),
           ),
+          // Empty space for balance (no filter button in design)
+          const SizedBox(width: 44),
         ],
       ),
       body: SafeArea(
@@ -36,91 +87,204 @@ class StudentSelectionScreen extends ConsumerWidget {
             message: error.toString(),
             onRetry: () => ref.refresh(studentsByParentProvider),
           ),
-          data: (students) {
-            if (students.isEmpty) {
-              return _buildEmptyState();
-            }
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.s6, vertical: AppSizes.s4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSizes.s2,
-                      vertical: AppSizes.s4,
-                    ),
-                    child: Text(
-                      'Your Children',
-                      style: TextStyle(
-                        fontSize: AppSizes.textLg,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: students.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: AppSizes.s3),
-                    itemBuilder: (context, index) {
-                      final student = students[index];
-                      return StudentCard(
-                        student: student,
-                        onTap: () {
-                          ref.read(selectedStudentProvider.notifier).state = student;
-                          context.go(Routes.home);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSizes.s6),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildStudentList() {
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      itemCount: _mockStudents.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final student = _mockStudents[index];
+        final isSelected = _selectedStudentId == student['id'];
+        return _buildStudentCard(student, isSelected);
+      },
+    );
+  }
+
+  Widget _buildStudentCard(Map<String, dynamic> student, bool isSelected) {
+    final isPending = student['status'] == 'Pending';
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedStudentId = student['id'];
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : const Color(0xFFFAFAFA),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF808087).withValues(alpha: 0.1),
+                    blurRadius: 40,
+                    offset: const Offset(0, 5),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.35),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.2),
+                    blurRadius: 2,
+                    offset: Offset.zero,
+                  ),
+                ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Radio Button
             Container(
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                color: AppColors.gray100,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.person_search_rounded,
-                size: 48,
-                color: AppColors.gray400,
+              margin: const EdgeInsets.only(top: 2),
+              child: isSelected
+                  ? Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.accent,
+                          width: 2,
+                        ),
+                      ),
+                      child: Center(
+                        child: Container(
+                          width: 12,
+                          height: 12,
+                          decoration: const BoxDecoration(
+                            color: AppColors.accent,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFF1F2933),
+                          width: 2,
+                        ),
+                      ),
+                    ),
+            ),
+            const SizedBox(width: 12),
+            // Student Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Admission No.
+                  const Text(
+                    'Admission No.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0xFF6B7280),
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    student['admissionNo'],
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0xFF1F2933),
+                      height: 1.47,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // Name and Class Row
+                  Row(
+                    children: [
+                      const Text(
+                        'Name :',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF6B7280),
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        student['name'],
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF1F2933),
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '|',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF1F2933),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Class :',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF6B7280),
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        student['class'],
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xFF1F2933),
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: AppSizes.s6),
-            const Text(
-              'No Students Found',
-              style: TextStyle(
-                fontSize: AppSizes.textLg,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+            // Status Badge
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isPending
+                    ? const Color(0xFFF59E0B)
+                    : const Color(0xFF2DBE60),
+                borderRadius: BorderRadius.circular(6),
               ),
-            ),
-            const SizedBox(height: AppSizes.s2),
-            const Text(
-              'Your mobile number is not linked to any student. Please contact your school administration.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: AppSizes.textSm,
-                color: AppColors.textSecondary,
+              child: Text(
+                student['status'],
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: AppSizes.fontSemibold,
+                  color: Colors.white,
+                  height: 1.5,
+                ),
               ),
             ),
           ],
@@ -129,29 +293,57 @@ class StudentSelectionScreen extends ConsumerWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+  Widget _buildContinueButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GestureDetector(
+        onTap: _selectedStudentId != null
+            ? () {
+                // Navigate to home screen
+                context.go(Routes.home);
+              }
+            : null,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            color: _selectedStudentId != null
+                ? AppColors.accent
+                : AppColors.accent.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3D75FC).withValues(alpha: 0.24),
+                blurRadius: 1,
+                offset: Offset.zero,
+              ),
+              const BoxShadow(
+                color: Color(0xFFE5E7EB),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ref.read(authProvider.notifier).signOut();
-              context.go(Routes.welcome);
-            },
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: AppColors.error),
-            ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Continue',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: AppSizes.fontSemibold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              Icon(
+                Icons.arrow_forward,
+                size: 24,
+                color: Colors.white,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

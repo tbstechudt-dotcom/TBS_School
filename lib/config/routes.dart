@@ -16,6 +16,9 @@ import '../presentation/screens/payments/payment_history_screen.dart';
 import '../presentation/screens/payments/payment_receipt_screen.dart';
 import '../presentation/screens/notifications/notifications_screen.dart';
 import '../presentation/screens/profile/profile_screen.dart';
+import '../presentation/screens/support/support_screen.dart';
+import '../presentation/screens/paid/paid_screen.dart';
+import '../presentation/screens/pending/pending_screen.dart';
 import '../presentation/widgets/common/main_scaffold.dart';
 import '../presentation/providers/auth_provider.dart' show parentAuthStateProvider;
 import '../presentation/providers/student_provider.dart';
@@ -37,6 +40,9 @@ class Routes {
   static const paymentReceipt = '/payment-history/:paymentId';
   static const notifications = '/notifications';
   static const profile = '/profile';
+  static const support = '/support';
+  static const paid = '/paid';
+  static const pending = '/pending';
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -133,6 +139,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.studentSelection,
         builder: (context, state) => const StudentSelectionScreen(),
+      ),
+
+      // Support Screen (standalone without bottom nav)
+      GoRoute(
+        path: Routes.support,
+        builder: (context, state) => const SupportScreen(),
+      ),
+
+      // Paid Screen (standalone without bottom nav)
+      GoRoute(
+        path: Routes.paid,
+        builder: (context, state) => const PaidScreen(),
+      ),
+
+      // Pending Screen (standalone without bottom nav)
+      GoRoute(
+        path: Routes.pending,
+        builder: (context, state) => const PendingScreen(),
       ),
 
       // Main App with Bottom Navigation (Shell Route)
