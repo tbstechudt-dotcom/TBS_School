@@ -73,7 +73,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       );
 
       if (mounted) {
-        context.go(Routes.studentSelection);
+        // Pass flag to bypass auth check in router redirect
+        context.go(Routes.studentSelection, extra: {'fromLogin': true});
       }
     } catch (e) {
       if (mounted) {

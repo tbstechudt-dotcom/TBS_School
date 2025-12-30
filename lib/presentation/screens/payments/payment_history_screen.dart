@@ -20,65 +20,46 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   final List<String> _filters = ['All', 'Term 1', 'Term 2', 'Term 3'];
 
   // Mock data for preview (remove when real data is available)
-  List<PaymentModel> get _mockPayments => [
-    PaymentModel(
-      id: '1',
-      paymentNumber: 'PAY-001',
-      studentId: 'mock-student',
-      parentId: 'mock-parent',
-      amount: 15500,
-      paymentMethod: 'Visa **** 9918',
-      status: PaymentStatus.success,
-      paidAt: DateTime(2025, 7, 10, 18, 0),
-      createdAt: DateTime(2025, 7, 10, 18, 0),
-      details: [
-        PaymentDetailModel(
-          id: 'd1',
-          paymentId: '1',
-          studentFeeId: 'sf1',
-          amount: 15500,
-          feeName: 'Tuition Fee',
-        ),
-      ],
+  // Note: PaymentModel.amount returns 0 by default as actual amount comes from cart
+  // Using a wrapper class to provide mock amounts for display
+  List<_MockPayment> get _mockPayments => [
+    _MockPayment(
+      payment: PaymentModel(
+        payId: 1,
+        insId: 1,
+        inscode: 'INS001',
+        paydate: DateTime(2025, 7, 10, 18, 0),
+        paystatus: 'C',
+        paymethod: 'Visa **** 9918',
+        createdat: DateTime(2025, 7, 10, 18, 0),
+      ),
+      mockAmount: 15500,
+      mockFeeName: 'Tuition Fee',
     ),
-    PaymentModel(
-      id: '2',
-      paymentNumber: 'PAY-002',
-      studentId: 'mock-student',
-      parentId: 'mock-parent',
-      amount: 10000,
-      paymentMethod: 'Visa **** 9918',
-      status: PaymentStatus.success,
-      paidAt: DateTime(2025, 7, 10, 18, 0),
-      createdAt: DateTime(2025, 7, 10, 18, 0),
-      details: [
-        PaymentDetailModel(
-          id: 'd2',
-          paymentId: '2',
-          studentFeeId: 'sf2',
-          amount: 10000,
-          feeName: 'Bus Fee',
-        ),
-      ],
+    _MockPayment(
+      payment: PaymentModel(
+        payId: 2,
+        insId: 1,
+        inscode: 'INS001',
+        paydate: DateTime(2025, 7, 10, 18, 0),
+        paystatus: 'C',
+        paymethod: 'Visa **** 9918',
+        createdat: DateTime(2025, 7, 10, 18, 0),
+      ),
+      mockAmount: 10000,
+      mockFeeName: 'Bus Fee',
     ),
-    PaymentModel(
-      id: '3',
-      paymentNumber: 'PAY-003',
-      studentId: 'mock-student',
-      parentId: 'mock-parent',
-      amount: 1000,
-      paymentMethod: 'Visa **** 9918',
-      status: PaymentStatus.failed,
-      createdAt: DateTime(2025, 7, 10, 18, 0),
-      details: [
-        PaymentDetailModel(
-          id: 'd3',
-          paymentId: '3',
-          studentFeeId: 'sf3',
-          amount: 1000,
-          feeName: 'Library Fee',
-        ),
-      ],
+    _MockPayment(
+      payment: PaymentModel(
+        payId: 3,
+        insId: 1,
+        inscode: 'INS001',
+        paystatus: 'F',
+        paymethod: 'Visa **** 9918',
+        createdat: DateTime(2025, 7, 10, 18, 0),
+      ),
+      mockAmount: 1000,
+      mockFeeName: 'Library Fee',
     ),
   ];
 
@@ -106,8 +87,14 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   child: Text('Error: $error'),
                 ),
                 data: (payments) {
-                  // Use mock data if no real payments exist
-                  final displayPayments = payments.isEmpty ? _mockPayments : payments;
+                  // Convert real payments to _MockPayment for unified handling
+                  final List<_MockPayment> displayPayments = payments.isEmpty
+                      ? _mockPayments
+                      : payments.map((p) => _MockPayment(
+                          payment: p,
+                          mockAmount: p.amount,
+                          mockFeeName: 'Fee Payment',
+                        )).toList();
 
                   // Filter payments based on active filter
                   final filteredPayments = _filterPayments(displayPayments);
@@ -133,7 +120,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     );
   }
 
-  List<PaymentModel> _filterPayments(List<PaymentModel> payments) {
+  List<_MockPayment> _filterPayments(List<_MockPayment> payments) {
     if (_activeFilter == 'All') return payments;
     // For mock data, we'll filter by index to simulate terms
     // In real implementation, you'd filter by actual term data
@@ -287,12 +274,11 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
     );
   }
 
-  Widget _buildTransactionCard(PaymentModel payment) {
+  Widget _buildTransactionCard(_MockPayment mockPayment) {
+    final payment = mockPayment.payment;
     final isPaid = payment.status == PaymentStatus.success;
     final statusColor = isPaid ? AppColors.success : AppColors.error;
-    final feeName = payment.details.isNotEmpty
-        ? payment.details.first.feeName ?? 'Fee Payment'
-        : 'Fee Payment';
+    final feeName = mockPayment.mockFeeName;
 
     return GestureDetector(
       onTap: () => context.push('/payment-history/${payment.id}'),
@@ -388,7 +374,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '₹ ${_formatAmount(payment.amount)}',
+                      '₹ ${_formatAmount(mockPayment.mockAmount)}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: AppSizes.fontSemibold,
@@ -554,4 +540,17 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
       ),
     );
   }
+}
+
+/// Helper class to wrap PaymentModel with mock display data
+class _MockPayment {
+  final PaymentModel payment;
+  final double mockAmount;
+  final String mockFeeName;
+
+  _MockPayment({
+    required this.payment,
+    required this.mockAmount,
+    required this.mockFeeName,
+  });
 }

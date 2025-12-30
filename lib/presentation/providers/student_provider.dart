@@ -4,7 +4,7 @@ import '../../data/models/student_model.dart';
 import 'auth_provider.dart' show supabaseClientProvider, parentAuthStateProvider;
 
 /// Set to false to use Supabase data, true for dummy data
-const bool useDummyData = false;
+const bool useDummyData = true;
 
 /// Currently selected student
 final selectedStudentProvider = StateProvider<StudentModel?>((ref) => null);
