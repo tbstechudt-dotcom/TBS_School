@@ -9,8 +9,36 @@ class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final studentsAsync = ref.watch(studentsByParentProvider);
+  ConsumerState<StudentSelectionScreen> createState() => _StudentSelectionScreenState();
+}
+
+class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen> {
+  String? _selectedStudentId;
+
+  // Mock student data for preview
+  final List<Map<String, dynamic>> _mockStudents = [
+    {
+      'id': '1',
+      'admissionNo': '24568790',
+      'name': 'Robert',
+      'class': '10-B',
+      'status': 'Pending',
+    },
+    {
+      'id': '2',
+      'admissionNo': '24568791',
+      'name': 'Emma Johnson',
+      'class': '10-B',
+      'status': 'Paid',
+    },
+    {
+      'id': '3',
+      'admissionNo': '24568792',
+      'name': 'James Wilson',
+      'class': '8-A',
+      'status': 'Pending',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +108,47 @@ class StudentSelectionScreen extends ConsumerStatefulWidget {
           const SizedBox(width: 44),
         ],
       ),
-      body: SafeArea(
-        child: studentsAsync.when(
-          loading: () => const LoadingIndicator(),
-          error: (error, stack) => AppErrorWidget(
-            message: error.toString(),
-            onRetry: () => ref.refresh(studentsByParentProvider),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title and Subtitle
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select Student',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1F2933),
+                  height: 1.21,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Welcome back!',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                  color: Color(0xFF6B7280),
+                  height: 1.47,
+                ),
+              ),
+            ],
+          ),
+          // Illustration
+          Image.asset(
+            'assets/images/select_student_illustration.png',
+            width: 120,
+            height: 100,
+            fit: BoxFit.contain,
           ),
         ],
       ),
