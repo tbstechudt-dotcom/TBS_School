@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../data/models/notification_model.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/drawer_provider.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -144,9 +145,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Back Button
+          // Menu Button
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => openMainDrawer(ref),
             child: Container(
               width: 46,
               height: 46,

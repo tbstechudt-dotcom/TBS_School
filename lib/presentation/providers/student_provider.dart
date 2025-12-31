@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/student_model.dart';
+import '../../data/models/institution_model.dart';
 import 'auth_provider.dart' show supabaseClientProvider, parentAuthStateProvider;
 
 /// Set to false to use Supabase data, true for dummy data
@@ -138,6 +139,37 @@ final studentByAdmissionProvider = FutureProvider.family<StudentModel?, String>(
     return null;
   } catch (e) {
     debugPrint('Error fetching student by admission number: $e');
+    return null;
+  }
+});
+
+/// Fetch institution for selected student
+final selectedStudentWithInstitutionProvider = FutureProvider<InstitutionModel?>((ref) async {
+  final selectedStudent = ref.watch(selectedStudentProvider);
+
+  if (selectedStudent == null) {
+    debugPrint('No student selected for institution fetch');
+    return null;
+  }
+
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    // Direct query to institution table
+    final response = await client
+        .from('institution')
+        .select('ins_id, insname, insaddress1, inspincode')
+        .eq('ins_id', selectedStudent.insId)
+        .maybeSingle();
+
+    debugPrint('Institution response: $response');
+
+    if (response != null) {
+      return InstitutionModel.fromJson(response);
+    }
+    return null;
+  } catch (e) {
+    debugPrint('Error fetching institution: $e');
     return null;
   }
 });

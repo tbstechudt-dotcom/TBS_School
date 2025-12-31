@@ -11,23 +11,70 @@ class CountryCode {
   final String flag;
   final String code;
   final String country;
+  final int phoneLength;
+  final String pattern; // Regex pattern for validation
 
   const CountryCode({
     required this.flag,
     required this.code,
     required this.country,
+    required this.phoneLength,
+    required this.pattern,
   });
 }
 
+// Countries where parents might be located (NRI parents, etc.)
+// Note: Some countries have overlapping number formats, OTP verification confirms validity
 const _countryCodes = [
-  CountryCode(flag: '🇮🇳', code: '+91', country: 'India'),
-  CountryCode(flag: '🇺🇸', code: '+1', country: 'United States'),
-  CountryCode(flag: '🇬🇧', code: '+44', country: 'United Kingdom'),
-  CountryCode(flag: '🇦🇪', code: '+971', country: 'UAE'),
-  CountryCode(flag: '🇸🇦', code: '+966', country: 'Saudi Arabia'),
-  CountryCode(flag: '🇦🇺', code: '+61', country: 'Australia'),
-  CountryCode(flag: '🇨🇦', code: '+1', country: 'Canada'),
-  CountryCode(flag: '🇸🇬', code: '+65', country: 'Singapore'),
+  CountryCode(
+    flag: '🇮🇳',
+    code: '+91',
+    country: 'India',
+    phoneLength: 10,
+    pattern: r'^[6-9][0-9]{9}$', // Indian mobile: starts with 6, 7, 8, or 9
+  ),
+  CountryCode(
+    flag: '🇦🇪',
+    code: '+971',
+    country: 'UAE',
+    phoneLength: 9,
+    pattern: r'^5[0-9]{8}$', // UAE mobile: starts with 5
+  ),
+  CountryCode(
+    flag: '🇸🇦',
+    code: '+966',
+    country: 'Saudi Arabia',
+    phoneLength: 9,
+    pattern: r'^5[0-9]{8}$', // Saudi mobile: starts with 5
+  ),
+  CountryCode(
+    flag: '🇸🇬',
+    code: '+65',
+    country: 'Singapore',
+    phoneLength: 8,
+    pattern: r'^[89][0-9]{7}$', // Singapore mobile: starts with 8 or 9
+  ),
+  CountryCode(
+    flag: '🇦🇺',
+    code: '+61',
+    country: 'Australia',
+    phoneLength: 9,
+    pattern: r'^4[0-9]{8}$', // Australian mobile: starts with 4
+  ),
+  CountryCode(
+    flag: '🇺🇸',
+    code: '+1',
+    country: 'USA / Canada',
+    phoneLength: 10,
+    pattern: r'^[2-9][0-9]{2}[2-9][0-9]{6}$', // NANP format
+  ),
+  CountryCode(
+    flag: '🇬🇧',
+    code: '+44',
+    country: 'United Kingdom',
+    phoneLength: 10,
+    pattern: r'^7[0-9]{9}$', // UK mobile: starts with 7
+  ),
 ];
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -148,7 +195,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       ),
                     ),
                     onTap: () {
-                      setState(() => _selectedCountryIndex = index);
+                      setState(() {
+                        _selectedCountryIndex = index;
+                        // Clear mobile input when country changes
+                        _mobileController.clear();
+                      });
                       Navigator.pop(context);
                     },
                   );
@@ -400,15 +451,25 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ),
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(10),
+            LengthLimitingTextInputFormatter(_countryCodes[_selectedCountryIndex].phoneLength),
           ],
           validator: (value) {
+            final selectedCountry = _countryCodes[_selectedCountryIndex];
+
             if (value == null || value.isEmpty) {
               return 'Please enter your mobile number';
             }
-            if (value.length != 10) {
-              return 'Please enter a valid 10-digit number';
+
+            if (value.length != selectedCountry.phoneLength) {
+              return 'Please enter a valid ${selectedCountry.phoneLength}-digit ${selectedCountry.country} number';
             }
+
+            // Validate against country-specific pattern
+            final regex = RegExp(selectedCountry.pattern);
+            if (!regex.hasMatch(value)) {
+              return 'Please enter a valid ${selectedCountry.country} mobile number';
+            }
+
             return null;
           },
         ),

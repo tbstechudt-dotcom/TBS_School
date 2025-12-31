@@ -126,5 +126,47 @@ USING (true)
 WITH CHECK (true);
 
 -- ============================================
+-- Institution table policies
+-- ============================================
+
+-- Enable RLS on institution table
+ALTER TABLE public.institution ENABLE ROW LEVEL SECURITY;
+
+-- Allow anonymous read access to institution
+CREATE POLICY "Allow anonymous read access to institution"
+ON public.institution
+FOR SELECT
+TO anon
+USING (true);
+
+-- Allow authenticated read access to institution
+CREATE POLICY "Allow authenticated read access to institution"
+ON public.institution
+FOR SELECT
+TO authenticated
+USING (true);
+
+-- ============================================
+-- City table policies (needed for joins)
+-- ============================================
+
+-- Enable RLS on city table
+ALTER TABLE public.city ENABLE ROW LEVEL SECURITY;
+
+-- Allow anonymous read access to city
+CREATE POLICY "Allow anonymous read access to city"
+ON public.city
+FOR SELECT
+TO anon
+USING (true);
+
+-- Allow authenticated read access to city
+CREATE POLICY "Allow authenticated read access to city"
+ON public.city
+FOR SELECT
+TO authenticated
+USING (true);
+
+-- ============================================
 -- DONE! RLS policies created successfully
 -- ============================================

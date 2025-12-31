@@ -1,4 +1,4 @@
-import svgPaths from "./svg-h4p1z0em35";
+import svgPaths from "./svg-y33o0oj5ip";
 import imgVisaPng41 from "figma:asset/5d085a41c0740ec6118c5c25b886831b4e5db03e.png";
 
 function Frame() {
@@ -65,7 +65,7 @@ function Frame21() {
   );
 }
 
-function Frame34() {
+function Frame33() {
   return (
     <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
       <Frame18 />
@@ -76,7 +76,8 @@ function Frame34() {
 
 function Frame9() {
   return (
-    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0 w-[166px]">
+    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic relative shrink-0 text-[#1f2933] text-[14px] text-nowrap">Paid Date:</p>
       <p className="font-['SF_Pro:Regular',sans-serif] font-normal leading-[22px] relative shrink-0 text-[#6b7280] text-[15px] text-nowrap" style={{ fontVariationSettings: "'wdth' 100" }}>{`10 July 2025 `}</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
@@ -115,7 +116,7 @@ function VuesaxLinearArrowLeft1() {
   );
 }
 
-function Frame35() {
+function Frame34() {
   return (
     <div className="content-stretch flex items-center justify-between relative shrink-0 w-[322px]">
       <Frame9 />
@@ -131,13 +132,13 @@ function Frame35() {
 function Frame10() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
+      <Frame33 />
       <Frame34 />
-      <Frame35 />
     </div>
   );
 }
 
-function Frame33() {
+function Frame38() {
   return (
     <div className="absolute bg-white content-stretch flex flex-col items-end left-[24px] p-[16px] rounded-[12px] shadow-[0px_5px_40px_0px_rgba(128,128,135,0.1),0px_0px_1px_0px_rgba(0,81,198,0.75)] top-[159px] w-[354px]">
       <Frame10 />
@@ -220,7 +221,7 @@ function Frame24() {
   );
 }
 
-function Frame39() {
+function Frame36() {
   return (
     <div className="content-stretch flex items-start justify-between relative shrink-0 w-full">
       <Frame19 />
@@ -231,7 +232,8 @@ function Frame39() {
 
 function Frame12() {
   return (
-    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0 w-[166px]">
+    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic relative shrink-0 text-[#1f2933] text-[14px] text-nowrap">Paid Date:</p>
       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic relative shrink-0 text-[#6b7280] text-[14px] text-nowrap">{`10 July 2025 `}</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
@@ -284,13 +286,13 @@ function Frame40() {
 function Frame13() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
-      <Frame39 />
+      <Frame36 />
       <Frame40 />
     </div>
   );
 }
 
-function Frame37() {
+function Frame39() {
   return (
     <div className="absolute bg-white content-stretch flex flex-col items-end left-[24px] p-[16px] rounded-[12px] shadow-[0px_5px_40px_0px_rgba(128,128,135,0.1),0px_0px_1px_0px_rgba(0,81,198,0.75)] top-[285px] w-[354px]">
       <Frame13 />
@@ -374,7 +376,8 @@ function Frame41() {
 
 function Frame15() {
   return (
-    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0 w-[166px]">
+    <div className="content-stretch flex gap-[6px] items-center justify-center relative shrink-0">
+      <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic relative shrink-0 text-[#1f2933] text-[14px] text-nowrap">Failed Date:</p>
       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[20px] not-italic relative shrink-0 text-[#6b7280] text-[14px] text-nowrap">{`10 July 2025 `}</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
@@ -433,7 +436,7 @@ function Frame16() {
   );
 }
 
-function Frame38() {
+function Frame37() {
   return (
     <div className="absolute bg-white content-stretch flex flex-col items-end left-[24px] p-[16px] rounded-[12px] shadow-[0px_5px_40px_0px_rgba(128,128,135,0.1),0px_0px_1px_0px_rgba(0,81,198,0.75)] top-[411px] w-[354px]">
       <Frame16 />
@@ -484,7 +487,7 @@ function Frame32() {
   );
 }
 
-function Frame36() {
+function Frame35() {
   return (
     <div className="absolute content-stretch flex gap-[16px] items-center left-[24px] top-[105px]">
       <Frame29 />
@@ -666,14 +669,14 @@ function History() {
   return (
     <div className="relative shrink-0 size-[24px]" data-name="history">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-        <g clipPath="url(#clip0_1_573)" id="history">
+        <g clipPath="url(#clip0_1_576)" id="history">
           <g id="Vector"></g>
           <path d="M4 4V8H7" id="Vector_2" stroke="var(--stroke-0, #007DFC)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
           <path d={svgPaths.p1d901900} id="Vector_3" stroke="var(--stroke-0, #007DFC)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
           <path d="M12.0006 7L12 12.2752L16 16" id="Vector_4" stroke="var(--stroke-0, #007DFC)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
         </g>
         <defs>
-          <clipPath id="clip0_1_573">
+          <clipPath id="clip0_1_576">
             <rect fill="white" height="24" width="24" />
           </clipPath>
         </defs>
@@ -822,10 +825,10 @@ export default function History1() {
   return (
     <div className="bg-[#fafafa] overflow-clip relative rounded-[24px] size-full" data-name="History">
       <Frame28 />
-      <Frame33 />
-      <Frame37 />
       <Frame38 />
-      <Frame36 />
+      <Frame39 />
+      <Frame37 />
+      <Frame35 />
       <Frame2 />
       <Group />
     </div>
