@@ -38,6 +38,8 @@ class TransactionDetailsScreen extends ConsumerWidget {
             const mockAmount = 15000.0;
             const mockFeeName = 'Tuition Fee - Term 1';
 
+            final isPaid = displayPayment.status == PaymentStatus.success;
+
             return Column(
               children: [
                 const SizedBox(height: 8),
@@ -58,10 +60,11 @@ class TransactionDetailsScreen extends ConsumerWidget {
                           selectedStudent?.className ?? '10-B',
                           mockAmount,
                           mockFeeName,
+                          isPaid,
                         ),
                         const SizedBox(height: 24),
                         // Action Buttons
-                        _buildActionButtons(context),
+                        _buildActionButtons(context, isPaid),
                       ],
                     ),
                   ),
@@ -186,8 +189,10 @@ class TransactionDetailsScreen extends ConsumerWidget {
     String className,
     double amount,
     String feeName,
+    bool isPaid,
   ) {
-    final isPaid = payment.status == PaymentStatus.success;
+    final headerColor = isPaid ? const Color(0xFF2DBE60) : const Color(0xFFDC2626);
+    final amountColor = isPaid ? const Color(0xFF2DBE60) : const Color(0xFFDC2626);
 
     return Container(
       decoration: BoxDecoration(
@@ -209,33 +214,49 @@ class TransactionDetailsScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         child: Column(
           children: [
-            // Green Success Header
+            // Header (Green for success, Red for failed)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              color: AppColors.success,
+              color: headerColor,
               child: Column(
                 children: [
-                  // Checkmark Icon
+                  // Icon (Checkmark for success, X for failed)
                   Container(
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: const Color(0xFFF1F6FD), width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF1F2933).withValues(alpha: 0.1),
+                          blurRadius: 40,
+                          offset: const Offset(0, 3),
+                        ),
+                        BoxShadow(
+                          color: const Color(0xFF1F2933).withValues(alpha: 0.75),
+                          blurRadius: 1,
+                          offset: Offset.zero,
+                        ),
+                      ],
                     ),
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      child: CustomPaint(
-                        size: const Size(36, 36),
-                        painter: _CheckmarkPainter(),
-                      ),
+                    child: Center(
+                      child: isPaid
+                          ? CustomPaint(
+                              size: const Size(36, 36),
+                              painter: _CheckmarkPainter(),
+                            )
+                          : CustomPaint(
+                              size: const Size(36, 36),
+                              painter: _CrossPainter(),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 5),
-                  // Payment Successful Text
+                  // Payment Status Text
                   Text(
-                    isPaid ? 'Payment  Successful' : 'Payment Failed',
+                    isPaid ? 'Payment  Successful' : 'Payment  Failed',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
@@ -244,10 +265,10 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  // Transaction Completed Text
-                  const Text(
-                    'Transaction Completed',
-                    style: TextStyle(
+                  // Transaction Status Text
+                  Text(
+                    isPaid ? 'Transaction Completed' : 'Transaction In-completed',
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
@@ -268,19 +289,19 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   const Text(
                     'Amount Paid',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textSecondary,
-                      height: 1.43,
+                      color: Color(0xFF6B7280),
+                      height: 1.47,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     '₹ ${_formatAmount(amount)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.success,
+                      color: amountColor,
                       height: 1.38,
                     ),
                   ),
@@ -300,7 +321,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     _formatTime(payment.paidAt ?? payment.createdAt),
                   ),
                   const SizedBox(height: 16),
-                  _buildDetailRow('Payment Method', payment.paymentMethod ?? 'VISA**** 9918'),
+                  _buildDetailRow('Payment Method', payment.paymentMethod),
                   const SizedBox(height: 16),
                   _buildDetailRow('Fee Type', feeName),
                   const SizedBox(height: 16),
@@ -325,7 +346,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: AppColors.textSecondary,
+            color: Color(0xFF6B7280),
             height: 1.43,
           ),
         ),
@@ -334,7 +355,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w400,
-            color: AppColors.textPrimary,
+            color: Color(0xFF1F2933),
             height: 1.47,
           ),
         ),
@@ -351,7 +372,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: AppColors.textSecondary,
+            color: Color(0xFF6B7280),
             height: 1.43,
           ),
         ),
@@ -362,7 +383,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
-                color: AppColors.textPrimary,
+                color: Color(0xFF1F2933),
                 height: 1.47,
               ),
             ),
@@ -370,7 +391,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
               width: 4,
               height: 4,
               decoration: const BoxDecoration(
-                color: AppColors.textPrimary,
+                color: Color(0xFF1F2933),
                 shape: BoxShape.circle,
               ),
             ),
@@ -379,7 +400,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
-                color: AppColors.textPrimary,
+                color: Color(0xFF1F2933),
                 height: 1.47,
               ),
             ),
@@ -389,16 +410,16 @@ class TransactionDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(BuildContext context, bool isPaid) {
     return Row(
       children: [
-        // Download Button
+        // Primary Button (Download for success, Retry for failed)
         Expanded(
           child: GestureDetector(
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Download - Coming Soon'),
+                SnackBar(
+                  content: Text(isPaid ? 'Download - Coming Soon' : 'Retry - Coming Soon'),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -409,18 +430,18 @@ class TransactionDetailsScreen extends ConsumerWidget {
                 color: const Color(0xFF007DFC),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.download_rounded,
+                    isPaid ? Icons.download_rounded : Icons.refresh,
                     size: 24,
                     color: Colors.white,
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(
-                    'Download',
-                    style: TextStyle(
+                    isPaid ? 'Download' : 'Retry',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -448,7 +469,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.textSecondary, width: 1),
+                border: Border.all(color: const Color(0xFF6B7280), width: 1.5),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -456,7 +477,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   Icon(
                     Icons.share,
                     size: 24,
-                    color: AppColors.textSecondary,
+                    color: Color(0xFF6B7280),
                   ),
                   SizedBox(width: 10),
                   Text(
@@ -464,7 +485,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: Color(0xFF6B7280),
                     ),
                   ),
                 ],
@@ -495,7 +516,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
   String _formatDate(DateTime date) {
     final months = ['January', 'February', 'March', 'April', 'May', 'June',
                     'July', 'August', 'September', 'October', 'November', 'December'];
-    return '${date.day} ${months[date.month - 1].substring(0, 3)} ${date.year}';
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   String _formatTime(DateTime date) {
@@ -506,7 +527,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
   }
 }
 
-/// Custom painter for checkmark icon
+/// Custom painter for checkmark icon (success)
 class _CheckmarkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -526,6 +547,33 @@ class _CheckmarkPainter extends CustomPainter {
     path.close();
 
     canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Custom painter for X icon (failed)
+class _CrossPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+
+    // Draw X shape
+    canvas.drawLine(
+      Offset(size.width * 0.25, size.height * 0.25),
+      Offset(size.width * 0.75, size.height * 0.75),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.75, size.height * 0.25),
+      Offset(size.width * 0.25, size.height * 0.75),
+      paint,
+    );
   }
 
   @override
