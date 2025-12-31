@@ -8,6 +8,7 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../data/models/fee_model.dart';
 import '../../providers/fee_provider.dart';
 import '../../providers/student_provider.dart';
+import '../../providers/drawer_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
 
@@ -121,33 +122,36 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Menu Button
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF808087).withValues(alpha: 0.1),
-                  blurRadius: 40,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: const Color(0xFF0051C6).withValues(alpha: 0.75),
-                  blurRadius: 1,
-                  offset: Offset.zero,
-                ),
-              ],
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/menu.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1F2933),
-                  BlendMode.srcIn,
+          GestureDetector(
+            onTap: () => openMainDrawer(ref),
+            child: Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF808087).withValues(alpha: 0.1),
+                    blurRadius: 40,
+                    offset: const Offset(0, 5),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/menu.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFF1F2933),
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),

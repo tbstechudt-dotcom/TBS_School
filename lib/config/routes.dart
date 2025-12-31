@@ -13,7 +13,7 @@ import '../presentation/screens/home/home_screen.dart';
 import '../presentation/screens/fees/fees_screen.dart';
 import '../presentation/screens/fees/fee_details_screen.dart';
 import '../presentation/screens/payments/payment_history_screen.dart';
-import '../presentation/screens/payments/payment_receipt_screen.dart';
+import '../presentation/screens/payments/transaction_details_screen.dart';
 import '../presentation/screens/notifications/notifications_screen.dart';
 import '../presentation/screens/profile/profile_screen.dart';
 import '../presentation/screens/support/support_screen.dart';
@@ -203,7 +203,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: ':paymentId',
                 builder: (context, state) {
                   final paymentId = state.pathParameters['paymentId']!;
-                  return PaymentReceiptScreen(paymentId: paymentId);
+                  return TransactionDetailsScreen(paymentId: paymentId);
                 },
               ),
             ],

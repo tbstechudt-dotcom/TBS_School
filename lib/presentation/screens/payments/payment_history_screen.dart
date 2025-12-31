@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../data/models/payment_model.dart';
 import '../../providers/payment_provider.dart';
+import '../../providers/drawer_provider.dart';
 
 class PaymentHistoryScreen extends ConsumerStatefulWidget {
   const PaymentHistoryScreen({super.key});
@@ -19,9 +20,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   String _activeFilter = 'All';
   final List<String> _filters = ['All', 'Term 1', 'Term 2', 'Term 3'];
 
-  // Mock data for preview (remove when real data is available)
-  // Note: PaymentModel.amount returns 0 by default as actual amount comes from cart
-  // Using a wrapper class to provide mock amounts for display
+  // Mock data for preview
   List<_MockPayment> get _mockPayments => [
     _MockPayment(
       payment: PaymentModel(
@@ -30,7 +29,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         inscode: 'INS001',
         paydate: DateTime(2025, 7, 10, 18, 0),
         paystatus: 'C',
-        paymethod: 'Visa **** 9918',
+        paymethod: '**** 9918',
         createdat: DateTime(2025, 7, 10, 18, 0),
       ),
       mockAmount: 15500,
@@ -43,7 +42,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         inscode: 'INS001',
         paydate: DateTime(2025, 7, 10, 18, 0),
         paystatus: 'C',
-        paymethod: 'Visa **** 9918',
+        paymethod: '**** 9918',
         createdat: DateTime(2025, 7, 10, 18, 0),
       ),
       mockAmount: 10000,
@@ -55,7 +54,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         insId: 1,
         inscode: 'INS001',
         paystatus: 'F',
-        paymethod: 'Visa **** 9918',
+        paymethod: '**** 9918',
         createdat: DateTime(2025, 7, 10, 18, 0),
       ),
       mockAmount: 1000,
@@ -87,7 +86,6 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   child: Text('Error: $error'),
                 ),
                 data: (payments) {
-                  // Convert real payments to _MockPayment for unified handling
                   final List<_MockPayment> displayPayments = payments.isEmpty
                       ? _mockPayments
                       : payments.map((p) => _MockPayment(
@@ -96,7 +94,6 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                           mockFeeName: 'Fee Payment',
                         )).toList();
 
-                  // Filter payments based on active filter
                   final filteredPayments = _filterPayments(displayPayments);
 
                   if (filteredPayments.isEmpty) {
@@ -122,8 +119,6 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
 
   List<_MockPayment> _filterPayments(List<_MockPayment> payments) {
     if (_activeFilter == 'All') return payments;
-    // For mock data, we'll filter by index to simulate terms
-    // In real implementation, you'd filter by actual term data
     return payments;
   }
 
@@ -134,33 +129,36 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Menu Button
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF808087).withValues(alpha: 0.1),
-                  blurRadius: 40,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: const Color(0xFF0051C6).withValues(alpha: 0.75),
-                  blurRadius: 1,
-                  offset: Offset.zero,
-                ),
-              ],
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/menu.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1F2933),
-                  BlendMode.srcIn,
+          GestureDetector(
+            onTap: () => openMainDrawer(ref),
+            child: Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF808087).withValues(alpha: 0.1),
+                    blurRadius: 40,
+                    offset: const Offset(0, 5),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/menu.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFF1F2933),
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -170,9 +168,9 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
           const Text(
             'History',
             style: TextStyle(
-              fontSize: AppSizes.sectionTitle,
-              fontWeight: AppSizes.fontSemibold,
-              color: AppColors.textPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1F2933),
             ),
           ),
 
@@ -213,13 +211,13 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 10,
+                  top: 11,
                   left: 24,
                   child: Container(
-                    width: 9,
-                    height: 9,
+                    width: 8,
+                    height: 8,
                     decoration: BoxDecoration(
-                      color: AppColors.accent,
+                      color: const Color(0xFF007DFC),
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 1),
                     ),
@@ -247,23 +245,24 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                   _activeFilter = filter;
                 });
               },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+              child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: isActive ? const Color(0xFF1F2933) : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isActive ? Colors.transparent : AppColors.textSecondary,
-                    width: 1,
-                  ),
+                  border: isActive
+                      ? null
+                      : Border.all(
+                          color: const Color(0xFF6B7280),
+                          width: 1,
+                        ),
                 ),
                 child: Text(
                   filter,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: isActive ? AppSizes.fontMedium : AppSizes.fontNormal,
-                    color: isActive ? const Color(0xFFFAFAFA) : AppColors.textSecondary,
+                    fontWeight: FontWeight.w400,
+                    color: isActive ? const Color(0xFFFAFAFA) : const Color(0xFF6B7280),
                   ),
                 ),
               ),
@@ -277,7 +276,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   Widget _buildTransactionCard(_MockPayment mockPayment) {
     final payment = mockPayment.payment;
     final isPaid = payment.status == PaymentStatus.success;
-    final statusColor = isPaid ? AppColors.success : AppColors.error;
+    final statusColor = isPaid ? const Color(0xFF2DBE60) : const Color(0xFFDC2626);
     final feeName = mockPayment.mockFeeName;
 
     return GestureDetector(
@@ -318,15 +317,16 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                         feeName,
                         style: const TextStyle(
                           fontSize: 15,
-                          fontWeight: AppSizes.fontNormal,
-                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF1F2933),
                           height: 1.47,
                         ),
                       ),
                       const SizedBox(height: 6),
+                      // Visa Card Info
                       Row(
                         children: [
-                          // Visa icon placeholder
+                          // Visa Logo
                           Container(
                             width: 34,
                             height: 14,
@@ -348,11 +348,12 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            payment.paymentMethod ?? '**** 9918',
+                            payment.paymentMethod,
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: AppSizes.fontNormal,
-                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF6B7280),
+                              height: 1.5,
                             ),
                           ),
                         ],
@@ -368,8 +369,9 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                       isPaid ? 'Paid' : 'Failed',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight: AppSizes.fontSemibold,
+                        fontWeight: FontWeight.w600,
                         color: statusColor,
+                        height: 1.5,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -377,8 +379,9 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                       '₹ ${_formatAmount(mockPayment.mockAmount)}',
                       style: const TextStyle(
                         fontSize: 18,
-                        fontWeight: AppSizes.fontSemibold,
-                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1F2933),
+                        height: 1.33,
                       ),
                     ),
                   ],
@@ -394,20 +397,29 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                 Row(
                   children: [
                     Text(
-                      _formatDate(payment.paidAt ?? payment.createdAt),
+                      isPaid ? 'Paid Date:' : 'Failed Date:',
                       style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: AppSizes.fontNormal,
-                        color: AppColors.textSecondary,
-                        height: 1.47,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF1F2933),
+                        height: 1.43,
                       ),
                     ),
                     const SizedBox(width: 6),
+                    Text(
+                      '${_formatDate(payment.paidAt ?? payment.createdAt)} ',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF6B7280),
+                        height: 1.43,
+                      ),
+                    ),
                     Container(
                       width: 4,
                       height: 4,
                       decoration: const BoxDecoration(
-                        color: AppColors.textSecondary,
+                        color: Color(0xFF6B7280),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -415,21 +427,21 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
                     Text(
                       _formatTime(payment.paidAt ?? payment.createdAt),
                       style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: AppSizes.fontNormal,
-                        color: AppColors.textSecondary,
-                        height: 1.47,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF6B7280),
+                        height: 1.43,
                       ),
                     ),
                   ],
                 ),
-                // Arrow Icon
+                // Arrow Icon (rotated to point right)
                 Transform.rotate(
                   angle: 3.14159, // 180 degrees
                   child: const Icon(
                     Icons.arrow_back_ios_new,
-                    size: 20,
-                    color: AppColors.textSecondary,
+                    size: 24,
+                    color: Color(0xFF6B7280),
                   ),
                 ),
               ],
@@ -441,17 +453,30 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   }
 
   Widget _buildTransactionIcon(String feeName, bool isPaid) {
-    final bgColor = isPaid ? AppColors.success : AppColors.error;
-    IconData icon;
+    final bgColor = isPaid ? const Color(0xFF2DBE60) : const Color(0xFFDC2626);
 
-    if (feeName.toLowerCase().contains('tuition')) {
-      icon = Icons.description_outlined;
+    // Determine icon based on fee type and status
+    Widget iconWidget;
+    if (!isPaid) {
+      // Failed - show X icon
+      iconWidget = const Icon(
+        Icons.close,
+        size: 24,
+        color: Colors.white,
+      );
     } else if (feeName.toLowerCase().contains('bus')) {
-      icon = Icons.directions_bus_outlined;
-    } else if (feeName.toLowerCase().contains('library')) {
-      icon = Icons.close;
+      iconWidget = const Icon(
+        Icons.directions_bus,
+        size: 24,
+        color: Colors.white,
+      );
     } else {
-      icon = Icons.receipt_outlined;
+      // Default receipt icon for tuition and other fees
+      iconWidget = const Icon(
+        Icons.description,
+        size: 24,
+        color: Colors.white,
+      );
     }
 
     return Container(
@@ -461,11 +486,7 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
         color: bgColor,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(
-        icon,
-        size: 24,
-        color: Colors.white,
-      ),
+      child: Center(child: iconWidget),
     );
   }
 
@@ -486,12 +507,13 @@ class _PaymentHistoryScreenState extends ConsumerState<PaymentHistoryScreen> {
   }
 
   String _formatDate(DateTime date) {
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   String _formatTime(DateTime date) {
-    final hour = date.hour > 12 ? date.hour - 12 : date.hour;
+    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
     final period = date.hour >= 12 ? 'pm' : 'am';
     final minute = date.minute.toString().padLeft(2, '0');
     return '$hour:$minute $period';

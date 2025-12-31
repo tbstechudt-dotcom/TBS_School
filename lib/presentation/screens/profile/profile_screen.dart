@@ -7,6 +7,7 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/student_provider.dart';
+import '../../providers/drawer_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -131,9 +132,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         children: [
           // Menu Button
           GestureDetector(
-            onTap: () {
-              // Open drawer or menu
-            },
+            onTap: () => openMainDrawer(ref),
             child: Container(
               width: 46,
               height: 46,
@@ -246,25 +245,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.primary100,
-                image: DecorationImage(
-                  image: AssetImage('assets/images/ac3f89ecafb3264080adf69735576d5fd8eb7967.png'),
-                  fit: BoxFit.cover,
+              ),
+              child: Center(
+                child: Text(
+                  (student['name'] as String?)?.isNotEmpty == true
+                      ? student['name'][0].toUpperCase()
+                      : 'P',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
-              child: student['name'] != null
-                  ? null
-                  : Center(
-                      child: Text(
-                        (student['name'] as String?)?.isNotEmpty == true
-                            ? student['name'][0].toUpperCase()
-                            : 'P',
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
             ),
             // Camera Button
             Positioned(
