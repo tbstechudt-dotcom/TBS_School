@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
+import '../../../data/models/institution_model.dart';
 import '../../providers/student_provider.dart';
+import '../../providers/drawer_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -11,6 +13,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedStudent = ref.watch(selectedStudentProvider);
+    final institutionAsync = ref.watch(selectedStudentWithInstitutionProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
@@ -25,12 +28,12 @@ class HomeScreen extends ConsumerWidget {
                     const SizedBox(height: 8),
 
                     // Header with Menu and Notification
-                    _buildHeader(context),
+                    _buildHeader(context, ref),
 
                     const SizedBox(height: 20),
 
                     // School Info
-                    _buildSchoolInfo(),
+                    _buildSchoolInfo(institutionAsync),
 
                     const SizedBox(height: 16),
 
@@ -84,40 +87,43 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Menu Button
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF808087).withValues(alpha: 0.1),
-                  blurRadius: 40,
-                  offset: const Offset(0, 5),
-                ),
-                BoxShadow(
-                  color: const Color(0xFF0051C6).withValues(alpha: 0.75),
-                  blurRadius: 1,
-                  offset: Offset.zero,
-                ),
-              ],
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/menu.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1F2933),
-                  BlendMode.srcIn,
+          GestureDetector(
+            onTap: () => openMainDrawer(ref),
+            child: Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF808087).withValues(alpha: 0.1),
+                    blurRadius: 40,
+                    offset: const Offset(0, 5),
+                  ),
+                  BoxShadow(
+                    color: const Color(0xFF0051C6).withValues(alpha: 0.75),
+                    blurRadius: 1,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/menu.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Color(0xFF1F2933),
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -180,7 +186,9 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSchoolInfo() {
+  Widget _buildSchoolInfo(AsyncValue<InstitutionModel?> institutionAsync) {
+    final institution = institutionAsync.valueOrNull;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
@@ -196,27 +204,29 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           // School Name and Address
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Vidyaranya High School',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1F2933),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  institution?.name ?? 'School Name',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1F2933),
+                  ),
                 ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                '7/9, MG Road, Udumalpet.',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF6B7280),
+                const SizedBox(height: 6),
+                Text(
+                  institution?.shortAddress ?? 'Address not available',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF6B7280),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -460,25 +470,39 @@ class HomeScreen extends ConsumerWidget {
           children: [
             // Student Photo
             ClipOval(
-              child: Image.asset(
-                'assets/images/b74001473ed48cfbfd34abbfab205a2118710677.png',
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 60,
-                  height: 60,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE5E7EB),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 32,
-                    color: Color(0xFF6B7280),
-                  ),
-                ),
-              ),
+              child: selectedStudent?.photoUrl != null && selectedStudent!.photoUrl!.isNotEmpty
+                  ? Image.network(
+                      selectedStudent.photoUrl!,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 60,
+                        height: 60,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFE5E7EB),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          size: 32,
+                          color: Color(0xFF6B7280),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: 60,
+                      height: 60,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE5E7EB),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 32,
+                        color: Color(0xFF6B7280),
+                      ),
+                    ),
             ),
             const SizedBox(width: 12),
 
@@ -550,9 +574,9 @@ class HomeScreen extends ConsumerWidget {
                           color: Color(0xFF6B7280),
                         ),
                       ),
-                      const Text(
-                        'B+',
-                        style: TextStyle(
+                      Text(
+                        selectedStudent?.stubloodgrp ?? 'N/A',
+                        style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                           color: Color(0xFF1F2933),

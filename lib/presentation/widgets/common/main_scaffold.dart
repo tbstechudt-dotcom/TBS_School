@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../providers/drawer_provider.dart';
+import 'app_drawer.dart';
 
-class MainScaffold extends StatelessWidget {
+class MainScaffold extends ConsumerWidget {
   final Widget child;
 
   const MainScaffold({
@@ -23,10 +26,14 @@ class MainScaffold extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = _calculateSelectedIndex(context);
+    final scaffoldKey = ref.watch(mainScaffoldKeyProvider);
 
     return Scaffold(
+      key: scaffoldKey,
+      drawer: const AppDrawer(),
+      drawerEnableOpenDragGesture: true,
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
