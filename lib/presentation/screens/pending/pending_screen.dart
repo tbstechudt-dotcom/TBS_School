@@ -1,36 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
+import '../../../data/models/fee_model.dart';
+import '../../providers/fee_provider.dart';
 
-class PendingScreen extends StatelessWidget {
+class PendingScreen extends ConsumerWidget {
   const PendingScreen({super.key});
 
-  // Mock data for pending fees
-  List<Map<String, dynamic>> get _mockPendingFees => [
-    {
-      'id': '1',
-      'title': 'Tuition Fee',
-      'subtitle': 'Uniform & Text Book',
-      'amount': 15000,
-      'dueDate': '10 July 2025',
-      'status': 'Pending',
-      'icon': 'receipt',
-    },
-    {
-      'id': '2',
-      'title': 'Bus Fee',
-      'subtitle': 'Monthly Transport',
-      'amount': 10000,
-      'dueDate': '10 July 2025',
-      'status': 'Pending',
-      'icon': 'bus',
-    },
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pendingFees = ref.watch(pendingFeesProvider);
+
     return Scaffold(
       backgroundColor: AppColors.bgSecondary,
       body: SafeArea(
@@ -42,13 +26,13 @@ class PendingScreen extends StatelessWidget {
             const SizedBox(height: 24),
             // Pending Fee List
             Expanded(
-              child: _mockPendingFees.isEmpty
+              child: pendingFees.isEmpty
                   ? _buildEmptyState()
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-                      itemCount: _mockPendingFees.length,
+                      itemCount: pendingFees.length,
                       itemBuilder: (context, index) {
-                        final fee = _mockPendingFees[index];
+                        final fee = pendingFees[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: _buildPendingCard(context, fee),
@@ -159,7 +143,7 @@ class PendingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPendingCard(BuildContext context, Map<String, dynamic> fee) {
+  Widget _buildPendingCard(BuildContext context, FeeModel fee) {
     return GestureDetector(
       onTap: () {
         // Navigate to fee details
@@ -199,7 +183,7 @@ class PendingScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    fee['icon'] == 'bus' ? Icons.directions_bus : Icons.description_outlined,
+                    _getFeeIcon(fee.demfeetype),
                     size: 24,
                     color: Colors.white,
                   ),
@@ -211,7 +195,7 @@ class PendingScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        fee['title'],
+                        '${fee.demfeeterm} - ${fee.demfeetype}',
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: AppSizes.fontNormal,
@@ -221,7 +205,7 @@ class PendingScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        fee['subtitle'],
+                        fee.demfeecategory ?? fee.yrlabel,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: AppSizes.fontNormal,
@@ -236,9 +220,9 @@ class PendingScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      fee['status'],
-                      style: const TextStyle(
+                    const Text(
+                      'Pending',
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: AppSizes.fontSemibold,
                         color: Color(0xFFF59E0B),
@@ -246,7 +230,7 @@ class PendingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '₹ ${_formatAmount(fee['amount'])}',
+                      '₹ ${NumberFormat('#,##,###').format(fee.balancedue.toInt())}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: AppSizes.fontSemibold,
@@ -275,7 +259,9 @@ class PendingScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      fee['dueDate'],
+                      fee.duedate != null
+                          ? DateFormat('dd MMM yyyy').format(fee.duedate!)
+                          : 'No due date',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: AppSizes.fontNormal,
@@ -301,16 +287,24 @@ class PendingScreen extends StatelessWidget {
     );
   }
 
-  String _formatAmount(int amount) {
-    if (amount >= 1000) {
-      final thousands = amount ~/ 1000;
-      final remainder = amount % 1000;
-      if (remainder == 0) {
-        return '$thousands,000';
-      }
-      return '$thousands,${remainder.toString().padLeft(3, '0')}';
+  /// Get appropriate icon based on fee type
+  IconData _getFeeIcon(String feeType) {
+    final lowerType = feeType.toLowerCase();
+    if (lowerType.contains('bus') || lowerType.contains('transport')) {
+      return Icons.directions_bus;
+    } else if (lowerType.contains('tuition') || lowerType.contains('term')) {
+      return Icons.school;
+    } else if (lowerType.contains('exam')) {
+      return Icons.assignment;
+    } else if (lowerType.contains('library')) {
+      return Icons.local_library;
+    } else if (lowerType.contains('lab')) {
+      return Icons.science;
+    } else if (lowerType.contains('sports')) {
+      return Icons.sports_soccer;
+    } else {
+      return Icons.description_outlined;
     }
-    return amount.toString();
   }
 
   Widget _buildEmptyState() {
