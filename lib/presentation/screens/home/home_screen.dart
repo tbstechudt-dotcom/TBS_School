@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../config/routes.dart';
 import '../../../data/models/institution_model.dart';
+import '../../../data/models/fee_model.dart';
 import '../../providers/student_provider.dart';
+import '../../providers/fee_provider.dart';
 import '../../providers/drawer_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -14,6 +17,8 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedStudent = ref.watch(selectedStudentProvider);
     final institutionAsync = ref.watch(selectedStudentWithInstitutionProvider);
+    final feeSummaryAsync = ref.watch(feeSummaryProvider);
+    final pendingFees = ref.watch(pendingFeesProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
@@ -38,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
 
                     // Total Outstanding Card
-                    _buildOutstandingCard(),
+                    _buildOutstandingCard(feeSummaryAsync),
 
                     const SizedBox(height: 24),
 
@@ -57,26 +62,33 @@ class HomeScreen extends ConsumerWidget {
 
                     const SizedBox(height: 12),
 
-                    // Fee Items
-                    _buildFeeItem(
-                      icon: Icons.description_outlined,
-                      title: 'Term-1 Fee',
-                      date: 'Sep 01, 2026',
-                      amount: '₹ 9,000',
-                      onTap: () => context.push(Routes.fees),
-                    ),
+                    // Fee Items - dynamically built from pendingFees
+                    ...pendingFees.take(3).map((fee) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildFeeItem(
+                        icon: _getFeeIcon(fee.demfeetype),
+                        title: '${fee.demfeeterm} - ${fee.demfeetype}',
+                        date: fee.duedate != null
+                            ? DateFormat('MMM dd, yyyy').format(fee.duedate!)
+                            : 'No due date',
+                        amount: '₹ ${NumberFormat('#,##,###').format(fee.balancedue.toInt())}',
+                        onTap: () => context.push(Routes.fees),
+                      ),
+                    )),
+
+                    if (pendingFees.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        child: Text(
+                          'No pending fees',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
 
                     const SizedBox(height: 12),
-
-                    _buildFeeItem(
-                      icon: Icons.directions_bus_outlined,
-                      title: 'Bus Fee',
-                      date: 'Sep 01, 2026',
-                      amount: '₹ 10,000',
-                      onTap: () => context.push(Routes.fees),
-                    ),
-
-                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -233,7 +245,20 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildOutstandingCard() {
+  Widget _buildOutstandingCard(AsyncValue<FeeSummary> feeSummaryAsync) {
+    final feeSummary = feeSummaryAsync.valueOrNull;
+    final totalOutstanding = feeSummary?.totalPending ?? 0;
+    final nextDueDate = feeSummary?.nextDueDate;
+
+    // Format amount
+    final formattedAmount = '₹ ${NumberFormat('#,##,###').format(totalOutstanding.toInt())}';
+
+    // Format due date
+    String dueDateText = 'No pending dues';
+    if (nextDueDate != null) {
+      dueDateText = 'Due by: ${DateFormat('MMM dd, yyyy').format(nextDueDate)}';
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Stack(
@@ -305,9 +330,9 @@ class HomeScreen extends ConsumerWidget {
                         const SizedBox(height: 10),
 
                         // Amount
-                        const Text(
-                          '₹ 15,000',
-                          style: TextStyle(
+                        Text(
+                          formattedAmount,
+                          style: const TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFF005FCC),
@@ -319,20 +344,22 @@ class HomeScreen extends ConsumerWidget {
                         // Due Alert
                         Row(
                           children: [
-                            const Text(
-                              'Due by: Feb 15,2026',
-                              style: TextStyle(
+                            Text(
+                              dueDateText,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: Color(0xFF1F2933),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Icon(
-                              Icons.info_outline,
-                              size: 16,
-                              color: Colors.red[600],
-                            ),
+                            if (nextDueDate != null) ...[
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.info_outline,
+                                size: 16,
+                                color: Colors.red[600],
+                              ),
+                            ],
                           ],
                         ),
                       ],
@@ -743,6 +770,25 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
+  /// Get appropriate icon based on fee type
+  IconData _getFeeIcon(String feeType) {
+    final lowerType = feeType.toLowerCase();
+    if (lowerType.contains('bus') || lowerType.contains('transport')) {
+      return Icons.directions_bus_outlined;
+    } else if (lowerType.contains('tuition') || lowerType.contains('term')) {
+      return Icons.school_outlined;
+    } else if (lowerType.contains('exam')) {
+      return Icons.assignment_outlined;
+    } else if (lowerType.contains('library')) {
+      return Icons.local_library_outlined;
+    } else if (lowerType.contains('lab')) {
+      return Icons.science_outlined;
+    } else if (lowerType.contains('sports')) {
+      return Icons.sports_soccer_outlined;
+    } else {
+      return Icons.description_outlined;
+    }
+  }
 }
 
 // Custom painter for school logo

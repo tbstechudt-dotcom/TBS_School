@@ -9,7 +9,12 @@ final feesProvider = FutureProvider<List<FeeModel>>((ref) async {
   final student = ref.watch(selectedStudentProvider);
   final client = ref.watch(supabaseClientProvider);
 
-  if (student == null) return [];
+  if (student == null) {
+    debugPrint('Fees Provider: No student selected');
+    return [];
+  }
+
+  debugPrint('Fees Provider: Fetching fees for stu_id=${student.stuId}');
 
   try {
     final response = await client
@@ -19,11 +24,13 @@ final feesProvider = FutureProvider<List<FeeModel>>((ref) async {
         .eq('activestatus', 1)
         .order('createdat', ascending: false);
 
+    debugPrint('Fees Provider: Found ${(response as List).length} fee records');
+
     return (response as List<dynamic>)
         .map((e) => FeeModel.fromJson(e))
         .toList();
   } catch (e) {
-    debugPrint('Error fetching fees: $e');
+    debugPrint('Fees Provider: Error fetching fees: $e');
     return [];
   }
 });
@@ -80,6 +87,7 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
   double totalPending = 0;
   int pendingCount = 0;
   int overdueCount = 0;
+  DateTime? nearestDueDate;
 
   for (final fee in fees) {
     totalDue += fee.feeamount - fee.conamount;
@@ -88,6 +96,18 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
 
     if (fee.paidstatus == 'U') {
       pendingCount++;
+
+      // Find the nearest due date from unpaid fees
+      if (fee.duedate != null) {
+        if (nearestDueDate == null || fee.duedate!.isBefore(nearestDueDate)) {
+          nearestDueDate = fee.duedate;
+        }
+      }
+
+      // Check if overdue
+      if (fee.duedate != null && fee.duedate!.isBefore(DateTime.now())) {
+        overdueCount++;
+      }
     }
   }
 
@@ -97,7 +117,7 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
     totalPending: totalPending,
     pendingCount: pendingCount,
     overdueCount: overdueCount,
-    nextDueDate: null,
+    nextDueDate: nearestDueDate,
   );
 });
 

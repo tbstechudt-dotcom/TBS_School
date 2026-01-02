@@ -73,57 +73,60 @@ async function clearTable(tableName) {
   }
 }
 
-async function syncTable(tableName, data) {
+async function syncTable(tableName, data, idColumn) {
   if (data.length === 0) {
     console.log(`  [SKIP] ${tableName}: No data to sync`);
-    return { success: true, count: 0 };
+    return { success: true, count: 0, existing: 0 };
   }
 
   if (isDryRun) {
     console.log(`  [DRY-RUN] ${tableName}: Would sync ${data.length} rows`);
-    return { success: true, count: data.length };
+    return { success: true, count: data.length, existing: 0 };
   }
 
   try {
-    // Clear existing data first
-    await clearTable(tableName);
-
     // Get column names from the first row
     const columns = Object.keys(data[0]);
     const columnList = columns.map(c => `"${c}"`).join(', ');
 
     let insertedCount = 0;
+    let skippedCount = 0;
 
-    // Insert data row by row with OVERRIDING SYSTEM VALUE for identity columns
+    // Insert data row by row, skip duplicates with ON CONFLICT DO NOTHING
     for (const row of data) {
       const values = columns.map((_, i) => `$${i + 1}`).join(', ');
       const rowValues = columns.map(col => row[col]);
 
       try {
-        await supabasePool.query(
-          `INSERT INTO public.${tableName} (${columnList}) OVERRIDING SYSTEM VALUE VALUES (${values})`,
+        // Use ON CONFLICT DO NOTHING to skip existing rows
+        const result = await supabasePool.query(
+          `INSERT INTO public.${tableName} (${columnList}) VALUES (${values}) ON CONFLICT DO NOTHING`,
           rowValues
         );
-        insertedCount++;
-      } catch (insertError) {
-        // Try without OVERRIDING SYSTEM VALUE
-        try {
-          await supabasePool.query(
-            `INSERT INTO public.${tableName} (${columnList}) VALUES (${values})`,
-            rowValues
-          );
+        if (result.rowCount > 0) {
           insertedCount++;
-        } catch (retryError) {
-          console.error(`    [ROW ERROR] ${retryError.message}`);
+        } else {
+          skippedCount++;
+        }
+      } catch (insertError) {
+        // If column doesn't exist or other error, log and continue
+        if (insertError.message.includes('does not exist')) {
+          console.error(`    [COLUMN ERROR] ${insertError.message}`);
+        } else {
+          skippedCount++;
         }
       }
     }
 
-    console.log(`  [OK] ${tableName}: Synced ${insertedCount}/${data.length} rows`);
-    return { success: true, count: insertedCount };
+    if (skippedCount > 0) {
+      console.log(`  [OK] ${tableName}: Inserted ${insertedCount}, Skipped ${skippedCount} (already exist)`);
+    } else {
+      console.log(`  [OK] ${tableName}: Synced ${insertedCount}/${data.length} rows`);
+    }
+    return { success: true, count: insertedCount, existing: skippedCount };
   } catch (error) {
     console.error(`  [ERROR] ${tableName}: ${error.message}`);
-    return { success: false, count: 0, error: error.message };
+    return { success: false, count: 0, existing: 0, error: error.message };
   }
 }
 

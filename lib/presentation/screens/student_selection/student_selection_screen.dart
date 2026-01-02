@@ -361,14 +361,15 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: GestureDetector(
         onTap: _selectedStudentId != null
-            ? () {
+            ? () async {
                 // Get the selected student and save to provider
                 final studentsAsync = ref.read(studentsByParentProvider);
-                studentsAsync.whenData((students) {
+                studentsAsync.whenData((students) async {
                   final selectedStudent = students.firstWhere(
                     (s) => s.stuId == _selectedStudentId,
                   );
-                  ref.read(selectedStudentProvider.notifier).state = selectedStudent;
+                  // Use selectStudent method for persistence
+                  await ref.read(selectedStudentProvider.notifier).selectStudent(selectedStudent);
                 });
                 // Navigate to home screen
                 context.go(Routes.home);

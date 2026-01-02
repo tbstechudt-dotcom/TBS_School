@@ -27,6 +27,7 @@ class FeeModel {
   final DateTime createdat;
   final int activestatus;
   final DateTime? inactivedate;
+  final DateTime? duedate;
 
   FeeModel({
     required this.demId,
@@ -53,6 +54,7 @@ class FeeModel {
     required this.createdat,
     this.activestatus = 1,
     this.inactivedate,
+    this.duedate,
   });
 
   /// Create from Supabase JSON response
@@ -87,6 +89,9 @@ class FeeModel {
       activestatus: json['activestatus'] ?? 1,
       inactivedate: json['inactivedate'] != null
           ? DateTime.parse(json['inactivedate'])
+          : null,
+      duedate: json['duedate'] != null
+          ? DateTime.parse(json['duedate'])
           : null,
     );
   }
@@ -132,9 +137,8 @@ class FeeModel {
   /// Late fee - not in feedemand table, returns 0
   double get lateFee => 0;
 
-  /// Due date - using createdat as reference since feedemand table doesn't have due date
-  /// In production, this should come from fee configuration or be added to the table
-  DateTime get dueDate => createdat;
+  /// Due date - from duedate column, falls back to createdat if null
+  DateTime get dueDate => duedate ?? createdat;
 
   FeeStatus get status {
     if (paidstatus == 'P') return FeeStatus.paid;
@@ -170,6 +174,7 @@ class FeeModel {
     DateTime? createdat,
     int? activestatus,
     DateTime? inactivedate,
+    DateTime? duedate,
   }) {
     return FeeModel(
       demId: demId ?? this.demId,
@@ -196,6 +201,7 @@ class FeeModel {
       createdat: createdat ?? this.createdat,
       activestatus: activestatus ?? this.activestatus,
       inactivedate: inactivedate ?? this.inactivedate,
+      duedate: duedate ?? this.duedate,
     );
   }
 }
