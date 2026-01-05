@@ -94,7 +94,7 @@ class PendingScreen extends ConsumerWidget {
 
           // Notification Button
           GestureDetector(
-            onTap: () => context.push(Routes.notifications),
+            onTap: () => context.go(Routes.notifications),
             child: Stack(
               children: [
                 Container(
@@ -146,8 +146,8 @@ class PendingScreen extends ConsumerWidget {
   Widget _buildPendingCard(BuildContext context, FeeModel fee) {
     return GestureDetector(
       onTap: () {
-        // Navigate to fee details
-        context.push(Routes.fees);
+        // Navigate to fees screen (use go instead of push to avoid navigator key conflict)
+        context.go(Routes.fees);
       },
       child: Container(
         width: double.infinity,
@@ -205,7 +205,7 @@ class PendingScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        fee.demfeecategory ?? fee.yrlabel,
+                        fee.demfeecategory ?? fee.demfeeyear,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: AppSizes.fontNormal,

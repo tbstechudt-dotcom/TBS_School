@@ -76,6 +76,7 @@ class SelectedStudentNotifier extends StateNotifier<StudentModel?> {
 }
 
 /// Fetch students by parent ID (used after login)
+/// Uses parentdetail table to link parents to students
 final studentsByParentProvider = FutureProvider<List<StudentModel>>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final parentAuthState = ref.watch(parentAuthStateProvider);
@@ -86,10 +87,27 @@ final studentsByParentProvider = FutureProvider<List<StudentModel>>((ref) async 
   }
 
   try {
+    // First, get student IDs from parentdetail table
+    final parentDetailResponse = await client
+        .from('parentdetail')
+        .select('stu_id')
+        .eq('par_id', parent.parId)
+        .eq('activestatus', 1);
+
+    final studentIds = (parentDetailResponse as List<dynamic>)
+        .map((e) => e['stu_id'] as int)
+        .toList();
+
+    if (studentIds.isEmpty) {
+      debugPrint('No students linked to parent ${parent.parId}');
+      return [];
+    }
+
+    // Then fetch the actual student records
     final response = await client
         .from('students')
         .select('*')
-        .eq('par_id', parent.parId)
+        .inFilter('stu_id', studentIds)
         .eq('activestatus', 1)
         .order('stuname', ascending: true);
 

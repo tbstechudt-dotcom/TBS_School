@@ -1,7 +1,7 @@
 /// Parent model matching Supabase 'parents' table
 class ParentModel {
   final int parId;
-  final String partype; // F (Father), M (Mother), G (Guardian)
+  final String partype; // P (Parent), G (Guardian)
   final String? paremail;
   final String? fathername;
   final String? mothername;
@@ -54,7 +54,7 @@ class ParentModel {
       parId: json['par_id'] is int
           ? json['par_id']
           : int.parse(json['par_id'].toString()),
-      partype: json['partype'] ?? 'F',
+      partype: json['partype'] ?? 'P',
       paremail: json['paremail'],
       fathername: json['fathername'],
       mothername: json['mothername'],
@@ -114,12 +114,11 @@ class ParentModel {
 
   /// Helper getters for UI display
   String get displayName {
-    // Return based on partype
+    // Return based on partype: P (Parent), G (Guardian)
     switch (partype) {
-      case 'F':
+      case 'P':
+        // For parent type, prefer father name, then mother name
         if (fathername != null && fathername!.isNotEmpty) return fathername!;
-        break;
-      case 'M':
         if (mothername != null && mothername!.isNotEmpty) return mothername!;
         break;
       case 'G':

@@ -94,7 +94,7 @@ class PaidScreen extends ConsumerWidget {
 
           // Notification Button
           GestureDetector(
-            onTap: () => context.push(Routes.notifications),
+            onTap: () => context.go(Routes.notifications),
             child: Stack(
               children: [
                 Container(
@@ -204,7 +204,7 @@ class PaidScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        fee.demfeecategory ?? fee.yrlabel,
+                        fee.demfeecategory ?? fee.demfeeyear,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: AppSizes.fontNormal,

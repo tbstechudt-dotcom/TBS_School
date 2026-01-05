@@ -1,7 +1,9 @@
+import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/parent_model.dart';
+import '../../core/services/sms_service.dart';
 
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
   return Supabase.instance.client;
@@ -124,6 +126,12 @@ class ParentAuthNotifier extends StateNotifier<AsyncValue<ParentAuthState>> {
 
       final parent = ParentModel.fromJson(response);
 
+      // Check if account creation is complete (password is set)
+      if (parent.parpassword == null || parent.parpassword!.isEmpty) {
+        throw Exception(
+            'Account setup incomplete. Please create your account first.');
+      }
+
       // Verify password
       if (parent.parpassword != password) {
         throw Exception('Invalid password');
@@ -163,23 +171,71 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
 
   AuthNotifier(this._client, this._ref) : super(const AsyncValue.data(null));
 
-  Future<void> requestOtp({required String mobile}) async {
+  /// Validate if mobile number exists in parents table
+  /// Returns the parent if found, throws exception if not found
+  Future<ParentModel> validateMobileNumber(String mobile) async {
+    final cleanMobile = mobile.replaceAll(RegExp(r'[^0-9]'), '');
+
+    final response = await _client
+        .from('parents')
+        .select()
+        .eq('payinchargemob', cleanMobile)
+        .maybeSingle();
+
+    if (response == null) {
+      throw Exception('Mobile number not registered. Contact school admin.');
+    }
+
+    final parent = ParentModel.fromJson(response);
+
+    // Check if account is active
+    if (parent.activestatus != 1) {
+      if (parent.activestatus == 2) {
+        throw Exception('Account suspended. Contact school admin.');
+      } else if (parent.activestatus == 9) {
+        throw Exception('Account terminated. Contact school admin.');
+      }
+      throw Exception('Account inactive. Contact school admin.');
+    }
+
+    // Check if already has password (account already created)
+    if (parent.parpassword != null && parent.parpassword!.isNotEmpty) {
+      throw Exception('Account already exists. Please sign in instead.');
+    }
+
+    return parent;
+  }
+
+  Future<void> requestOtp({
+    required String mobile,
+    String countryCode = '+91',
+  }) async {
     state = const AsyncValue.loading();
     try {
-      // Generate OTP and store in database
-      final otp = _generateOtp();
-      await _client.from('otp_verifications').insert({
-        'mobile': mobile,
-        'otp': otp,
-        'purpose': 'signup',
-        'expires_at':
-            DateTime.now().add(const Duration(minutes: 10)).toIso8601String(),
-      });
+      final cleanMobile = mobile.replaceAll(RegExp(r'[^0-9]'), '');
 
-      // TODO: Send OTP via SMS gateway
-      // For development, log the OTP
-      // ignore: avoid_print
-      print('OTP for $mobile: $otp');
+      // Step 1: Validate mobile exists in parents table
+      final parent = await validateMobileNumber(cleanMobile);
+
+      // Step 2: Generate secure 6-digit OTP
+      final otp = _generateSecureOtp();
+
+      // Step 3: Store OTP in parent record (parmobotp field)
+      await _client.from('parents').update({
+        'parmobotp': int.parse(otp),
+        'parotpstatus': 0, // Reset to pending
+      }).eq('par_id', parent.parId);
+
+      // Step 4: Send OTP via Twilio SMS
+      final smsSent = await SmsService.sendOtp(
+        phoneNumber: cleanMobile,
+        otp: otp,
+        countryCode: countryCode,
+      );
+
+      if (!smsSent) {
+        throw Exception('Failed to send OTP. Please try again.');
+      }
 
       state = const AsyncValue.data(null);
     } catch (e, st) {
@@ -191,25 +247,27 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
   Future<void> verifyOtp({required String mobile, required String otp}) async {
     state = const AsyncValue.loading();
     try {
+      final cleanMobile = mobile.replaceAll(RegExp(r'[^0-9]'), '');
+
+      // Query parent record with matching mobile and OTP
       final response = await _client
-          .from('otp_verifications')
+          .from('parents')
           .select()
-          .eq('mobile', mobile)
-          .eq('otp', otp)
-          .eq('is_verified', false)
-          .gt('expires_at', DateTime.now().toIso8601String())
-          .order('created_at', ascending: false)
-          .limit(1)
+          .eq('payinchargemob', cleanMobile)
+          .eq('parmobotp', int.parse(otp))
+          .eq('parotpstatus', 0) // Not yet verified
+          .eq('activestatus', 1)
           .maybeSingle();
 
       if (response == null) {
         throw Exception('Invalid or expired OTP');
       }
 
-      // Mark OTP as verified
+      // Mark OTP as verified in parent record
       await _client
-          .from('otp_verifications')
-          .update({'is_verified': true}).eq('id', response['id']);
+          .from('parents')
+          .update({'parotpstatus': 1})
+          .eq('par_id', response['par_id']);
 
       state = const AsyncValue.data(null);
     } catch (e, st) {
@@ -218,28 +276,43 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 
-  Future<void> signUp({
+  /// Complete account creation by setting password
+  /// This UPDATES the existing parent record, does NOT create new
+  Future<void> completeAccountCreation({
     required String mobile,
     required String password,
   }) async {
     state = const AsyncValue.loading();
     try {
-      // Create auth user with phone
-      final authResponse = await _client.auth.signUp(
-        phone: '+91$mobile',
-        password: password,
-      );
+      final cleanMobile = mobile.replaceAll(RegExp(r'[^0-9]'), '');
 
-      if (authResponse.user == null) {
-        throw Exception('Failed to create account');
+      // Verify OTP was verified for this mobile
+      final response = await _client
+          .from('parents')
+          .select()
+          .eq('payinchargemob', cleanMobile)
+          .eq('parotpstatus', 1) // Must be verified
+          .eq('activestatus', 1)
+          .maybeSingle();
+
+      if (response == null) {
+        throw Exception('Please verify OTP first');
       }
 
-      // Create parent profile
-      await _client.from('parents').insert({
-        'id': authResponse.user!.id,
-        'mobile': mobile,
-        'is_verified': true,
-      });
+      final parent = ParentModel.fromJson(response);
+
+      // Update parent record with password
+      await _client.from('parents').update({
+        'parpassword': password,
+        // Clear OTP after successful password set
+        'parmobotp': null,
+      }).eq('par_id', parent.parId);
+
+      // Auto-login after account creation
+      await _ref.read(parentAuthStateProvider.notifier).signIn(
+            mobile: cleanMobile,
+            password: password,
+          );
 
       state = const AsyncValue.data(null);
     } catch (e, st) {
@@ -272,9 +345,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
     await _client.auth.signOut();
   }
 
-  String _generateOtp() {
-    // Generate 6-digit OTP
-    return (100000 + DateTime.now().millisecondsSinceEpoch % 900000).toString();
+  /// Generate cryptographically secure 6-digit OTP
+  String _generateSecureOtp() {
+    final random = Random.secure();
+    return (100000 + random.nextInt(900000)).toString();
   }
 }
 

@@ -178,9 +178,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     setState(() => _isLoading = true);
 
     try {
+      final selectedCountry = _countryCodes[_selectedCountryIndex];
       await ref.read(authProvider.notifier).requestOtp(
-        mobile: _mobileController.text,
-      );
+            mobile: _mobileController.text,
+            countryCode: selectedCountry.code,
+          );
 
       if (mounted) {
         context.push(
@@ -190,10 +192,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = e.toString();
+        // Clean up exception prefix for user-friendly display
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring(11);
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text(errorMessage),
             backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
