@@ -289,13 +289,16 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        student.stuname,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF1F2933),
-                          height: 1.5,
+                      Flexible(
+                        child: Text(
+                          student.stuname,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF1F2933),
+                            height: 1.5,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
