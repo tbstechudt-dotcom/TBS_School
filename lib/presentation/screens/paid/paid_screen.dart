@@ -1,38 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
+import '../../../data/models/fee_model.dart';
+import '../../providers/fee_provider.dart';
 
-class PaidScreen extends StatelessWidget {
+class PaidScreen extends ConsumerWidget {
   const PaidScreen({super.key});
 
-  // Mock data for paid fees
-  List<Map<String, dynamic>> get _mockPaidFees => [
-    {
-      'id': '1',
-      'title': 'Tuition Fee',
-      'amount': 15000,
-      'cardType': 'visa',
-      'cardLast4': '9918',
-      'paidDate': '10 July 2025',
-      'paidTime': '6:00 pm',
-      'icon': 'receipt',
-    },
-    {
-      'id': '2',
-      'title': 'Bus Fee',
-      'amount': 10000,
-      'cardType': 'visa',
-      'cardLast4': '9918',
-      'paidDate': '10 July 2025',
-      'paidTime': '6:00 pm',
-      'icon': 'bus',
-    },
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final paidFees = ref.watch(paidFeesProvider);
+
     return Scaffold(
       backgroundColor: AppColors.bgSecondary,
       body: SafeArea(
@@ -44,13 +26,13 @@ class PaidScreen extends StatelessWidget {
             const SizedBox(height: 24),
             // Paid Fee List
             Expanded(
-              child: _mockPaidFees.isEmpty
+              child: paidFees.isEmpty
                   ? _buildEmptyState()
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-                      itemCount: _mockPaidFees.length,
+                      itemCount: paidFees.length,
                       itemBuilder: (context, index) {
-                        final fee = _mockPaidFees[index];
+                        final fee = paidFees[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: _buildPaidCard(context, fee),
@@ -112,7 +94,7 @@ class PaidScreen extends StatelessWidget {
 
           // Notification Button
           GestureDetector(
-            onTap: () => context.push(Routes.notifications),
+            onTap: () => context.go(Routes.notifications),
             child: Stack(
               children: [
                 Container(
@@ -161,7 +143,7 @@ class PaidScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaidCard(BuildContext context, Map<String, dynamic> fee) {
+  Widget _buildPaidCard(BuildContext context, FeeModel fee) {
     return GestureDetector(
       onTap: () {
         // Navigate to receipt/details
@@ -200,19 +182,19 @@ class PaidScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    fee['icon'] == 'bus' ? Icons.directions_bus : Icons.receipt,
+                    _getFeeIcon(fee.demfeetype),
                     size: 24,
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Title and Card Info
+                // Title and Category Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        fee['title'],
+                        '${fee.demfeeterm} - ${fee.demfeetype}',
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: AppSizes.fontNormal,
@@ -221,39 +203,13 @@ class PaidScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      // Card Info
-                      Row(
-                        children: [
-                          // Visa Logo placeholder
-                          Container(
-                            width: 34,
-                            height: 14,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1A1F71),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'VISA',
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '**** ${fee['cardLast4']}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: AppSizes.fontNormal,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        fee.demfeecategory ?? fee.demfeeyear,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: AppSizes.fontNormal,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -272,7 +228,7 @@ class PaidScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '₹ ${_formatAmount(fee['amount'])}',
+                      '₹ ${NumberFormat('#,##,###').format(fee.paidamount.toInt())}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: AppSizes.fontSemibold,
@@ -288,7 +244,7 @@ class PaidScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Date and Time
+                // Date
                 Row(
                   children: [
                     const Text(
@@ -301,25 +257,7 @@ class PaidScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      fee['paidDate'],
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: AppSizes.fontNormal,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      width: 4,
-                      height: 4,
-                      decoration: const BoxDecoration(
-                        color: AppColors.textSecondary,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      fee['paidTime'],
+                      DateFormat('dd MMM yyyy').format(fee.createdat),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: AppSizes.fontNormal,
@@ -345,11 +283,24 @@ class PaidScreen extends StatelessWidget {
     );
   }
 
-  String _formatAmount(int amount) {
-    if (amount >= 1000) {
-      return '${(amount / 1000).toStringAsFixed(amount % 1000 == 0 ? 0 : 1).replaceAll('.0', '')},${(amount % 1000).toString().padLeft(3, '0')}';
+  /// Get appropriate icon based on fee type
+  IconData _getFeeIcon(String feeType) {
+    final lowerType = feeType.toLowerCase();
+    if (lowerType.contains('bus') || lowerType.contains('transport')) {
+      return Icons.directions_bus;
+    } else if (lowerType.contains('tuition') || lowerType.contains('term')) {
+      return Icons.school;
+    } else if (lowerType.contains('exam')) {
+      return Icons.assignment;
+    } else if (lowerType.contains('library')) {
+      return Icons.local_library;
+    } else if (lowerType.contains('lab')) {
+      return Icons.science;
+    } else if (lowerType.contains('sports')) {
+      return Icons.sports_soccer;
+    } else {
+      return Icons.receipt;
     }
-    return amount.toString();
   }
 
   Widget _buildEmptyState() {

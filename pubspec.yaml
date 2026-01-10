@@ -47,6 +47,9 @@ dependencies:
   url_launcher: ^6.2.4
   connectivity_plus: ^5.0.2
 
+  # SMS Gateway
+  twilio_flutter: ^0.9.0
+
   # Icons
   flutter_feather_icons: ^2.0.0+1
   iconsax: ^0.0.8

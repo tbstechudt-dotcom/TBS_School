@@ -1,16 +1,82 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/student_model.dart';
 import '../../data/models/institution_model.dart';
 import 'auth_provider.dart' show supabaseClientProvider, parentAuthStateProvider;
 
 /// Set to false to use Supabase data, true for dummy data
-const bool useDummyData = true;
+const bool useDummyData = false;
 
-/// Currently selected student
-final selectedStudentProvider = StateProvider<StudentModel?>((ref) => null);
+/// Key for persisting selected student ID
+const String _selectedStudentIdKey = 'selected_student_id';
+
+/// Currently selected student - managed by StateNotifier for persistence
+final selectedStudentProvider = StateNotifierProvider<SelectedStudentNotifier, StudentModel?>((ref) {
+  return SelectedStudentNotifier(ref);
+});
+
+/// Notifier that handles student selection with persistence
+class SelectedStudentNotifier extends StateNotifier<StudentModel?> {
+  final Ref _ref;
+
+  SelectedStudentNotifier(this._ref) : super(null) {
+    _loadSavedStudent();
+  }
+
+  /// Load saved student from SharedPreferences
+  Future<void> _loadSavedStudent() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedStudentId = prefs.getInt(_selectedStudentIdKey);
+
+      if (savedStudentId != null) {
+        debugPrint('Loading saved student ID: $savedStudentId');
+        final client = _ref.read(supabaseClientProvider);
+
+        final response = await client
+            .from('students')
+            .select('*')
+            .eq('stu_id', savedStudentId)
+            .eq('activestatus', 1)
+            .maybeSingle();
+
+        if (response != null) {
+          state = StudentModel.fromJson(response);
+          debugPrint('Loaded student: ${state?.name}');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading saved student: $e');
+    }
+  }
+
+  /// Save student selection to SharedPreferences
+  Future<void> _saveStudent(int? studentId) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (studentId != null) {
+      await prefs.setInt(_selectedStudentIdKey, studentId);
+    } else {
+      await prefs.remove(_selectedStudentIdKey);
+    }
+  }
+
+  /// Select a student
+  Future<void> selectStudent(StudentModel student) async {
+    state = student;
+    await _saveStudent(student.stuId);
+    debugPrint('Selected student: ${student.name}');
+  }
+
+  /// Clear selection (on logout)
+  Future<void> clearSelection() async {
+    state = null;
+    await _saveStudent(null);
+  }
+}
 
 /// Fetch students by parent ID (used after login)
+/// Uses parentdetail table to link parents to students
 final studentsByParentProvider = FutureProvider<List<StudentModel>>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final parentAuthState = ref.watch(parentAuthStateProvider);
@@ -21,10 +87,26 @@ final studentsByParentProvider = FutureProvider<List<StudentModel>>((ref) async 
   }
 
   try {
+    // First, get student IDs from parentdetail table
+    final parentDetailResponse = await client
+        .from('parentdetail')
+        .select('stu_id')
+        .eq('par_id', parent.parId);
+
+    final studentIds = (parentDetailResponse as List<dynamic>)
+        .map((e) => e['stu_id'] as int)
+        .toList();
+
+    if (studentIds.isEmpty) {
+      debugPrint('No students linked to parent ${parent.parId}');
+      return [];
+    }
+
+    // Then fetch the actual student records
     final response = await client
         .from('students')
         .select('*')
-        .eq('par_id', parent.parId)
+        .inFilter('stu_id', studentIds)
         .eq('activestatus', 1)
         .order('stuname', ascending: true);
 
@@ -143,33 +225,38 @@ final studentByAdmissionProvider = FutureProvider.family<StudentModel?, String>(
   }
 });
 
-/// Fetch institution for selected student
+/// Fetch institution for selected student based on ins_id
 final selectedStudentWithInstitutionProvider = FutureProvider<InstitutionModel?>((ref) async {
   final selectedStudent = ref.watch(selectedStudentProvider);
 
   if (selectedStudent == null) {
-    debugPrint('No student selected for institution fetch');
+    debugPrint('Institution Provider: No student selected');
     return null;
   }
 
+  debugPrint('Institution Provider: Fetching institution for student "${selectedStudent.name}" with ins_id=${selectedStudent.insId}');
   final client = ref.watch(supabaseClientProvider);
 
   try {
-    // Direct query to institution table
+    // Query institution table matching ins_id from student record
     final response = await client
         .from('institution')
-        .select('ins_id, insname, insaddress1, inspincode')
+        .select('*')
         .eq('ins_id', selectedStudent.insId)
         .maybeSingle();
 
-    debugPrint('Institution response: $response');
+    debugPrint('Institution Provider: Response for ins_id=${selectedStudent.insId}: $response');
 
     if (response != null) {
-      return InstitutionModel.fromJson(response);
+      final institution = InstitutionModel.fromJson(response);
+      debugPrint('Institution Provider: Found institution "${institution.insname}"');
+      return institution;
     }
+
+    debugPrint('Institution Provider: No institution found for ins_id=${selectedStudent.insId}');
     return null;
   } catch (e) {
-    debugPrint('Error fetching institution: $e');
+    debugPrint('Institution Provider: Error fetching institution: $e');
     return null;
   }
 });

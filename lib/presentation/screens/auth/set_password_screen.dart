@@ -39,19 +39,26 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(authProvider.notifier).signUp(
-        mobile: widget.mobile,
-        password: _passwordController.text,
-      );
+      // Use completeAccountCreation to UPDATE existing parent record
+      await ref.read(authProvider.notifier).completeAccountCreation(
+            mobile: widget.mobile,
+            password: _passwordController.text,
+          );
 
       if (mounted) {
         context.go(Routes.studentSelection);
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = e.toString();
+        // Clean up exception prefix for user-friendly display
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring(11);
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text(errorMessage),
             backgroundColor: AppColors.error,
           ),
         );

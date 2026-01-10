@@ -8,7 +8,7 @@ class FeeModel {
   final int insId;
   final String inscode;
   final int yrId;
-  final String yrlabel;
+  final String demseqtype; // Sequence type for fee demand
   final int stuId;
   final String stuadmno;
   final String stuclass;
@@ -27,6 +27,7 @@ class FeeModel {
   final DateTime createdat;
   final int activestatus;
   final DateTime? inactivedate;
+  final DateTime? duedate;
 
   FeeModel({
     required this.demId,
@@ -34,7 +35,7 @@ class FeeModel {
     required this.insId,
     required this.inscode,
     required this.yrId,
-    required this.yrlabel,
+    required this.demseqtype,
     required this.stuId,
     required this.stuadmno,
     required this.stuclass,
@@ -53,6 +54,7 @@ class FeeModel {
     required this.createdat,
     this.activestatus = 1,
     this.inactivedate,
+    this.duedate,
   });
 
   /// Create from Supabase JSON response
@@ -63,7 +65,7 @@ class FeeModel {
       insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
       inscode: json['inscode'] ?? '',
       yrId: json['yr_id'] is int ? json['yr_id'] : int.parse(json['yr_id'].toString()),
-      yrlabel: json['yrlabel'] ?? '',
+      demseqtype: json['demseqtype'] ?? '',
       stuId: json['stu_id'] is int ? json['stu_id'] : int.parse(json['stu_id'].toString()),
       stuadmno: json['stuadmno'] ?? '',
       stuclass: json['stuclass'] ?? '',
@@ -88,6 +90,9 @@ class FeeModel {
       inactivedate: json['inactivedate'] != null
           ? DateTime.parse(json['inactivedate'])
           : null,
+      duedate: json['duedate'] != null
+          ? DateTime.parse(json['duedate'])
+          : null,
     );
   }
 
@@ -99,7 +104,7 @@ class FeeModel {
       'ins_id': insId,
       'inscode': inscode,
       'yr_id': yrId,
-      'yrlabel': yrlabel,
+      'demseqtype': demseqtype,
       'stu_id': stuId,
       'stuadmno': stuadmno,
       'stuclass': stuclass,
@@ -132,9 +137,8 @@ class FeeModel {
   /// Late fee - not in feedemand table, returns 0
   double get lateFee => 0;
 
-  /// Due date - using createdat as reference since feedemand table doesn't have due date
-  /// In production, this should come from fee configuration or be added to the table
-  DateTime get dueDate => createdat;
+  /// Due date - from duedate column, falls back to createdat if null
+  DateTime get dueDate => duedate ?? createdat;
 
   FeeStatus get status {
     if (paidstatus == 'P') return FeeStatus.paid;
@@ -151,7 +155,7 @@ class FeeModel {
     int? insId,
     String? inscode,
     int? yrId,
-    String? yrlabel,
+    String? demseqtype,
     int? stuId,
     String? stuadmno,
     String? stuclass,
@@ -170,6 +174,7 @@ class FeeModel {
     DateTime? createdat,
     int? activestatus,
     DateTime? inactivedate,
+    DateTime? duedate,
   }) {
     return FeeModel(
       demId: demId ?? this.demId,
@@ -177,7 +182,7 @@ class FeeModel {
       insId: insId ?? this.insId,
       inscode: inscode ?? this.inscode,
       yrId: yrId ?? this.yrId,
-      yrlabel: yrlabel ?? this.yrlabel,
+      demseqtype: demseqtype ?? this.demseqtype,
       stuId: stuId ?? this.stuId,
       stuadmno: stuadmno ?? this.stuadmno,
       stuclass: stuclass ?? this.stuclass,
@@ -196,6 +201,7 @@ class FeeModel {
       createdat: createdat ?? this.createdat,
       activestatus: activestatus ?? this.activestatus,
       inactivedate: inactivedate ?? this.inactivedate,
+      duedate: duedate ?? this.duedate,
     );
   }
 }
