@@ -17,7 +17,7 @@ class FeeModel {
   final String demfeetype;
   final String? demfeecategory;
   final double feeamount;
-  final int conId;
+  final int? conId;
   final double conamount;
   final double paidamount;
   final double balancedue;
@@ -44,7 +44,7 @@ class FeeModel {
     required this.demfeetype,
     this.demfeecategory,
     required this.feeamount,
-    required this.conId,
+    this.conId,
     this.conamount = 0,
     this.paidamount = 0,
     required this.balancedue,
@@ -74,7 +74,9 @@ class FeeModel {
       demfeetype: json['demfeetype'] ?? '',
       demfeecategory: json['demfeecategory'],
       feeamount: (json['feeamount'] as num?)?.toDouble() ?? 0,
-      conId: json['con_id'] is int ? json['con_id'] : int.parse(json['con_id'].toString()),
+      conId: json['con_id'] != null
+          ? (json['con_id'] is int ? json['con_id'] : int.parse(json['con_id'].toString()))
+          : null,
       conamount: (json['conamount'] as num?)?.toDouble() ?? 0,
       paidamount: (json['paidamount'] as num?)?.toDouble() ?? 0,
       balancedue: (json['balancedue'] as num?)?.toDouble() ?? 0,
