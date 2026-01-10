@@ -132,8 +132,27 @@ class ParentAuthNotifier extends StateNotifier<AsyncValue<ParentAuthState>> {
             'Account setup incomplete. Please create your account first.');
       }
 
-      // Verify password
-      if (parent.parpassword != password) {
+      // Verify password using pgcrypto's verify_password function
+      final verifyResult = await _client.rpc('verify_password', params: {
+        'plain_password': password,
+        'hashed_password': parent.parpassword,
+      });
+
+      // Debug: Print exact result
+      print('DEBUG: verifyResult = $verifyResult');
+      print('DEBUG: verifyResult type = ${verifyResult.runtimeType}');
+      print('DEBUG: password = $password');
+      print('DEBUG: hashed = ${parent.parpassword}');
+
+      // RPC can return bool, String, or other formats - handle all cases
+      final isValid = verifyResult == true ||
+                      verifyResult == 'true' ||
+                      verifyResult == 't' ||
+                      verifyResult.toString() == 'true';
+
+      print('DEBUG: isValid = $isValid');
+
+      if (!isValid) {
         throw Exception('Invalid password');
       }
 
@@ -176,10 +195,18 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
   Future<ParentModel> validateMobileNumber(String mobile) async {
     final cleanMobile = mobile.replaceAll(RegExp(r'[^0-9]'), '');
 
+    print('Auth: Validating mobile number: $cleanMobile');
+
+    // Convert to int for numeric column comparison
+    final mobileNumber = int.tryParse(cleanMobile);
+    if (mobileNumber == null) {
+      throw Exception('Invalid mobile number format');
+    }
+
     final response = await _client
         .from('parents')
         .select()
-        .eq('payinchargemob', cleanMobile)
+        .eq('payinchargemob', mobileNumber)
         .maybeSingle();
 
     if (response == null) {
