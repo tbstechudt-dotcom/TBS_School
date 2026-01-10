@@ -91,8 +91,7 @@ final studentsByParentProvider = FutureProvider<List<StudentModel>>((ref) async 
     final parentDetailResponse = await client
         .from('parentdetail')
         .select('stu_id')
-        .eq('par_id', parent.parId)
-        .eq('activestatus', 1);
+        .eq('par_id', parent.parId);
 
     final studentIds = (parentDetailResponse as List<dynamic>)
         .map((e) => e['stu_id'] as int)
