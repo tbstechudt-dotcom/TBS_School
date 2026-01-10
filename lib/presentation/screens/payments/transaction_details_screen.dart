@@ -226,20 +226,9 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                       border: Border.all(color: const Color(0xFFF1F6FD), width: 1),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF1F2933).withValues(alpha: 0.1),
-                          blurRadius: 40,
-                          offset: const Offset(0, 3),
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFF1F2933).withValues(alpha: 0.75),
-                          blurRadius: 1,
-                          offset: Offset.zero,
-                        ),
-                      ],
                     ),
                     child: Center(
                       child: isPaid

@@ -8,6 +8,8 @@ import '../presentation/screens/auth/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up_screen.dart';
 import '../presentation/screens/auth/otp_verification_screen.dart';
 import '../presentation/screens/auth/set_password_screen.dart';
+import '../presentation/screens/auth/forgot_password_screen.dart';
+import '../presentation/screens/auth/forgot_password_otp_screen.dart';
 import '../presentation/screens/student_selection/student_selection_screen.dart';
 import '../presentation/screens/home/home_screen.dart';
 import '../presentation/screens/fees/fees_screen.dart';
@@ -32,6 +34,9 @@ class Routes {
   static const signUp = '/sign-up';
   static const otpVerification = '/otp-verification';
   static const setPassword = '/set-password';
+  static const forgotPassword = '/forgot-password';
+  static const forgotPasswordOtp = '/forgot-password-otp';
+  static const resetPassword = '/reset-password';
   static const studentSelection = '/student-selection';
   static const home = '/home';
   static const fees = '/fees';
@@ -71,7 +76,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isOnAuthPage = state.matchedLocation == Routes.signIn ||
           state.matchedLocation == Routes.signUp ||
           state.matchedLocation == Routes.otpVerification ||
-          state.matchedLocation == Routes.setPassword;
+          state.matchedLocation == Routes.setPassword ||
+          state.matchedLocation == Routes.forgotPassword ||
+          state.matchedLocation == Routes.forgotPasswordOtp ||
+          state.matchedLocation == Routes.resetPassword;
       final isOnOnboarding = state.matchedLocation == Routes.onboarding;
       final isOnWelcome = state.matchedLocation == Routes.welcome;
       final isOnStudentSelection = state.matchedLocation == Routes.studentSelection;
@@ -140,6 +148,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final mobile = state.extra as String?;
           return SetPasswordScreen(mobile: mobile ?? '');
+        },
+      ),
+
+      // Forgot Password Routes
+      GoRoute(
+        path: Routes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: Routes.forgotPasswordOtp,
+        builder: (context, state) {
+          final mobile = state.extra as String?;
+          return ForgotPasswordOtpScreen(mobile: mobile ?? '');
+        },
+      ),
+      GoRoute(
+        path: Routes.resetPassword,
+        builder: (context, state) {
+          final mobile = state.extra as String?;
+          return SetPasswordScreen(mobile: mobile ?? '', isResetPassword: true);
         },
       ),
 

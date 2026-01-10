@@ -53,13 +53,7 @@ class AppDrawer extends ConsumerWidget {
                       label: 'Change Password',
                       onTap: () {
                         Navigator.pop(context);
-                        // TODO: Navigate to change password screen
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Change Password - Coming Soon'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
+                        context.push(Routes.forgotPassword);
                       },
                     ),
                     const SizedBox(height: 16),
