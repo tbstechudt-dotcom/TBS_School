@@ -178,7 +178,7 @@ async function syncTable(tableName, data) {
             const result = await supabasePool.query(singleQuery, columns.map(col => row[col]));
             totalInserted += result.rowCount || 0;
           } catch (rowError) {
-            // Skip this row
+            console.log(`      [FAIL] Row with ${columns[0]}=${row[columns[0]]}: ${rowError.message}`);
           }
         }
       }
