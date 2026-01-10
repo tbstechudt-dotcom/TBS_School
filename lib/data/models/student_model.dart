@@ -1,9 +1,9 @@
 /// Student model matching Supabase 'students' table
+/// Note: Parent relationship is now through 'parentdetail' table, not direct parId
 class StudentModel {
   final int stuId;
   final int insId;
   final String inscode;
-  final int parId; // Parent ID - links to parents table
   final String stuadmno;
   final DateTime stuadmdate;
   final String stuname;
@@ -31,7 +31,6 @@ class StudentModel {
     required this.stuId,
     required this.insId,
     required this.inscode,
-    required this.parId,
     required this.stuadmno,
     required this.stuadmdate,
     required this.stuname,
@@ -62,7 +61,6 @@ class StudentModel {
       stuId: json['stu_id'] is int ? json['stu_id'] : int.parse(json['stu_id'].toString()),
       insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
       inscode: json['inscode'] ?? '',
-      parId: json['par_id'] is int ? json['par_id'] : int.parse(json['par_id'].toString()),
       stuadmno: json['stuadmno'] ?? '',
       stuadmdate: json['stuadmdate'] != null
           ? DateTime.parse(json['stuadmdate'])
@@ -100,7 +98,6 @@ class StudentModel {
       'stu_id': stuId,
       'ins_id': insId,
       'inscode': inscode,
-      'par_id': parId,
       'stuadmno': stuadmno,
       'stuadmdate': stuadmdate.toIso8601String().split('T')[0],
       'stuname': stuname,
@@ -148,7 +145,6 @@ class StudentModel {
     int? stuId,
     int? insId,
     String? inscode,
-    int? parId,
     String? stuadmno,
     DateTime? stuadmdate,
     String? stuname,
@@ -176,7 +172,6 @@ class StudentModel {
       stuId: stuId ?? this.stuId,
       insId: insId ?? this.insId,
       inscode: inscode ?? this.inscode,
-      parId: parId ?? this.parId,
       stuadmno: stuadmno ?? this.stuadmno,
       stuadmdate: stuadmdate ?? this.stuadmdate,
       stuname: stuname ?? this.stuname,

@@ -289,13 +289,16 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        student.stuname,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                          color: Color(0xFF1F2933),
-                          height: 1.5,
+                      Flexible(
+                        child: Text(
+                          student.stuname,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xFF1F2933),
+                            height: 1.5,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -361,14 +364,15 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: GestureDetector(
         onTap: _selectedStudentId != null
-            ? () {
+            ? () async {
                 // Get the selected student and save to provider
                 final studentsAsync = ref.read(studentsByParentProvider);
-                studentsAsync.whenData((students) {
+                studentsAsync.whenData((students) async {
                   final selectedStudent = students.firstWhere(
                     (s) => s.stuId == _selectedStudentId,
                   );
-                  ref.read(selectedStudentProvider.notifier).state = selectedStudent;
+                  // Use selectStudent method for persistence
+                  await ref.read(selectedStudentProvider.notifier).selectStudent(selectedStudent);
                 });
                 // Navigate to home screen
                 context.go(Routes.home);

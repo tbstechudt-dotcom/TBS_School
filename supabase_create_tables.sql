@@ -1,20 +1,50 @@
 -- TBS School Database Schema for Supabase
+-- COMPLETE RESET SCRIPT: Drops all tables and recreates with correct structure
 -- Run this script in Supabase SQL Editor
--- Tables are ordered by dependencies
 
 -- ============================================
--- STEP 1: Create custom domain for email
+-- STEP 1: Drop all existing tables (reverse dependency order)
 -- ============================================
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'email') THEN
-        CREATE DOMAIN email AS text
-        CHECK (VALUE ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
-    END IF;
-END $$;
+
+-- Drop tables with foreign keys first
+DROP TABLE IF EXISTS public.shoppingcartdetails CASCADE;
+DROP TABLE IF EXISTS public.feedemand CASCADE;
+DROP TABLE IF EXISTS public.parentdetail CASCADE;
+DROP TABLE IF EXISTS public.students CASCADE;
+DROP TABLE IF EXISTS public.parents CASCADE;
+DROP TABLE IF EXISTS public.institutionusers CASCADE;
+DROP TABLE IF EXISTS public.staffdesignation CASCADE;
+DROP TABLE IF EXISTS public.custuserroles CASCADE;
+DROP TABLE IF EXISTS public.sequence CASCADE;
+DROP TABLE IF EXISTS public.activitytype CASCADE;
+DROP TABLE IF EXISTS public.institution CASCADE;
+DROP TABLE IF EXISTS public.city CASCADE;
+DROP TABLE IF EXISTS public.state CASCADE;
+DROP TABLE IF EXISTS public.country CASCADE;
+DROP TABLE IF EXISTS public.shoppingcart CASCADE;
+DROP TABLE IF EXISTS public.payment CASCADE;
+DROP TABLE IF EXISTS public.paymentgateway CASCADE;
+DROP TABLE IF EXISTS public.institutionyear CASCADE;
+DROP TABLE IF EXISTS public.modules CASCADE;
+DROP TABLE IF EXISTS public.concessioncategory CASCADE;
+DROP TABLE IF EXISTS public.year CASCADE;
+DROP TABLE IF EXISTS public.institutiontype CASCADE;
+DROP TABLE IF EXISTS public.currency CASCADE;
+DROP TABLE IF EXISTS public.challan CASCADE;
+DROP TABLE IF EXISTS public.userlogin CASCADE;
+
+-- Drop the email domain if it exists (to recreate cleanly)
+DROP DOMAIN IF EXISTS email CASCADE;
 
 -- ============================================
--- STEP 2: Base tables (no foreign keys)
+-- STEP 2: Create custom domain for email
+-- ============================================
+
+CREATE DOMAIN email AS text
+CHECK (VALUE ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+
+-- ============================================
+-- STEP 3: Base tables (no foreign keys)
 -- ============================================
 
 -- Table: currency
@@ -32,6 +62,8 @@ CREATE TABLE IF NOT EXISTS public.currency
     CONSTRAINT currency_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.currency OWNER to postgres;
+
 -- Table: institutiontype
 CREATE TABLE IF NOT EXISTS public.institutiontype
 (
@@ -42,6 +74,8 @@ CREATE TABLE IF NOT EXISTS public.institutiontype
     CONSTRAINT institutiontype_ittype_key UNIQUE (ittype),
     CONSTRAINT institutiontype_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9]))
 );
+
+ALTER TABLE IF EXISTS public.institutiontype OWNER to postgres;
 
 -- Table: year
 CREATE TABLE IF NOT EXISTS public.year
@@ -58,6 +92,8 @@ CREATE TABLE IF NOT EXISTS public.year
     CONSTRAINT chk_year_dates CHECK (yrstadate <= yrenddate)
 );
 
+ALTER TABLE IF EXISTS public.year OWNER to postgres;
+
 -- Table: concessioncategory
 CREATE TABLE IF NOT EXISTS public.concessioncategory
 (
@@ -70,6 +106,8 @@ CREATE TABLE IF NOT EXISTS public.concessioncategory
     CONSTRAINT concessioncategory_activiestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.concessioncategory OWNER to postgres;
+
 -- Table: paymentgateway
 CREATE TABLE IF NOT EXISTS public.paymentgateway
 (
@@ -81,6 +119,8 @@ CREATE TABLE IF NOT EXISTS public.paymentgateway
     CONSTRAINT paymentgateway_pkey PRIMARY KEY (gw_id),
     CONSTRAINT paymentgateway_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
+
+ALTER TABLE IF EXISTS public.paymentgateway OWNER to postgres;
 
 -- Table: payment
 CREATE TABLE IF NOT EXISTS public.payment
@@ -101,6 +141,8 @@ CREATE TABLE IF NOT EXISTS public.payment
     CONSTRAINT payment_paystatus_check CHECK (paystatus = ANY (ARRAY['I'::bpchar, 'C'::bpchar, 'F'::bpchar, 'R'::bpchar]))
 );
 
+ALTER TABLE IF EXISTS public.payment OWNER to postgres;
+
 -- Table: shoppingcart
 CREATE TABLE IF NOT EXISTS public.shoppingcart
 (
@@ -120,6 +162,8 @@ CREATE TABLE IF NOT EXISTS public.shoppingcart
     CONSTRAINT shoppingcart_carinitiated_check CHECK (carinitiated = ANY (ARRAY['N'::bpchar, 'I'::bpchar, 'F'::bpchar]))
 );
 
+ALTER TABLE IF EXISTS public.shoppingcart OWNER to postgres;
+
 -- Table: modules
 CREATE TABLE IF NOT EXISTS public.modules
 (
@@ -134,6 +178,8 @@ CREATE TABLE IF NOT EXISTS public.modules
     CONSTRAINT modules_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1])),
     CONSTRAINT modules_modtype_check CHECK (modtype = ANY (ARRAY['A'::bpchar, 'C'::bpchar]))
 );
+
+ALTER TABLE IF EXISTS public.modules OWNER to postgres;
 
 -- Table: institutionyear
 CREATE TABLE IF NOT EXISTS public.institutionyear
@@ -160,22 +206,10 @@ CREATE TABLE IF NOT EXISTS public.institutionyear
     CONSTRAINT institution_year_iyearsubstatus_check CHECK (iyearsubstatus = ANY (ARRAY[0, 1]))
 );
 
--- Table: parentdetail
-CREATE TABLE IF NOT EXISTS public.parentdetail
-(
-    pd_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-    par_id bigint NOT NULL,
-    stu_id bigint NOT NULL,
-    ins_id integer NOT NULL,
-    inscode character varying(10) NOT NULL,
-    stuadmno character varying(20) NOT NULL,
-    stuname character varying(50) NOT NULL,
-    stuclass character varying(20) NOT NULL,
-    CONSTRAINT parentdetail_pkey PRIMARY KEY (pd_id)
-);
+ALTER TABLE IF EXISTS public.institutionyear OWNER to postgres;
 
 -- ============================================
--- STEP 3: Tables with location hierarchy
+-- STEP 4: Tables with location hierarchy
 -- ============================================
 
 -- Table: country
@@ -191,6 +225,8 @@ CREATE TABLE IF NOT EXISTS public.country
     CONSTRAINT country_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.country OWNER to postgres;
+
 -- Table: state
 CREATE TABLE IF NOT EXISTS public.state
 (
@@ -202,6 +238,8 @@ CREATE TABLE IF NOT EXISTS public.state
     CONSTRAINT state_pkey PRIMARY KEY (sta_id),
     CONSTRAINT state_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
+
+ALTER TABLE IF EXISTS public.state OWNER to postgres;
 
 -- Table: city
 CREATE TABLE IF NOT EXISTS public.city
@@ -220,8 +258,10 @@ CREATE TABLE IF NOT EXISTS public.city
     CONSTRAINT city_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.city OWNER to postgres;
+
 -- ============================================
--- STEP 4: Institution and related tables
+-- STEP 5: Institution and related tables
 -- ============================================
 
 -- Table: institution
@@ -293,6 +333,8 @@ CREATE TABLE IF NOT EXISTS public.institution
     CONSTRAINT institution_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9]))
 );
 
+ALTER TABLE IF EXISTS public.institution OWNER to postgres;
+
 -- Index for institution
 CREATE UNIQUE INDEX IF NOT EXISTS unique_inscode
     ON public.institution USING btree
@@ -315,6 +357,8 @@ CREATE TABLE IF NOT EXISTS public.custuserroles
     CONSTRAINT custuserroles_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9]))
 );
 
+ALTER TABLE IF EXISTS public.custuserroles OWNER to postgres;
+
 -- Table: staffdesignation
 CREATE TABLE IF NOT EXISTS public.staffdesignation
 (
@@ -335,6 +379,8 @@ CREATE TABLE IF NOT EXISTS public.staffdesignation
         ON DELETE NO ACTION,
     CONSTRAINT staffdesignation_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9]))
 );
+
+ALTER TABLE IF EXISTS public.staffdesignation OWNER to postgres;
 
 -- Table: institutionusers
 CREATE TABLE IF NOT EXISTS public.institutionusers
@@ -377,8 +423,10 @@ CREATE TABLE IF NOT EXISTS public.institutionusers
     CONSTRAINT institutionusers_useotpstatus_check CHECK (useotpstatus = ANY (ARRAY[0, 1, 2]))
 );
 
+ALTER TABLE IF EXISTS public.institutionusers OWNER to postgres;
+
 -- ============================================
--- STEP 5: Activity and module related tables
+-- STEP 6: Activity and module related tables
 -- ============================================
 
 -- Table: activitytype
@@ -400,6 +448,8 @@ CREATE TABLE IF NOT EXISTS public.activitytype
     CONSTRAINT activitytype_seqapplicable_check CHECK (seqapplicable = ANY (ARRAY['Y'::bpchar, 'N'::bpchar])),
     CONSTRAINT activitytype_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
+
+ALTER TABLE IF EXISTS public.activitytype OWNER to postgres;
 
 -- Table: sequence
 CREATE TABLE IF NOT EXISTS public.sequence
@@ -428,11 +478,14 @@ CREATE TABLE IF NOT EXISTS public.sequence
     CONSTRAINT sequence_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.sequence OWNER to postgres;
+
 -- ============================================
--- STEP 6: Parents and Student related tables
+-- STEP 7: Parents table (NEW STRUCTURE - partype P/G only)
 -- ============================================
 
 -- Table: parents
+-- NOTE: partype is now 'P' (Parent) or 'G' (Guardian) - NOT 'F'/'M'/'G'
 CREATE TABLE IF NOT EXISTS public.parents
 (
     par_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
@@ -461,16 +514,22 @@ CREATE TABLE IF NOT EXISTS public.parents
     CONSTRAINT parents_paremail_key UNIQUE (paremail),
     CONSTRAINT parents_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9])),
     CONSTRAINT parents_parotpstatus_check CHECK (parotpstatus = ANY (ARRAY[0, 1])),
-    CONSTRAINT parents_partype_check CHECK (partype = ANY (ARRAY['F'::bpchar, 'M'::bpchar, 'G'::bpchar]))
+    CONSTRAINT parents_partype_check CHECK (partype = ANY (ARRAY['P'::bpchar, 'G'::bpchar]))
 );
 
+ALTER TABLE IF EXISTS public.parents OWNER to postgres;
+
+-- ============================================
+-- STEP 8: Students table (NEW STRUCTURE - NO par_id)
+-- ============================================
+
 -- Table: students
+-- NOTE: par_id is REMOVED - parent relationship is through parentdetail table
 CREATE TABLE IF NOT EXISTS public.students
 (
     stu_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     ins_id integer NOT NULL,
     inscode character varying(10) NOT NULL,
-    par_id bigint NOT NULL,
     stuadmno character varying(25) NOT NULL,
     stuadmdate date NOT NULL,
     stuname character varying(50) NOT NULL,
@@ -504,21 +563,81 @@ CREATE TABLE IF NOT EXISTS public.students
     CONSTRAINT students_pkey PRIMARY KEY (stu_id),
     CONSTRAINT students_stuemail_key UNIQUE (stuemail),
     CONSTRAINT uq_students_admission UNIQUE (ins_id, stuadmno),
-    CONSTRAINT students_par_id_fkey FOREIGN KEY (par_id)
-        REFERENCES public.parents (par_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
     CONSTRAINT students_activestatus_check CHECK (activestatus = ANY (ARRAY[1, 2, 9])),
     CONSTRAINT students_stu_id_check CHECK (stu_id > 0),
     CONSTRAINT students_stugender_check CHECK (stugender = ANY (ARRAY['M'::bpchar, 'F'::bpchar, 'T'::bpchar])),
     CONSTRAINT students_stuotpstatus_check CHECK (stuotpstatus = ANY (ARRAY[0, 1, 2]))
 );
 
+ALTER TABLE IF EXISTS public.students OWNER to postgres;
+
 -- ============================================
--- STEP 7: Fee and payment related tables
+-- STEP 9: Parentdetail table (links parents to students)
+-- ============================================
+
+-- Table: parentdetail
+-- This is the junction table linking parents to students (many-to-many)
+CREATE TABLE IF NOT EXISTS public.parentdetail
+(
+    pd_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    par_id bigint NOT NULL,
+    stu_id bigint NOT NULL,
+    ins_id integer NOT NULL,
+    inscode character varying(10) NOT NULL,
+    stuadmno character varying(20),
+    stuname character varying(50),
+    stuclass character varying(20),
+    activestatus smallint NOT NULL DEFAULT 1,
+    CONSTRAINT parentdetail_pkey PRIMARY KEY (pd_id),
+    CONSTRAINT parentdetail_par_id_fkey FOREIGN KEY (par_id) REFERENCES public.parents (par_id),
+    CONSTRAINT parentdetail_stu_id_fkey FOREIGN KEY (stu_id) REFERENCES public.students (stu_id),
+    CONSTRAINT parentdetail_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
+);
+
+ALTER TABLE IF EXISTS public.parentdetail OWNER to postgres;
+
+-- ============================================
+-- STEP 10: Challan table
+-- ============================================
+
+-- Table: challan
+CREATE TABLE IF NOT EXISTS public.challan
+(
+    cha_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    chano character varying(30) NOT NULL,
+    ins_id integer NOT NULL,
+    inscode character varying(10) NOT NULL,
+    yr_id integer NOT NULL,
+    stu_id bigint NOT NULL,
+    stuadmno character varying(25) NOT NULL,
+    stuclass character varying(20) NOT NULL,
+    chatotalamt numeric(12,2) NOT NULL,
+    chabalancedue numeric(12,2),
+    chastatus character(1) NOT NULL DEFAULT 'U'::bpchar,
+    createdby character varying(50) NOT NULL,
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    activestatus smallint NOT NULL DEFAULT 1,
+    CONSTRAINT challan_pkey PRIMARY KEY (cha_id),
+    CONSTRAINT fk_challan_student FOREIGN KEY (stu_id)
+        REFERENCES public.students (stu_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_challan_year FOREIGN KEY (yr_id)
+        REFERENCES public.year (yr_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT challan_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1])),
+    CONSTRAINT challan_chastatus_check CHECK (chastatus = ANY (ARRAY['P'::bpchar, 'U'::bpchar]))
+);
+
+ALTER TABLE IF EXISTS public.challan OWNER to postgres;
+
+-- ============================================
+-- STEP 11: Fee demand table (NEW STRUCTURE - demseqtype instead of yrlabel)
 -- ============================================
 
 -- Table: feedemand
+-- NOTE: yrlabel is REPLACED by demseqtype
 CREATE TABLE IF NOT EXISTS public.feedemand
 (
     dem_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
@@ -526,7 +645,7 @@ CREATE TABLE IF NOT EXISTS public.feedemand
     ins_id integer NOT NULL,
     inscode character varying(10) NOT NULL,
     yr_id integer NOT NULL,
-    yrlabel character varying(9) NOT NULL,
+    demseqtype character varying(10),
     stu_id bigint NOT NULL,
     stuadmno character varying(25) NOT NULL,
     stuclass character varying(20) NOT NULL,
@@ -541,6 +660,7 @@ CREATE TABLE IF NOT EXISTS public.feedemand
     balancedue numeric(12,2),
     pay_id integer,
     paidstatus character(1) NOT NULL DEFAULT 'U'::bpchar,
+    duedate date,
     createdby character varying(50) NOT NULL,
     createdat timestamp without time zone NOT NULL DEFAULT now(),
     activestatus smallint NOT NULL DEFAULT 1,
@@ -562,6 +682,12 @@ CREATE TABLE IF NOT EXISTS public.feedemand
     CONSTRAINT feedemand_paidstatus_check CHECK (paidstatus = ANY (ARRAY['P'::bpchar, 'U'::bpchar]))
 );
 
+ALTER TABLE IF EXISTS public.feedemand OWNER to postgres;
+
+-- ============================================
+-- STEP 12: Shopping cart details table
+-- ============================================
+
 -- Table: shoppingcartdetails
 CREATE TABLE IF NOT EXISTS public.shoppingcartdetails
 (
@@ -580,6 +706,38 @@ CREATE TABLE IF NOT EXISTS public.shoppingcartdetails
     CONSTRAINT shoppingcartdetails_activestatus_check CHECK (activestatus = ANY (ARRAY[0, 1]))
 );
 
+ALTER TABLE IF EXISTS public.shoppingcartdetails OWNER to postgres;
+
 -- ============================================
--- DONE! All 25 tables created successfully
+-- STEP 13: User login table (for OTP verification tracking)
+-- ============================================
+
+-- Table: userlogin
+CREATE TABLE IF NOT EXISTS public.userlogin
+(
+    login_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    usertype character(1) NOT NULL,
+    user_id bigint NOT NULL,
+    mobile character varying(20) NOT NULL,
+    otp numeric(6,0),
+    otpstatus smallint NOT NULL DEFAULT 0,
+    createdat timestamp without time zone NOT NULL DEFAULT now(),
+    verifiedat timestamp without time zone,
+    CONSTRAINT userlogin_pkey PRIMARY KEY (login_id),
+    CONSTRAINT userlogin_usertype_check CHECK (usertype = ANY (ARRAY['P'::bpchar, 'S'::bpchar])),
+    CONSTRAINT userlogin_otpstatus_check CHECK (otpstatus = ANY (ARRAY[0, 1, 2]))
+);
+
+ALTER TABLE IF EXISTS public.userlogin OWNER to postgres;
+
+-- ============================================
+-- DONE! All tables created successfully
+--
+-- Key changes from previous schema:
+-- 1. students table: NO par_id column (parent link via parentdetail)
+-- 2. parents table: partype CHECK ('P', 'G') instead of ('F', 'M', 'G')
+-- 3. feedemand table: demseqtype column instead of yrlabel
+-- 4. parentdetail table: Has activestatus column
+-- 5. Added challan table
+-- 6. Added userlogin table
 -- ============================================
