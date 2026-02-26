@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/common/auth_desktop_wrapper.dart';
+import '../../widgets/common/screen_illustrations.dart';
 
 class CountryCode {
   final String flag;
@@ -141,7 +142,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   void _showCountryPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.cardBg(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -159,12 +160,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Select Country',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF1F2933),
+                color: AppColors.textPrimaryC(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -181,16 +182,16 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     ),
                     title: Text(
                       country.country,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: AppSizes.textSm,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textPrimaryC(context),
                       ),
                     ),
                     trailing: Text(
                       country.code,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: AppSizes.textSm,
-                        color: AppColors.textSecondary,
+                        color: AppColors.textSecondaryC(context),
                       ),
                     ),
                     onTap: () {
@@ -255,12 +256,18 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
-      body: SafeArea(
+      backgroundColor: AppColors.scaffoldBg(context),
+      body: AuthDesktopWrapper(
+        headline: 'Forgot Password?',
+        subtitle: "Don't worry, we'll help you reset it",
+        centerContent: ScreenIllustrations.forgotPassword(size: 360, isDark: true),
+        onBack: () => context.pop(),
+        child: SafeArea(
           child: Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
+                child: Center(
+                  child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Form(
@@ -269,11 +276,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 16),
-
-                          // Back Button
-                          _buildBackButton(),
-
-                          const SizedBox(height: 24),
 
                           // Header with title and illustration
                           _buildHeader(),
@@ -292,6 +294,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     ),
                   ),
                 ),
+                ),
               ),
               // Back to Sign In Link at bottom
               Padding(
@@ -301,64 +304,29 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             ],
           ),
         ),
-    );
-  }
-
-  Widget _buildBackButton() {
-    return GestureDetector(
-      onTap: () => context.pop(),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: const BoxDecoration(
-          color: Color(0xFF1F2937),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.arrow_back_rounded,
-          size: 20,
-          color: Colors.white,
-        ),
       ),
     );
   }
 
   Widget _buildHeader() {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Title and subtitle
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Forgot Password',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Enter your mobile number to reset your password',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textTertiary,
-                ),
-              ),
-            ],
+        Text(
+          'Forgot Password',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimaryC(context),
           ),
         ),
-        // Illustration
-        SizedBox(
-          width: 120,
-          height: 120,
-          child: Image.asset(
-            'assets/Authendication gif/Sign up.gif',
-            fit: BoxFit.contain,
+        const SizedBox(height: 8),
+        Text(
+          'Enter your mobile number to reset your password',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
           ),
         ),
       ],
@@ -369,12 +337,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Mobile Number',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF6B7280),
+            color: AppColors.textSecondaryC(context),
           ),
         ),
         const SizedBox(height: 8),
@@ -382,26 +350,26 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           controller: _mobileController,
           focusNode: _mobileFocusNode,
           keyboardType: TextInputType.phone,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
-            color: Color(0xFF1F2933),
+            color: AppColors.textPrimaryC(context),
           ),
           decoration: InputDecoration(
             hintText: 'Enter mobile number',
-            hintStyle: const TextStyle(
+            hintStyle: TextStyle(
               fontSize: 15,
-              color: Color(0xFF9CA3AF),
+              color: AppColors.textHintC(context),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: AppColors.cardBg(context),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -427,17 +395,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(
+                    Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 18,
-                      color: Color(0xFF6B7280),
+                      color: AppColors.textSecondaryC(context),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       _countryCodes[_selectedCountryIndex].code,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
-                        color: Color(0xFF1F2933),
+                        color: AppColors.textPrimaryC(context),
                       ),
                     ),
                   ],
@@ -519,15 +487,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              SvgPicture.asset(
-                'assets/school Icons/shield-tick.svg',
-                width: 22,
-                height: 22,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-              ),
+              const Icon(Icons.send_rounded, size: 22, color: Colors.white),
             ],
           ],
         ),
@@ -543,7 +503,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           'Remember your password ?',
           style: TextStyle(
             fontSize: 15,
-            color: AppColors.textTertiary,
+            color: AppColors.textSecondaryC(context),
           ),
         ),
         const SizedBox(width: 4),

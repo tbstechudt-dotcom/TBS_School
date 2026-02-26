@@ -6,6 +6,8 @@ import 'package:pinput/pinput.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/common/auth_desktop_wrapper.dart';
+import '../../widgets/common/screen_illustrations.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   final String mobile;
@@ -141,15 +143,15 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     final defaultPinTheme = PinTheme(
       width: 50,
       height: 56,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
-        color: Color(0xFF1F2933),
+        color: AppColors.textPrimaryC(context),
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBg(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        border: Border.all(color: AppColors.borderC(context)),
       ),
     );
 
@@ -167,23 +169,24 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
-      body: SafeArea(
+      backgroundColor: AppColors.scaffoldBg(context),
+      body: AuthDesktopWrapper(
+        headline: 'Verify Your Number',
+        subtitle: 'We sent a code to your phone',
+        centerContent: ScreenIllustrations.otpVerification(size: 360, isDark: true),
+        onBack: () => context.pop(),
+        child: SafeArea(
           child: Column(
             children: [
               Expanded(
-                child: SingleChildScrollView(
+                child: Center(
+                  child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-
-                        // Back Button
-                        _buildBackButton(),
-
-                        const SizedBox(height: 24),
 
                         // Header
                         _buildHeader(),
@@ -244,7 +247,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                                     text: 'Resend OTP in ',
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: AppColors.textTertiary,
+                                      color: AppColors.textSecondaryC(context),
                                     ),
                                     children: [
                                       TextSpan(
@@ -279,6 +282,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                     ),
                   ),
                 ),
+                ),
               ),
               // Sign In Link at bottom
               Padding(
@@ -288,62 +292,29 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
             ],
           ),
         ),
-    );
-  }
-
-  Widget _buildBackButton() {
-    return GestureDetector(
-      onTap: () => context.pop(),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: const BoxDecoration(
-          color: Color(0xFF1F2937),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.arrow_back_rounded,
-          size: 20,
-          color: Colors.white,
-        ),
       ),
     );
   }
 
   Widget _buildHeader() {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Verify OTP',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Enter the 6-digit code sent to\n+91 ${widget.mobile}',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textTertiary,
-                ),
-              ),
-            ],
+        Text(
+          'Verify OTP',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimaryC(context),
           ),
         ),
-        SizedBox(
-          width: 120,
-          height: 120,
-          child: Image.asset(
-            'assets/Authendication gif/Sign up.gif',
-            fit: BoxFit.contain,
+        const SizedBox(height: 8),
+        Text(
+          'Enter the 6-digit code sent to\n+91 ${widget.mobile}',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
           ),
         ),
       ],
@@ -411,7 +382,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
           'Already have an Account ?',
           style: TextStyle(
             fontSize: 15,
-            color: AppColors.textTertiary,
+            color: AppColors.textSecondaryC(context),
           ),
         ),
         const SizedBox(width: 4),

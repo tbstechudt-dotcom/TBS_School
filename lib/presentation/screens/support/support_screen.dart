@@ -4,7 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/extensions.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/institution_provider.dart';
+import '../../providers/notification_provider.dart';
+import '../../providers/student_provider.dart';
+import '../../widgets/common/breadcrumb_bar.dart';
+import '../../widgets/common/desktop_detail_scaffold.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {
   const SupportScreen({super.key});
@@ -30,7 +36,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     {
       'question': 'Will I receive a receipt after payment?',
       'answer':
-          'Yes, you will receive a digital receipt via email immediately after successful payment completion.',
+          'Yes, you can download and share the payment receipt from the payment history section after successful payment.',
     },
     {
       'question': 'What happens if I miss a payment due date?',
@@ -39,95 +45,68 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     },
   ];
 
-  // Mock contact info
-  final String _schoolEmail = 'johnson@gmail.com';
-  final String _schoolPhone = '+84 414 323 567';
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
-      body: Column(
-          children: [
-            // Header with white SafeArea and subtle shadow
-            Container(
-              color: Colors.white,
-              child: SafeArea(
-                bottom: false,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 16),
-                      _buildHeader(context),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
+    final institutionAsync = ref.watch(selectedStudentInstitutionProvider);
+    return DesktopDetailScaffold(
+      isNested: true,
+      header: Column(
+        children: [
+          const SizedBox(height: 16),
+          _buildHeader(context),
+          const SizedBox(height: 16),
+        ],
+      ),
+      toolbar: const BreadcrumbBar(currentLabel: 'Help & Support'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              // Contact School Card
+              _buildContactCard(institutionAsync),
+              const SizedBox(height: 24),
+              // FAQ's Title
+              Text(
+                "FAQ's",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimaryC(context),
                 ),
               ),
-            ),
-            // Scrollable Content
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 24),
-                      // Contact School Card
-                      _buildContactCard(),
-                      const SizedBox(height: 24),
-                      // FAQ's Title
-                      Text(
-                        "FAQ's",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      // FAQ Items
-                      ..._faqs.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final faq = entry.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _buildFaqItem(
-                            question: faq['question']!,
-                            answer: faq['answer']!,
-                            isOpen: _openFaqIndex == index,
-                            onToggle: () {
-                              setState(() {
-                                _openFaqIndex = _openFaqIndex == index ? -1 : index;
-                              });
-                            },
-                          ),
-                        );
-                      }),
-                      const SizedBox(height: 32),
-                    ],
+              const SizedBox(height: 12),
+              // FAQ Items
+              ..._faqs.asMap().entries.map((entry) {
+                final index = entry.key;
+                final faq = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildFaqItem(
+                    question: faq['question']!,
+                    answer: faq['answer']!,
+                    isOpen: _openFaqIndex == index,
+                    onToggle: () {
+                      setState(() {
+                        _openFaqIndex = _openFaqIndex == index ? -1 : index;
+                      });
+                    },
                   ),
-                ),
-              ),
-            ),
-          ],
+                );
+              }),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
+      ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
     final cartItemCount = ref.watch(cartItemCountProvider);
+    final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -139,8 +118,8 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             child: Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1F2937),
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -152,7 +131,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           ),
           const SizedBox(width: 12),
           // Title & Subtitle
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -161,29 +140,34 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1F2937),
+                    color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   'Get assistance',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF6B7280),
+                    color: AppColors.textSecondaryC(context),
                   ),
                 ),
               ],
             ),
           ),
+          // Student chip (desktop only)
+          if (context.isDesktop) ...[
+            _buildStudentChip(context),
+            const SizedBox(width: 12),
+          ],
           // Cart Icon - Dark theme
           GestureDetector(
             onTap: () => context.push(Routes.cart),
             child: Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1F2937),
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
                 shape: BoxShape.circle,
               ),
               child: Stack(
@@ -209,7 +193,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.error,
                           shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFF1F2937), width: 2),
+                          border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
                         ),
                         child: Text(
                           cartItemCount > 9 ? '9+' : '$cartItemCount',
@@ -227,26 +211,53 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             ),
           ),
           const SizedBox(width: 10),
-          // Notification Icon - Dark theme
+          // Notification Icon - Dark theme with badge
           GestureDetector(
             onTap: () => context.go(Routes.notifications),
             child: Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1F2937),
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/notification.svg',
-                  width: 20,
-                  height: 20,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/notification.svg',
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
                   ),
-                ),
+                  if (notificationCount > 0)
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                        decoration: BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
+                        ),
+                        child: Text(
+                          notificationCount > 9 ? '9+' : '$notificationCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -255,20 +266,37 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     );
   }
 
-  Widget _buildContactCard() {
+  Widget _buildStudentChip(BuildContext context) {
+    final student = ref.watch(selectedStudentProvider);
+    if (student == null) return const SizedBox.shrink();
+    final parts = student.name.trim().split(' ').where((p) => p.isNotEmpty).toList();
+    final initials = parts.take(2).map((p) => p[0]).join().toUpperCase();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: AppColors.primary,
+          backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
+              ? NetworkImage(student.photoUrl!) : null,
+          child: (student.photoUrl == null || student.photoUrl!.isEmpty)
+              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              : null,
+        ),
+        const SizedBox(width: 8),
+        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+      ],
+    );
+  }
+
+  Widget _buildContactCard(AsyncValue<dynamic> institutionAsync) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.cardBg(context),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowPurple,
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        boxShadow: AppColors.cardShadow(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +323,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textPrimaryC(context),
                 ),
               ),
             ],
@@ -304,7 +332,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           // Divider
           Container(
             height: 1,
-            color: AppColors.borderLight,
+            color: AppColors.borderC(context),
           ),
           const SizedBox(height: 20),
           // Email Row
@@ -313,7 +341,11 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             iconBg: AppColors.cardPurple,
             iconColor: AppColors.cardPurpleDark,
             label: 'Email',
-            value: _schoolEmail,
+            value: institutionAsync.when(
+              data: (inst) => inst?.email ?? 'N/A',
+              loading: () => 'Loading...',
+              error: (_, __) => 'N/A',
+            ),
           ),
           const SizedBox(height: 16),
           // Phone Row
@@ -322,7 +354,11 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
             iconBg: AppColors.cardGreen,
             iconColor: AppColors.cardGreenDark,
             label: 'Phone',
-            value: _schoolPhone,
+            value: institutionAsync.when(
+              data: (inst) => inst?.phone ?? 'N/A',
+              loading: () => 'Loading...',
+              error: (_, __) => 'N/A',
+            ),
           ),
         ],
       ),
@@ -357,7 +393,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textTertiary,
+                  color: AppColors.textHintC(context),
                 ),
               ),
               const SizedBox(height: 2),
@@ -366,7 +402,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textPrimaryC(context),
                 ),
               ),
             ],
@@ -387,7 +423,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.cardBg(context),
           borderRadius: BorderRadius.circular(16),
           border: isOpen
               ? Border.all(color: AppColors.primary, width: 2)
@@ -427,7 +463,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: isOpen ? FontWeight.w600 : FontWeight.w500,
-                        color: AppColors.textPrimary,
+                        color: AppColors.textPrimaryC(context),
                       ),
                     ),
                   ),
@@ -435,13 +471,13 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: isOpen ? AppColors.primary : AppColors.bgSecondary,
+                      color: isOpen ? AppColors.primary : AppColors.filterBg(context),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       isOpen ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                       size: 20,
-                      color: isOpen ? Colors.white : AppColors.textTertiary,
+                      color: isOpen ? Colors.white : AppColors.textHintC(context),
                     ),
                   ),
                 ],
@@ -461,7 +497,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.textSecondary,
+                      color: AppColors.textSecondaryC(context),
                       height: 1.6,
                     ),
                   ),

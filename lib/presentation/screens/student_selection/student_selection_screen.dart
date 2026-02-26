@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
 import '../../../data/models/student_model.dart';
 import '../../providers/student_provider.dart';
+import '../../widgets/common/auth_desktop_wrapper.dart';
+import '../../widgets/common/screen_illustrations.dart';
 
 class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
@@ -88,19 +90,19 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
 
     // Show loading screen while checking for single student
     if (_isCheckingStudents) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF8F9FB),
+      return Scaffold(
+        backgroundColor: AppColors.scaffoldBg(context),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
               Text(
                 'Loading...',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Color(0xFF9CA3AF),
+                  color: AppColors.textHintC(context),
                 ),
               ),
             ],
@@ -109,125 +111,54 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
       );
     }
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
-      body: Column(
-        children: [
-          // Header with white SafeArea and subtle shadow
-          Container(
-            color: Colors.white,
-            child: SafeArea(
-              bottom: false,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    _buildTopNavigation(),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Content
-          Expanded(
-            child: SafeArea(
-              top: false,
+      backgroundColor: AppColors.scaffoldBg(context),
+      body: AuthDesktopWrapper(
+        headline: 'Select Student',
+        subtitle: 'Choose a student to continue',
+        centerContent: ScreenIllustrations.studentSelection(size: 360, isDark: true),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: Column(
                 children: [
-                  const SizedBox(height: 24),
                   _buildHeader(),
                   const SizedBox(height: 32),
-                  Expanded(
-                    child: _buildStudentList(),
-                  ),
+                  _buildStudentList(),
+                  const SizedBox(height: 32),
                   _buildContinueButton(),
-                  const SizedBox(height: 24),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildTopNavigation() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () => context.pop(),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1F2937),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.arrow_back_rounded,
-                size: 20,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(width: 44),
-        ],
-      ),
-    );
-  }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Select Student',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Choose a student to continue',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'Select Student',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimaryC(context),
           ),
-          Image.asset(
-            'assets/images/select_student_illustration.png',
-            width: 120,
-            height: 100,
-            fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Choose a student to continue',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -263,7 +194,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                   'No students found',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.textTertiary,
+                    color: AppColors.textSecondaryC(context),
                   ),
                 ),
               ],
@@ -271,29 +202,19 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
           );
         }
 
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemCount: students.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final student = students[index];
-            final isSelected = _selectedStudentId == student.stuId;
-            return _buildStudentCard(student, isSelected, index);
-          },
+        return Column(
+          children: [
+            for (int index = 0; index < students.length; index++) ...[
+              if (index > 0) const SizedBox(height: 12),
+              _buildStudentCard(students[index], _selectedStudentId == students[index].stuId, index),
+            ],
+          ],
         );
       },
     );
   }
 
   Widget _buildStudentCard(StudentModel student, bool isSelected, int index) {
-    final cardColors = [
-      {'bg': AppColors.cardPurple, 'icon': AppColors.cardPurpleDark},
-      {'bg': AppColors.cardGreen, 'icon': AppColors.cardGreenDark},
-      {'bg': AppColors.cardBlue, 'icon': AppColors.cardBlueDark},
-      {'bg': AppColors.cardPink, 'icon': AppColors.cardPinkDark},
-    ];
-    final colorSet = cardColors[index % cardColors.length];
-
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -303,40 +224,73 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.cardBg(context),
           borderRadius: BorderRadius.circular(20),
           border: isSelected
               ? Border.all(color: AppColors.primary, width: 2)
               : null,
-          boxShadow: [
-            BoxShadow(
-              color: isSelected ? AppColors.shadowPurple : AppColors.shadowLight,
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          boxShadow: Theme.of(context).brightness == Brightness.dark
+              ? []
+              : [
+                  BoxShadow(
+                    color: isSelected ? AppColors.shadowPurple : AppColors.shadowLight,
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
         ),
         child: Row(
           children: [
-            // Avatar - Circular like home page
+            // Avatar - Circular like profile page
             Container(
               width: 48,
               height: 48,
-              decoration: BoxDecoration(
-                color: colorSet['bg'],
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
-              ),
-              child: Center(
-                child: Text(
-                  student.stuname.isNotEmpty ? student.stuname[0].toUpperCase() : 'S',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: colorSet['icon'],
-                  ),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.primary, AppColors.primary600],
                 ),
+                shape: BoxShape.circle,
               ),
+              clipBehavior: Clip.antiAlias,
+              child: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
+                  ? CachedNetworkImage(
+                      imageUrl: student.photoUrl!,
+                      fit: BoxFit.cover,
+                      width: 48,
+                      height: 48,
+                      placeholder: (context, url) => Center(
+                        child: Text(
+                          _getInitials(student.stuname),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Center(
+                        child: Text(
+                          _getInitials(student.stuname),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        _getInitials(student.stuname),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
             ),
             const SizedBox(width: 14),
             // Student Info - Home page style
@@ -349,43 +303,43 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textPrimaryC(context),
                     ),
                   ),
                   const SizedBox(height: 4),
                   RichText(
                     text: TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'Adm No: ',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF6B7280),
+                            color: AppColors.textSecondaryC(context),
                           ),
                         ),
                         TextSpan(
                           text: student.stuadmno,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                            color: AppColors.textPrimaryC(context),
                           ),
                         ),
-                        const TextSpan(
+                        TextSpan(
                           text: ' | Class: ',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF6B7280),
+                            color: AppColors.textSecondaryC(context),
                           ),
                         ),
                         TextSpan(
                           text: student.stuclass,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                            color: AppColors.textPrimaryC(context),
                           ),
                         ),
                       ],
@@ -402,7 +356,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                 shape: BoxShape.circle,
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? AppColors.primary : AppColors.borderC(context),
                   width: 2,
                 ),
               ),
@@ -416,6 +370,15 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
     );
   }
 
+  String _getInitials(String name) {
+    if (name.isEmpty) return 'S';
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
+  }
+
   Widget _buildContinueButton() {
     final isEnabled = _selectedStudentId != null;
 
@@ -425,13 +388,14 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
         onTap: isEnabled
             ? () async {
                 final studentsAsync = ref.read(studentsByParentProvider);
-                studentsAsync.whenData((students) async {
+                final students = studentsAsync.valueOrNull;
+                if (students != null) {
                   final selectedStudent = students.firstWhere(
                     (s) => s.stuId == _selectedStudentId,
                   );
                   await ref.read(selectedStudentProvider.notifier).selectStudent(selectedStudent);
-                });
-                context.go(Routes.home);
+                }
+                if (mounted) context.go(Routes.home);
               }
             : null,
         child: Container(
@@ -443,7 +407,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                     colors: [AppColors.primary, AppColors.primary600],
                   )
                 : null,
-            color: isEnabled ? null : AppColors.gray300,
+            color: isEnabled ? null : AppColors.borderC(context),
             borderRadius: BorderRadius.circular(16),
             boxShadow: isEnabled
                 ? [
@@ -463,14 +427,14 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: isEnabled ? Colors.white : AppColors.textDisabled,
+                  color: isEnabled ? Colors.white : AppColors.textHintC(context),
                 ),
               ),
               const SizedBox(width: 8),
               Icon(
                 Icons.arrow_forward_rounded,
                 size: 20,
-                color: isEnabled ? Colors.white : AppColors.textDisabled,
+                color: isEnabled ? Colors.white : AppColors.textHintC(context),
               ),
             ],
           ),
