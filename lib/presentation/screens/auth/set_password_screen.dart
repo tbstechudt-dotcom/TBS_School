@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
 import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/common/app_button.dart';
-import '../../widgets/common/app_text_field.dart';
+import '../../widgets/common/auth_desktop_wrapper.dart';
+import '../../widgets/common/screen_illustrations.dart';
 
 class SetPasswordScreen extends ConsumerStatefulWidget {
   final String mobile;
+  final bool isResetPassword;
 
   const SetPasswordScreen({
     super.key,
     required this.mobile,
+    this.isResetPassword = false,
   });
 
   @override
@@ -39,19 +40,44 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(authProvider.notifier).signUp(
-        mobile: widget.mobile,
-        password: _passwordController.text,
-      );
+      if (widget.isResetPassword) {
+        // Reset password flow
+        await ref.read(authProvider.notifier).resetPassword(
+          mobile: widget.mobile,
+          newPassword: _passwordController.text,
+        );
 
-      if (mounted) {
-        context.go(Routes.studentSelection);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Password reset successfully'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          context.go(Routes.signIn);
+        }
+      } else {
+        // Sign up flow - use completeAccountCreation to UPDATE existing parent record
+        await ref.read(authProvider.notifier).completeAccountCreation(
+          mobile: widget.mobile,
+          password: _passwordController.text,
+        );
+
+        if (mounted) {
+          context.go(Routes.studentSelection);
+        }
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = e.toString();
+        // Clean up exception prefix for user-friendly display
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring(11);
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text(errorMessage),
             backgroundColor: AppColors.error,
           ),
         );
@@ -63,113 +89,56 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
     }
   }
 
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.s6),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Set Password',
-                  style: TextStyle(
-                    fontSize: AppSizes.text2xl,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+      backgroundColor: AppColors.scaffoldBg(context),
+      body: AuthDesktopWrapper(
+        headline: 'Set Your Password',
+        subtitle: 'Create a secure password for your account',
+        centerContent: ScreenIllustrations.setPassword(size: 360, isDark: true),
+        onBack: () => context.pop(),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+
+                    // Header
+                    _buildHeader(),
+
+                    const SizedBox(height: 32),
+
+                    // Password Field
+                    _buildPasswordField(),
+
+                    const SizedBox(height: 16),
+
+                    // Confirm Password Field
+                    _buildConfirmPasswordField(),
+
+                    const SizedBox(height: 16),
+
+                    // Password Requirements
+                    _buildPasswordRequirements(),
+
+                    const SizedBox(height: 32),
+
+                    // Submit Button
+                    _buildSubmitButton(),
+
+                    const SizedBox(height: 32),
+                  ],
                 ),
-                const SizedBox(height: AppSizes.s2),
-                const Text(
-                  'Create a secure password for your account',
-                  style: TextStyle(
-                    fontSize: AppSizes.textBase,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-
-                const SizedBox(height: AppSizes.s8),
-
-                AppTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hint: 'Enter your password',
-                  isPassword: true,
-                  prefixIcon: Icons.lock_rounded,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
-                    }
-                    if (value.length < 8) {
-                      return 'Password must be at least 8 characters';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSizes.s4),
-
-                AppTextField(
-                  controller: _confirmPasswordController,
-                  label: 'Confirm Password',
-                  hint: 'Re-enter your password',
-                  isPassword: true,
-                  prefixIcon: Icons.lock_rounded,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: AppSizes.s4),
-
-                Container(
-                  padding: const EdgeInsets.all(AppSizes.s4),
-                  decoration: BoxDecoration(
-                    color: AppColors.gray50,
-                    borderRadius: BorderRadius.circular(AppSizes.roundedLg),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Password must:',
-                        style: TextStyle(
-                          fontSize: AppSizes.textSm,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSizes.s2),
-                      _buildRequirement('Be at least 8 characters'),
-                      _buildRequirement('Include uppercase & lowercase letters'),
-                      _buildRequirement('Include at least one number'),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: AppSizes.s8),
-
-                AppButton(
-                  text: 'Create Account',
-                  onPressed: _handleSetPassword,
-                  isLoading: _isLoading,
-                  isFullWidth: true,
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -177,25 +146,306 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
     );
   }
 
-  Widget _buildRequirement(String text) {
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.isResetPassword ? 'Reset Password' : 'Set Password',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimaryC(context),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          widget.isResetPassword
+              ? 'Create a new password for your account'
+              : 'Create a secure password for your account',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Password',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _passwordController,
+          obscureText: !_showPassword,
+          style: TextStyle(
+            fontSize: 15,
+            color: AppColors.textPrimaryC(context),
+          ),
+          decoration: InputDecoration(
+            hintText: 'Enter your password',
+            hintStyle: TextStyle(
+              fontSize: 15,
+              color: AppColors.textHintC(context),
+            ),
+            filled: true,
+            fillColor: AppColors.cardBg(context),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+            prefixIcon: Icon(
+              Icons.lock_outline_rounded,
+              size: 22,
+              color: AppColors.textHintC(context),
+            ),
+            suffixIcon: GestureDetector(
+              onTap: () => setState(() => _showPassword = !_showPassword),
+              child: Icon(
+                _showPassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                size: 22,
+                color: AppColors.textHintC(context),
+              ),
+            ),
+          ),
+          onChanged: (_) => setState(() {}), // Trigger rebuild for requirements
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter a password';
+            }
+            if (value.length < 8) {
+              return 'Password must be at least 8 characters';
+            }
+            if (!RegExp(r'[A-Z]').hasMatch(value)) {
+              return 'Password must include at least one uppercase letter';
+            }
+            if (!RegExp(r'[a-z]').hasMatch(value)) {
+              return 'Password must include at least one lowercase letter';
+            }
+            if (!RegExp(r'[0-9]').hasMatch(value)) {
+              return 'Password must include at least one number';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConfirmPasswordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Confirm Password',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: AppColors.textSecondaryC(context),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _confirmPasswordController,
+          obscureText: !_showConfirmPassword,
+          style: TextStyle(
+            fontSize: 15,
+            color: AppColors.textPrimaryC(context),
+          ),
+          decoration: InputDecoration(
+            hintText: 'Re-enter your password',
+            hintStyle: TextStyle(
+              fontSize: 15,
+              color: AppColors.textHintC(context),
+            ),
+            filled: true,
+            fillColor: AppColors.cardBg(context),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderC(context)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444)),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+            prefixIcon: Icon(
+              Icons.lock_outline_rounded,
+              size: 22,
+              color: AppColors.textHintC(context),
+            ),
+            suffixIcon: GestureDetector(
+              onTap: () => setState(() => _showConfirmPassword = !_showConfirmPassword),
+              child: Icon(
+                _showConfirmPassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                size: 22,
+                color: AppColors.textHintC(context),
+              ),
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please confirm your password';
+            }
+            if (value != _passwordController.text) {
+              return 'Passwords do not match';
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordRequirements() {
+    final password = _passwordController.text;
+    final hasMinLength = password.length >= 8;
+    final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+    final hasLowercase = RegExp(r'[a-z]').hasMatch(password);
+    final hasNumber = RegExp(r'[0-9]').hasMatch(password);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardPurple,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Password must:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryC(context),
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildRequirement('Be at least 8 characters', hasMinLength),
+          _buildRequirement('Include uppercase & lowercase letters', hasUppercase && hasLowercase),
+          _buildRequirement('Include at least one number', hasNumber),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRequirement(String text, bool isSatisfied) {
     return Padding(
-      padding: const EdgeInsets.only(top: AppSizes.s1),
+      padding: const EdgeInsets.only(top: 4),
       child: Row(
         children: [
-          const Icon(
-            Icons.check_circle_outline_rounded,
+          Icon(
+            isSatisfied ? Icons.check_circle_rounded : Icons.check_circle_outline_rounded,
             size: 16,
-            color: AppColors.textTertiary,
+            color: isSatisfied ? AppColors.success : AppColors.cardPurpleDark,
           ),
-          const SizedBox(width: AppSizes.s2),
+          const SizedBox(width: 8),
           Text(
             text,
-            style: const TextStyle(
-              fontSize: AppSizes.textSm,
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              fontSize: 13,
+              color: isSatisfied ? AppColors.success : AppColors.textSecondaryC(context),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return GestureDetector(
+      onTap: _isLoading ? null : _handleSetPassword,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.primary600],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.4),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_isLoading)
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            else ...[
+              Text(
+                widget.isResetPassword ? 'Reset Password' : 'Create Account',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.arrow_forward_rounded,
+                size: 22,
+                color: Colors.white,
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

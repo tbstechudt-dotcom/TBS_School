@@ -8,16 +8,27 @@ import '../presentation/screens/auth/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up_screen.dart';
 import '../presentation/screens/auth/otp_verification_screen.dart';
 import '../presentation/screens/auth/set_password_screen.dart';
+import '../presentation/screens/auth/forgot_password_screen.dart';
+import '../presentation/screens/auth/forgot_password_otp_screen.dart';
 import '../presentation/screens/student_selection/student_selection_screen.dart';
+import '../presentation/screens/student_selection/switch_student_screen.dart';
 import '../presentation/screens/home/home_screen.dart';
+import '../presentation/screens/home/home_screen_copy.dart';
 import '../presentation/screens/fees/fees_screen.dart';
 import '../presentation/screens/fees/fee_details_screen.dart';
 import '../presentation/screens/payments/payment_history_screen.dart';
-import '../presentation/screens/payments/payment_receipt_screen.dart';
+import '../presentation/screens/payments/transaction_details_screen.dart';
 import '../presentation/screens/notifications/notifications_screen.dart';
+import '../presentation/screens/notifications/notification_detail_screen.dart';
+import '../data/models/notification_model.dart';
 import '../presentation/screens/profile/profile_screen.dart';
+import '../presentation/screens/support/support_screen.dart';
+import '../presentation/screens/cart/cart_screen.dart';
+import '../presentation/screens/fees/all_pending_fees_screen.dart';
+import '../presentation/screens/fees/pay_all_fees_screen.dart';
+import '../presentation/screens/fees/paid_fees_screen.dart';
 import '../presentation/widgets/common/main_scaffold.dart';
-import '../presentation/providers/auth_provider.dart';
+import '../presentation/providers/auth_provider.dart' show parentAuthStateProvider;
 import '../presentation/providers/student_provider.dart';
 
 /// Route names
@@ -29,7 +40,11 @@ class Routes {
   static const signUp = '/sign-up';
   static const otpVerification = '/otp-verification';
   static const setPassword = '/set-password';
+  static const forgotPassword = '/forgot-password';
+  static const forgotPasswordOtp = '/forgot-password-otp';
+  static const resetPassword = '/reset-password';
   static const studentSelection = '/student-selection';
+  static const switchStudent = '/switch-student';
   static const home = '/home';
   static const fees = '/fees';
   static const feeDetails = '/fees/:feeId';
@@ -37,14 +52,20 @@ class Routes {
   static const paymentReceipt = '/payment-history/:paymentId';
   static const notifications = '/notifications';
   static const profile = '/profile';
+  static const support = '/support';
+  static const cart = '/cart';
+  static const cartStandalone = '/cart-standalone';
+  static const allPendingFees = '/all-pending-fees';
+  static const payAllFees = '/pay-all-fees';
+  static const paidFees = '/paid-fees';
+  static const transactionDetails = '/transaction';
+  static const homeTest = '/home-test';
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
-
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: Routes.splash,
@@ -56,21 +77,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null; // Let splash screen handle navigation
       }
 
+      // TESTING: Allow home test screen without auth
+      if (state.matchedLocation == Routes.homeTest) {
+        return null;
+      }
+
       // Bypass authentication when using dummy data
       if (useDummyData) {
         return null;
       }
 
-      final isLoggedIn = authState.valueOrNull != null;
+      // Read auth state directly for most up-to-date value
+      final parentAuthState = ref.read(parentAuthStateProvider);
+      final isLoggedIn = parentAuthState.valueOrNull?.isAuthenticated ?? false;
       final isOnAuthPage = state.matchedLocation == Routes.signIn ||
           state.matchedLocation == Routes.signUp ||
           state.matchedLocation == Routes.otpVerification ||
-          state.matchedLocation == Routes.setPassword;
+          state.matchedLocation == Routes.setPassword ||
+          state.matchedLocation == Routes.forgotPassword ||
+          state.matchedLocation == Routes.forgotPasswordOtp ||
+          state.matchedLocation == Routes.resetPassword;
       final isOnOnboarding = state.matchedLocation == Routes.onboarding;
       final isOnWelcome = state.matchedLocation == Routes.welcome;
+      final isOnStudentSelection = state.matchedLocation == Routes.studentSelection;
 
       // Allow onboarding and welcome without auth
       if (isOnOnboarding || isOnWelcome) {
+        return null;
+      }
+
+      // Allow student selection when coming from login or if authenticated
+      final extra = state.extra;
+      final fromLogin = extra is Map && extra['fromLogin'] == true;
+      if (isOnStudentSelection && (isLoggedIn || fromLogin)) {
         return null;
       }
 
@@ -129,10 +168,42 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
+      // Forgot Password Routes
+      GoRoute(
+        path: Routes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: Routes.forgotPasswordOtp,
+        builder: (context, state) {
+          final mobile = state.extra as String?;
+          return ForgotPasswordOtpScreen(mobile: mobile ?? '');
+        },
+      ),
+      GoRoute(
+        path: Routes.resetPassword,
+        builder: (context, state) {
+          final mobile = state.extra as String?;
+          return SetPasswordScreen(mobile: mobile ?? '', isResetPassword: true);
+        },
+      ),
+
       // Student Selection
       GoRoute(
         path: Routes.studentSelection,
         builder: (context, state) => const StudentSelectionScreen(),
+      ),
+
+      // Standalone Cart Screen (without bottom nav, with back button)
+      GoRoute(
+        path: Routes.cartStandalone,
+        builder: (context, state) => const CartScreen(isStandalone: true),
+      ),
+
+      // TESTING: Home Screen Copy (new design)
+      GoRoute(
+        path: Routes.homeTest,
+        builder: (context, state) => const HomeScreenCopy(),
       ),
 
       // Main App with Bottom Navigation (Shell Route)
@@ -163,15 +234,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: Routes.paymentHistory,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: PaymentHistoryScreen(),
-            ),
+            pageBuilder: (context, state) {
+              final initialTab = state.uri.queryParameters['tab'];
+              return NoTransitionPage(
+                child: PaymentHistoryScreen(initialTab: initialTab),
+              );
+            },
             routes: [
               GoRoute(
                 path: ':paymentId',
                 builder: (context, state) {
                   final paymentId = state.pathParameters['paymentId']!;
-                  return PaymentReceiptScreen(paymentId: paymentId);
+                  return TransactionDetailsScreen(paymentId: paymentId, isNested: true);
                 },
               ),
             ],
@@ -181,12 +255,67 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const NoTransitionPage(
               child: NotificationsScreen(),
             ),
+            routes: [
+              GoRoute(
+                path: ':notificationId',
+                builder: (context, state) {
+                  final notificationId = state.pathParameters['notificationId']!;
+                  final extra = state.extra;
+                  final notification = extra is NotificationModel
+                      ? extra
+                      : extra is Map<String, dynamic>
+                          ? NotificationModel.fromJson(extra)
+                          : null;
+                  return NotificationDetailScreen(
+                    notificationId: notificationId,
+                    notification: notification,
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: Routes.profile,
             pageBuilder: (context, state) => const NoTransitionPage(
               child: ProfileScreen(),
             ),
+          ),
+
+          // Drill-down routes (rendered inside MainScaffold)
+          GoRoute(
+            path: Routes.support,
+            builder: (context, state) => const SupportScreen(),
+          ),
+          GoRoute(
+            path: Routes.cart,
+            builder: (context, state) => const CartScreen(),
+          ),
+          GoRoute(
+            path: Routes.allPendingFees,
+            builder: (context, state) {
+              final feeGroup = state.uri.queryParameters['group'];
+              final filterStatus = state.uri.queryParameters['status'];
+              return AllPendingFeesScreen(filterGroup: feeGroup, filterStatus: filterStatus);
+            },
+          ),
+          GoRoute(
+            path: Routes.payAllFees,
+            builder: (context, state) => const PayAllFeesScreen(),
+          ),
+          GoRoute(
+            path: Routes.paidFees,
+            builder: (context, state) => const PaidFeesScreen(),
+          ),
+          GoRoute(
+            path: Routes.switchStudent,
+            builder: (context, state) => const SwitchStudentScreen(),
+          ),
+          GoRoute(
+            path: '${Routes.transactionDetails}/:paymentId',
+            builder: (context, state) {
+              final paymentId = state.pathParameters['paymentId']!;
+              return TransactionDetailsScreen(paymentId: paymentId, isNested: true);
+            },
           ),
         ],
       ),
