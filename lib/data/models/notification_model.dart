@@ -50,8 +50,8 @@ class NotificationModel {
       type: _parseType(json['type']),
       data: json['data'] as Map<String, dynamic>?,
       isRead: json['is_read'] ?? false,
-      readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
-      createdAt: DateTime.parse(json['created_at']),
+      readAt: json['read_at'] != null ? DateTime.parse(json['read_at']).toLocal() : null,
+      createdAt: DateTime.parse(json['created_at']).toLocal(),
     );
   }
 

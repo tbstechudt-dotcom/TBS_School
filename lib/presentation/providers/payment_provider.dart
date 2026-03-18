@@ -388,33 +388,8 @@ Future<int?> initiatePayment({
       debugPrint('check_fees_locked RPC not available: $e');
     }
 
-    // 3. Generate payment number atomically (prevents duplicate paynumber on concurrent devices)
-    String payNumber;
-    try {
-      final rpcResult = await client.rpc('generate_payment_number');
-      payNumber = rpcResult as String;
-    } catch (e) {
-      // Fallback: non-atomic sequence generation (if RPC not deployed yet)
-      debugPrint('generate_payment_number RPC not available, using fallback: $e');
-      final sequence = await client
-          .from('sequence')
-          .select('seq_id, sequid, seqwidth, seqcurno')
-          .limit(1)
-          .single();
-
-      final sequid = sequence['sequid'] as String;
-      final seqWidth = sequence['seqwidth'] as int;
-      final seqCurNo = (sequence['seqcurno'] as num).toInt();
-      final newSeqNo = seqCurNo + 1;
-      final prefix = sequid.replaceAll(RegExp(r'\d+$'), '');
-      payNumber = '$prefix${newSeqNo.toString().padLeft(seqWidth, '0')}';
-
-      await client.from('sequence').update({
-        'seqcurno': newSeqNo,
-      }).eq('seq_id', sequence['seq_id'] as int);
-    }
-
-    // 4. Create payment record with paynumber (paystatus = 'I' for Initiated)
+    // 3. Create payment record without paynumber (paystatus = 'I' for Initiated)
+    // paynumber is generated after payment completes or fails
     final payResponse = await client.from('payment').insert({
       'ins_id': student.insId,
       'inscode': student.inscode,
@@ -425,7 +400,6 @@ Future<int?> initiatePayment({
       'transcurrency': 'INR',
       'paydate': DateTime.now().toIso8601String(),
       'paystatus': 'I',
-      'paynumber': payNumber,
       'createdby': parent?.payincharge ?? student.stuname,
     }).select('pay_id').single();
 
@@ -449,7 +423,7 @@ Future<int?> initiatePayment({
       }).eq('car_id', carId),
     ]);
 
-    debugPrint('Payment initiated: pay_id=$payId, paynumber=$payNumber, ${items.length} detail rows');
+    debugPrint('Payment initiated: pay_id=$payId, ${items.length} detail rows');
     return payId;
   } catch (e, stackTrace) {
     lastPaymentError = e.toString();
@@ -523,11 +497,35 @@ Future<bool> handlePaymentSuccess({
   final client = ref.read(supabaseClientProvider);
 
   try {
-    // 1. Update payment status + fetch feedemand in parallel
+    // 1. Generate payment number
+    String payNumber;
+    try {
+      final rpcResult = await client.rpc('generate_payment_number');
+      payNumber = rpcResult as String;
+    } catch (e) {
+      debugPrint('generate_payment_number RPC not available, using fallback: $e');
+      final sequence = await client
+          .from('sequence')
+          .select('seq_id, sequid, seqwidth, seqcurno')
+          .limit(1)
+          .single();
+      final sequid = sequence['sequid'] as String;
+      final seqWidth = sequence['seqwidth'] as int;
+      final seqCurNo = (sequence['seqcurno'] as num).toInt();
+      final newSeqNo = seqCurNo + 1;
+      final prefix = sequid.replaceAll(RegExp(r'\d+$'), '');
+      payNumber = '$prefix${newSeqNo.toString().padLeft(seqWidth, '0')}';
+      await client.from('sequence').update({
+        'seqcurno': newSeqNo,
+      }).eq('seq_id', sequence['seq_id'] as int);
+    }
+
+    // 2. Update payment status with paynumber + fetch feedemand in parallel
     final paymentUpdateFuture = client.from('payment').update({
       'paystatus': 'C',
       'paymethod': paymethod,
       'payreference': payreference,
+      'paynumber': payNumber,
       'paydate': DateTime.now().toIso8601String(),
     }).eq('pay_id', payId).select('paynumber').single();
 
@@ -622,10 +620,34 @@ Future<bool> handlePaymentFailure({
   final client = ref.read(supabaseClientProvider);
 
   try {
-    // Build update map - always set paymethod since payment was attempted via Razorpay
+    // Generate payment number for failed payment
+    String payNumber;
+    try {
+      final rpcResult = await client.rpc('generate_payment_number');
+      payNumber = rpcResult as String;
+    } catch (e) {
+      debugPrint('generate_payment_number RPC not available, using fallback: $e');
+      final sequence = await client
+          .from('sequence')
+          .select('seq_id, sequid, seqwidth, seqcurno')
+          .limit(1)
+          .single();
+      final sequid = sequence['sequid'] as String;
+      final seqWidth = sequence['seqwidth'] as int;
+      final seqCurNo = (sequence['seqcurno'] as num).toInt();
+      final newSeqNo = seqCurNo + 1;
+      final prefix = sequid.replaceAll(RegExp(r'\d+$'), '');
+      payNumber = '$prefix${newSeqNo.toString().padLeft(seqWidth, '0')}';
+      await client.from('sequence').update({
+        'seqcurno': newSeqNo,
+      }).eq('seq_id', sequence['seq_id'] as int);
+    }
+
+    // Build update map
     final paymentUpdate = <String, dynamic>{
       'paystatus': 'F',
       'paymethod': 'razorpay',
+      'paynumber': payNumber,
       'paydate': DateTime.now().toIso8601String(),
     };
     if (payReference != null) {

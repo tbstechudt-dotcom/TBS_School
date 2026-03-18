@@ -469,51 +469,88 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-            child: SizedBox(
-              height: 165,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (int i = 0; i < (feesByGroup.isEmpty ? categories.length : sortedEntries.length).clamp(0, 4); i++) ...[
-                    if (i > 0) const SizedBox(width: 12),
-                    if (feesByGroup.isEmpty)
-                      Expanded(
-                        child: _buildSpendingCard(
-                          context: context,
-                          icon: categories[i]['icon'] as IconData?,
-                          svgPath: categories[i]['svgPath'] as String?,
-                          label: categories[i]['name'] as String,
-                          groupName: categories[i]['name'] as String,
-                          amount: 0,
-                          primaryColor: categories[i]['color'] as Color,
-                          iconBgColor: categories[i]['iconBgColor'] as Color,
-                          isFirst: i == 0,
-                          fixedWidth: false,
-                        ),
-                      )
-                    else
-                      Expanded(
-                        child: _buildSpendingCard(
-                          context: context,
-                          icon: _getIconForFeeGroup(sortedEntries[i].key)['icon'] as IconData?,
-                          svgPath: _getIconForFeeGroup(sortedEntries[i].key)['svgPath'] as String?,
-                          label: _toTitleCase(sortedEntries[i].key),
-                          groupName: sortedEntries[i].key,
-                          amount: sortedEntries[i].value,
-                          primaryColor: _getIconForFeeGroup(sortedEntries[i].key)['color'] as Color,
-                          iconBgColor: _getIconForFeeGroup(sortedEntries[i].key)['iconBgColor'] as Color,
-                          isFirst: i == 0,
-                          fixedWidth: false,
-                        ),
-                      ),
+            child: () {
+              final itemCount = feesByGroup.isEmpty ? categories.length : sortedEntries.length;
+              final clampedCount = itemCount.clamp(0, 4);
+              final isSingle = clampedCount == 1;
+              return SizedBox(
+                height: isSingle ? 130 : 165,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (int i = 0; i < clampedCount; i++) ...[
+                      if (i > 0) const SizedBox(width: 12),
+                      if (feesByGroup.isEmpty)
+                        isSingle
+                          ? SizedBox(
+                              width: 260,
+                              child: _buildSpendingCard(
+                                context: context,
+                                icon: categories[i]['icon'] as IconData?,
+                                svgPath: categories[i]['svgPath'] as String?,
+                                label: categories[i]['name'] as String,
+                                groupName: categories[i]['name'] as String,
+                                amount: 0,
+                                primaryColor: categories[i]['color'] as Color,
+                                iconBgColor: categories[i]['iconBgColor'] as Color,
+                                isFirst: i == 0,
+                                fixedWidth: false,
+                              ),
+                            )
+                          : Expanded(
+                              child: _buildSpendingCard(
+                                context: context,
+                                icon: categories[i]['icon'] as IconData?,
+                                svgPath: categories[i]['svgPath'] as String?,
+                                label: categories[i]['name'] as String,
+                                groupName: categories[i]['name'] as String,
+                                amount: 0,
+                                primaryColor: categories[i]['color'] as Color,
+                                iconBgColor: categories[i]['iconBgColor'] as Color,
+                                isFirst: i == 0,
+                                fixedWidth: false,
+                              ),
+                            )
+                      else
+                        isSingle
+                          ? SizedBox(
+                              width: 260,
+                              child: _buildSpendingCard(
+                                context: context,
+                                icon: _getIconForFeeGroup(sortedEntries[i].key)['icon'] as IconData?,
+                                svgPath: _getIconForFeeGroup(sortedEntries[i].key)['svgPath'] as String?,
+                                label: _toTitleCase(sortedEntries[i].key),
+                                groupName: sortedEntries[i].key,
+                                amount: sortedEntries[i].value,
+                                primaryColor: _getIconForFeeGroup(sortedEntries[i].key)['color'] as Color,
+                                iconBgColor: _getIconForFeeGroup(sortedEntries[i].key)['iconBgColor'] as Color,
+                                isFirst: i == 0,
+                                fixedWidth: false,
+                              ),
+                            )
+                          : Expanded(
+                              child: _buildSpendingCard(
+                                context: context,
+                                icon: _getIconForFeeGroup(sortedEntries[i].key)['icon'] as IconData?,
+                                svgPath: _getIconForFeeGroup(sortedEntries[i].key)['svgPath'] as String?,
+                                label: _toTitleCase(sortedEntries[i].key),
+                                groupName: sortedEntries[i].key,
+                                amount: sortedEntries[i].value,
+                                primaryColor: _getIconForFeeGroup(sortedEntries[i].key)['color'] as Color,
+                                iconBgColor: _getIconForFeeGroup(sortedEntries[i].key)['iconBgColor'] as Color,
+                                isFirst: i == 0,
+                                fixedWidth: false,
+                              ),
+                            ),
+                    ],
                   ],
-                ],
-              ),
-            ),
+                ),
+              );
+            }(),
           )
         else
           SizedBox(
-            height: 165,
+            height: (feesByGroup.isEmpty ? categories.length : sortedEntries.length) == 1 ? 120 : 165,
             child: ListView.separated(
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
