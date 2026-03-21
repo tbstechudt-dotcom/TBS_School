@@ -68,7 +68,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             'adminNo': selectedStudent.admissionNumber,
             'gender': selectedStudent.gender,
             'dob': _formatDate(selectedStudent.dateOfBirth),
-            'blood': selectedStudent.stubloodgrp ?? 'N/A',
+            'blood': (selectedStudent.stubloodgrp != null && selectedStudent.stubloodgrp!.toUpperCase() != 'NULL' && selectedStudent.stubloodgrp!.isNotEmpty) ? selectedStudent.stubloodgrp! : 'N/A',
             'mobile': currentParent?.payinchargemob ?? 'N/A',
             'email': currentParent?.paremail ?? 'N/A',
             'address': selectedStudent.fullAddress.isNotEmpty ? selectedStudent.fullAddress : 'N/A',
@@ -893,12 +893,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     children: [
                       Icon(Icons.check_circle, size: 14, color: AppColors.cardGreenDark),
                       const SizedBox(width: 4),
-                      Text(
-                        'Active Student',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.cardGreenDark,
+                      Flexible(
+                        child: Text(
+                          'Active Student',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.cardGreenDark,
+                          ),
                         ),
                       ),
                     ],
@@ -925,30 +929,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
+        Column(
           children: [
             // Switch Student
             if (hasMultipleStudents) ...[
-              Expanded(
-                child: _buildActionCard(
-                  icon: Icons.swap_horiz_rounded,
-                  label: 'Switch Student',
-                  bgColor: AppColors.cardBlue,
-                  iconColor: AppColors.cardBlueDark,
-                  onTap: () => context.push(Routes.switchStudent),
-                ),
+              _buildActionCard(
+                icon: Icons.swap_horiz_rounded,
+                label: 'Switch Student',
+                bgColor: AppColors.cardBlue,
+                iconColor: AppColors.cardBlueDark,
+                onTap: () => context.push(Routes.switchStudent),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(height: 12),
             ],
             // Get Support
-            Expanded(
-              child: _buildActionCard(
-                icon: Icons.support_agent_rounded,
-                label: 'Get Support',
-                bgColor: AppColors.cardCyan,
-                iconColor: AppColors.cardCyanDark,
-                onTap: () => context.push(Routes.support),
-              ),
+            _buildActionCard(
+              icon: Icons.support_agent_rounded,
+              label: 'Get Support',
+              bgColor: AppColors.cardCyan,
+              iconColor: AppColors.cardCyanDark,
+              onTap: () => context.push(Routes.support),
             ),
           ],
         ),

@@ -550,7 +550,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           )
         else
           SizedBox(
-            height: (feesByGroup.isEmpty ? categories.length : sortedEntries.length) == 1 ? 120 : 165,
+            height: (feesByGroup.isEmpty ? categories.length : sortedEntries.length) == 1 ? 130 : 165,
             child: ListView.separated(
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
@@ -610,7 +610,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onTap: () => context.push('${Routes.allPendingFees}?group=${Uri.encodeComponent(groupName)}'),
       child: Container(
         width: fixedWidth ? 160 : null,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: hasColoredBg ? primaryColor : AppColors.cardBg(context),
           borderRadius: BorderRadius.circular(16),
@@ -716,17 +716,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             // Amount and arrow row
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    NumberFormat('#,##,###').format(amount.toInt()),
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: hasColoredBg ? Colors.white : AppColors.textPrimaryC(context),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      NumberFormat('#,##,###').format(amount.toInt()),
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: hasColoredBg ? Colors.white : AppColors.textPrimaryC(context),
+                      ),
                     ),
                   ),
                 ),

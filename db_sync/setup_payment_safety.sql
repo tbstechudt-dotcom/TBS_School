@@ -29,7 +29,7 @@ BEGIN
 
   -- Build payment number: extract prefix (e.g., 'FC25/') and pad the number
   v_pay_number := regexp_replace(v_seq.sequid, '\d+$', '') ||
-                  lpad(v_new_no::TEXT, v_seq.seqwidth, '0');
+                  lpad(v_new_no::TEXT, v_seq.seqwidth::INTEGER, '0');
 
   -- Update the sequence atomically
   UPDATE sequence SET seqcurno = v_new_no WHERE seq_id = v_seq.seq_id;

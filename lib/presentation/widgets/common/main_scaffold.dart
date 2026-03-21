@@ -241,23 +241,24 @@ class MainScaffold extends ConsumerWidget {
               }
             },
             itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'switch',
-                child: Row(
-                  children: [
-                    Icon(Icons.swap_horiz_rounded, size: 20, color: AppColors.textSecondaryC(context)),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Switch Account',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimaryC(context),
+              if (ref.watch(hasMultipleStudentsProvider))
+                PopupMenuItem(
+                  value: 'switch',
+                  child: Row(
+                    children: [
+                      Icon(Icons.swap_horiz_rounded, size: 20, color: AppColors.textSecondaryC(context)),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Switch Account',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimaryC(context),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
               PopupMenuItem(
                 value: 'logout',
                 child: Row(

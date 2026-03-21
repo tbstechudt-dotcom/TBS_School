@@ -50,9 +50,30 @@ class NotificationModel {
       type: _parseType(json['type']),
       data: json['data'] as Map<String, dynamic>?,
       isRead: json['is_read'] ?? false,
-      readAt: json['read_at'] != null ? DateTime.parse(json['read_at']).toLocal() : null,
-      createdAt: DateTime.parse(json['created_at']).toLocal(),
+      readAt: json['read_at'] != null ? _parseLocalDateTime(json['read_at']) : null,
+      createdAt: _parseLocalDateTime(json['created_at']),
     );
+  }
+
+  /// Parses a PostgreSQL timestamptz string and extracts the local time
+  /// directly from the offset, avoiding Flutter web's broken toLocal().
+  /// e.g. "2026-03-21 15:37:19.813237+0530" → DateTime(2026,3,21,15,37,19)
+  static DateTime _parseLocalDateTime(String raw) {
+    final parsed = DateTime.parse(raw);
+    // Match timezone offset like +0530, +05:30, +05, -0800, etc.
+    final offsetMatch = RegExp(r'([+-])(\d{2}):?(\d{2})?$').firstMatch(raw);
+    if (offsetMatch != null) {
+      final sign = offsetMatch.group(1) == '+' ? 1 : -1;
+      final hours = int.parse(offsetMatch.group(2)!);
+      final minutes = int.parse(offsetMatch.group(3) ?? '0');
+      final offset = Duration(hours: hours, minutes: minutes) * sign;
+      // parsed is in UTC; add the offset to get the original local time
+      final localTime = parsed.add(offset);
+      return DateTime(localTime.year, localTime.month, localTime.day,
+          localTime.hour, localTime.minute, localTime.second, localTime.millisecond);
+    }
+    // No offset found — treat as local time
+    return parsed;
   }
 
   static NotificationType _parseType(String? type) {

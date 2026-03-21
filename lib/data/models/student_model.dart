@@ -128,7 +128,7 @@ class StudentModel {
 
   String get fullAddress {
     final parts = [stuaddress, stucity, stustate, stucountry, stupin]
-        .where((p) => p != null && p.isNotEmpty)
+        .where((p) => p != null && p.isNotEmpty && p.toUpperCase() != 'NULL')
         .toList();
     return parts.join(', ');
   }
