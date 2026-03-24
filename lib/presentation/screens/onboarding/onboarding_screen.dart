@@ -7,6 +7,7 @@ import '../../../core/utils/extensions.dart';
 import '../../../config/routes.dart';
 import '../../widgets/common/desktop_left_panel.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingData {
   final int id;
@@ -179,7 +180,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildBackButton(),
-                    const SizedBox(width: 44),
+                    SizedBox(width: 44.w),
                   ],
                 ),
               ),
@@ -209,7 +210,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
               // Bottom Navigation - Skip and Next
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -290,28 +291,28 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               currentData.title,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 28.sp,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.textPrimaryC(context),
                                 height: 1.3,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             Text(
                               currentData.subtitle,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 20,
+                              style: TextStyle(
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             Text(
                               currentData.description,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 color: AppColors.textSecondaryC(context),
                                 height: 1.6,
                               ),
@@ -326,12 +327,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     // Pagination dots
                     _buildPaginationDots(),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
 
                     // Full-width Next/Get Started button
                     _buildDesktopNextButton(isLastPage),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                   ],
                 ),
               ),
@@ -359,13 +360,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       label: Text(
         'Back',
         style: TextStyle(
-          fontSize: 15,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w500,
           color: AppColors.textSecondaryC(context),
         ),
       ),
       style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
@@ -387,7 +388,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: EdgeInsets.symmetric(horizontal: 4.w),
             width: 8,
             height: 8,
             decoration: BoxDecoration(
@@ -406,15 +407,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     return TextButton(
       onPressed: _completeOnboarding,
       style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 11),
+        padding: EdgeInsets.symmetric(horizontal: 29.w, vertical: 11.h),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
         ),
       ),
       child: Text(
         'Skip',
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryC(context),
           letterSpacing: 0.3,
@@ -427,10 +428,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     return GestureDetector(
       onTap: _nextPage,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         decoration: BoxDecoration(
           color: AppColors.primary,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.24),
@@ -451,14 +452,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           children: [
             Text(
               isLastPage ? 'Get Started' : 'Next',
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
                 letterSpacing: 0.3,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             const Icon(
               Icons.arrow_forward_rounded,
               size: 20,
@@ -475,12 +476,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       onTap: _nextPage,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primary, AppColors.primary600],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.4),
@@ -494,13 +495,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           children: [
             Text(
               isLastPage ? 'Get Started' : 'Next',
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             const Icon(
               Icons.arrow_forward_rounded,
               size: 20,
@@ -536,18 +537,18 @@ class _OnboardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Title
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.r),
               child: Text(
                 data.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimaryC(context),
                   height: 1.27,
@@ -555,29 +556,29 @@ class _OnboardingPage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
 
             // Illustration
             _buildOnboardIllustration(data.id - 1, isDark: false),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
 
             // Subtitle and Description
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.r),
               child: Column(
                 children: [
                   Text(
                     data.subtitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
 
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 300),
@@ -585,7 +586,7 @@ class _OnboardingPage extends StatelessWidget {
                       data.description,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textSecondaryC(context),
                         height: 1.43,

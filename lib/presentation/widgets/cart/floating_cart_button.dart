@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../config/routes.dart';
 import '../../providers/cart_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FloatingCartButton extends ConsumerWidget {
   const FloatingCartButton({super.key});
@@ -43,7 +44,7 @@ class FloatingCartButton extends ConsumerWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4.r),
                   constraints: const BoxConstraints(
                     minWidth: 20,
                     minHeight: 20,
@@ -54,9 +55,9 @@ class FloatingCartButton extends ConsumerWidget {
                   ),
                   child: Text(
                     cartState.itemCount > 9 ? '9+' : '${cartState.itemCount}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,

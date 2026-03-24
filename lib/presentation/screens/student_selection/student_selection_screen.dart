@@ -8,6 +8,7 @@ import '../../../data/models/student_model.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/auth_desktop_wrapper.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StudentSelectionScreen extends ConsumerStatefulWidget {
   const StudentSelectionScreen({super.key});
@@ -97,11 +98,11 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const CircularProgressIndicator(),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Text(
                 'Loading...',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: AppColors.textHintC(context),
                 ),
               ),
@@ -119,13 +120,13 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
               child: Column(
                 children: [
                   _buildHeader(),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                   _buildStudentList(),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                   _buildContinueButton(),
                 ],
               ),
@@ -144,16 +145,16 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
         Text(
           'Select Student',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 28.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Text(
           'Choose a student to continue',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
@@ -189,11 +190,11 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                     color: AppColors.cardPurpleDark,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'No students found',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: AppColors.textSecondaryC(context),
                   ),
                 ),
@@ -205,7 +206,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
         return Column(
           children: [
             for (int index = 0; index < students.length; index++) ...[
-              if (index > 0) const SizedBox(height: 12),
+              if (index > 0) SizedBox(height: 12.h),
               _buildStudentCard(students[index], _selectedStudentId == students[index].stuId, index),
             ],
           ],
@@ -222,10 +223,10 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
         });
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           border: isSelected
               ? Border.all(color: AppColors.primary, width: 2)
               : null,
@@ -263,8 +264,8 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                       placeholder: (context, url) => Center(
                         child: Text(
                           _getInitials(student.stuname),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -273,8 +274,8 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                       errorWidget: (context, url, error) => Center(
                         child: Text(
                           _getInitials(student.stuname),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -284,15 +285,15 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                   : Center(
                       child: Text(
                         _getInitials(student.stuname),
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14.w),
             // Student Info - Home page style
             Expanded(
               child: Column(
@@ -301,19 +302,19 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                   Text(
                     student.stuname,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryC(context),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   RichText(
                     text: TextSpan(
                       children: [
                         TextSpan(
                           text: 'Adm No: ',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textSecondaryC(context),
                           ),
@@ -321,7 +322,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                         TextSpan(
                           text: student.stuadmno,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimaryC(context),
                           ),
@@ -329,7 +330,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                         TextSpan(
                           text: ' | Class: ',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textSecondaryC(context),
                           ),
@@ -337,7 +338,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                         TextSpan(
                           text: student.stuclass,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimaryC(context),
                           ),
@@ -383,7 +384,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
     final isEnabled = _selectedStudentId != null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: GestureDetector(
         onTap: isEnabled
             ? () async {
@@ -400,7 +401,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
             : null,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           decoration: BoxDecoration(
             gradient: isEnabled
                 ? const LinearGradient(
@@ -408,7 +409,7 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
                   )
                 : null,
             color: isEnabled ? null : AppColors.borderC(context),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: isEnabled
                 ? [
                     BoxShadow(
@@ -425,12 +426,12 @@ class _StudentSelectionScreenState extends ConsumerState<StudentSelectionScreen>
               Text(
                 'Continue',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: isEnabled ? Colors.white : AppColors.textHintC(context),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Icon(
                 Icons.arrow_forward_rounded,
                 size: 20,

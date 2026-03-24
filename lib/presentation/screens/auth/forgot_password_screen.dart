@@ -8,6 +8,7 @@ import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/auth_desktop_wrapper.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CountryCode {
   final String flag;
@@ -150,25 +151,25 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
                 color: AppColors.gray300,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'Select Country',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -178,7 +179,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   return ListTile(
                     leading: Text(
                       country.flag,
-                      style: const TextStyle(fontSize: 24),
+                      style: TextStyle(fontSize: 24.sp),
                     ),
                     title: Text(
                       country.country,
@@ -205,7 +206,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
@@ -269,23 +270,23 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 child: Center(
                   child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Header with title and illustration
                           _buildHeader(),
 
-                          const SizedBox(height: 32),
+                          SizedBox(height: 32.h),
 
                           // Mobile Number Field
                           _buildMobileField(),
 
-                          const SizedBox(height: 32),
+                          SizedBox(height: 32.h),
 
                           // Get OTP Button
                           _buildGetOtpButton(),
@@ -315,16 +316,16 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         Text(
           'Forgot Password',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 28.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Text(
           'Enter your mobile number to reset your password',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
@@ -340,71 +341,71 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         Text(
           'Mobile Number',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: _mobileController,
           focusNode: _mobileFocusNode,
           keyboardType: TextInputType.phone,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             color: AppColors.textPrimaryC(context),
           ),
           decoration: InputDecoration(
             hintText: 'Enter mobile number',
             hintStyle: TextStyle(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: AppColors.textHintC(context),
             ),
             filled: true,
             fillColor: AppColors.cardBg(context),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444)),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
             ),
             prefixIcon: GestureDetector(
               onTap: _showCountryPicker,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       _countryCodes[_selectedCountryIndex].flag,
-                      style: const TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20.sp),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 18,
                       color: AppColors.textSecondaryC(context),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Text(
                       _countryCodes[_selectedCountryIndex].code,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         color: AppColors.textPrimaryC(context),
                       ),
                     ),
@@ -451,12 +452,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       onTap: _isLoading ? null : _handleRequestOtp,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primary, AppColors.primary600],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.4),
@@ -478,15 +479,15 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
               )
             else ...[
-              const Text(
+              Text(
                 'Get OTP',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               const Icon(Icons.send_rounded, size: 22, color: Colors.white),
             ],
           ],
@@ -502,17 +503,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         Text(
           'Remember your password ?',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(width: 4),
+        SizedBox(width: 4.w),
         GestureDetector(
           onTap: () => context.go(Routes.signIn),
           child: Text(
             'Sign In',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum AppButtonVariant { filled, outlined, text }
 
@@ -72,7 +73,7 @@ class AppButton extends StatelessWidget {
             backgroundColor: backgroundColor ?? AppColors.primary,
             disabledBackgroundColor: AppColors.gray300,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
           ),
           child: _buildContent(textColor ?? Colors.white),
@@ -87,7 +88,7 @@ class AppButton extends StatelessWidget {
                   : (backgroundColor ?? AppColors.primary),
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
           ),
           child: _buildContent(textColor ?? AppColors.primary),

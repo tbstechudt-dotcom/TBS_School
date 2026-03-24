@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../data/models/institution_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/student_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// App Drawer widget that slides in from the left
 /// Contains school info, user profile, menu items, and logout button
@@ -28,7 +29,7 @@ class AppDrawer extends ConsumerWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 52),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 52.h),
           child: Column(
             children: [
               // Top Section
@@ -38,14 +39,14 @@ class AppDrawer extends ConsumerWidget {
                   children: [
                     // School Header with Close Button
                     _buildSchoolHeader(context, institution),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildDivider(),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     // User Profile
                     _buildUserProfile(selectedStudent),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildDivider(),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     // Menu Items
                     _buildMenuItem(
                       context: context,
@@ -56,7 +57,7 @@ class AppDrawer extends ConsumerWidget {
                         context.push(Routes.forgotPassword);
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildMenuItem(
                       context: context,
                       icon: Icons.help_outline,
@@ -66,7 +67,7 @@ class AppDrawer extends ConsumerWidget {
                         context.push(Routes.support);
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildMenuItem(
                       context: context,
                       icon: Icons.settings,
@@ -89,9 +90,9 @@ class AppDrawer extends ConsumerWidget {
               Column(
                 children: [
                   _buildDivider(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildLogoutButton(context, ref),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _buildSchoolFooter(institution),
                 ],
               ),
@@ -111,13 +112,13 @@ class AppDrawer extends ConsumerWidget {
             children: [
               // School Logo
               Container(
-                padding: const EdgeInsets.all(5),
+                padding: EdgeInsets.all(5.r),
                 child: CustomPaint(
                   size: const Size(30, 30),
                   painter: _SchoolLogoPainter(),
                 ),
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: 4.w),
               // School Name and Address
               Expanded(
                 child: Column(
@@ -125,19 +126,19 @@ class AppDrawer extends ConsumerWidget {
                   children: [
                     Text(
                       institution?.name ?? 'School Name',
-                      style: const TextStyle(
-                        fontSize: 15,
+                      style: TextStyle(
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textPrimary,
                         height: 1.47,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       institution?.shortAddress ?? 'Address not available',
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: TextStyle(
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
                         height: 1.5,
@@ -203,25 +204,25 @@ class AppDrawer extends ConsumerWidget {
           child: Center(
             child: Text(
               initials,
-              style: const TextStyle(
-                fontSize: 18,
+              style: TextStyle(
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,
               ),
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         // User Info
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7),
+              padding: EdgeInsets.symmetric(vertical: 7.h),
               child: Text(
                 studentName,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -229,10 +230,10 @@ class AppDrawer extends ConsumerWidget {
             ),
             Row(
               children: [
-                const Text(
+                Text(
                   'Class: ',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.textSecondary,
                     height: 1.5,
@@ -240,8 +241,8 @@ class AppDrawer extends ConsumerWidget {
                 ),
                 Text(
                   className,
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: TextStyle(
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.textPrimary,
                     height: 1.5,
@@ -265,9 +266,9 @@ class AppDrawer extends ConsumerWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(6.r),
         ),
         child: Row(
           children: [
@@ -276,11 +277,11 @@ class AppDrawer extends ConsumerWidget {
               size: 24,
               color: AppColors.textSecondary,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 15,
+              style: TextStyle(
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 color: AppColors.textPrimary,
                 height: 1.47,
@@ -304,10 +305,10 @@ class AppDrawer extends ConsumerWidget {
       onTap: () => _showLogoutDialog(context, ref),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: const Color(0xFFFFD1CF),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF808087).withValues(alpha: 0.1),
@@ -321,19 +322,19 @@ class AppDrawer extends ConsumerWidget {
             ),
           ],
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Logout',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 color: Color(0xFFDC2626),
                 height: 1.47,
               ),
             ),
-            SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Icon(
               Icons.logout,
               size: 24,
@@ -351,19 +352,19 @@ class AppDrawer extends ConsumerWidget {
         // School Name
         Text(
           institution?.name ?? 'School Name',
-          style: const TextStyle(
-            fontSize: 14,
+          style: TextStyle(
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: AppColors.textPrimary,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         // School Location
         Text(
           institution?.shortAddress ?? 'Location not available',
-          style: const TextStyle(
-            fontSize: 12,
+          style: TextStyle(
+            fontSize: 12.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondary,
           ),

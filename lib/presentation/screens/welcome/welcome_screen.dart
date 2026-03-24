@@ -5,6 +5,7 @@ import '../../../core/utils/extensions.dart';
 import '../../../config/routes.dart';
 import '../../widgets/common/desktop_left_panel.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -26,25 +27,25 @@ class WelcomeScreen extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 480),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24.r),
             child: Column(
               children: [
                 const Spacer(),
                 _buildLogo(context, 180),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 Text(
                   'SchoolPay',
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: 32.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   'Pay school fees with ease',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: AppColors.textSecondaryC(context),
                   ),
                 ),
@@ -56,7 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                   color: AppColors.cardPurple,
                   iconColor: AppColors.cardPurpleDark,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildFeatureItem(
                   context: context,
                   icon: Icons.security_rounded,
@@ -64,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
                   color: AppColors.cardGreen,
                   iconColor: AppColors.cardGreenDark,
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildFeatureItem(
                   context: context,
                   icon: Icons.receipt_long_rounded,
@@ -74,9 +75,9 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 _buildSignInButton(context),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildCreateAccountButton(context),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
               ],
             ),
           ),
@@ -116,21 +117,21 @@ class WelcomeScreen extends StatelessWidget {
                     Text(
                       'Welcome!',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 32.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimaryC(context),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'Get started with secure and hassle-free school fee payments.',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: AppColors.textSecondaryC(context),
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 36),
+                    SizedBox(height: 36.h),
                     _buildFeatureItem(
                       context: context,
                       icon: Icons.speed_rounded,
@@ -138,7 +139,7 @@ class WelcomeScreen extends StatelessWidget {
                       color: AppColors.cardPurple,
                       iconColor: AppColors.cardPurpleDark,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _buildFeatureItem(
                       context: context,
                       icon: Icons.security_rounded,
@@ -146,7 +147,7 @@ class WelcomeScreen extends StatelessWidget {
                       color: AppColors.cardGreen,
                       iconColor: AppColors.cardGreenDark,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _buildFeatureItem(
                       context: context,
                       icon: Icons.receipt_long_rounded,
@@ -154,9 +155,9 @@ class WelcomeScreen extends StatelessWidget {
                       color: AppColors.cardBlue,
                       iconColor: AppColors.cardBlueDark,
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                     _buildSignInButton(context),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _buildCreateAccountButton(context),
                   ],
                 ),
@@ -179,12 +180,12 @@ class WelcomeScreen extends StatelessWidget {
       onTap: () => context.push(Routes.signIn),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primary, AppColors.primary600],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.4),
@@ -196,15 +197,15 @@ class WelcomeScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Sign In',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             const Icon(Icons.login_rounded, size: 20, color: Colors.white),
           ],
         ),
@@ -217,10 +218,10 @@ class WelcomeScreen extends StatelessWidget {
       onTap: () => context.push(Routes.signUp),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: AppColors.primary, width: 2),
         ),
         child: Row(
@@ -229,12 +230,12 @@ class WelcomeScreen extends StatelessWidget {
             Text(
               'Create Account',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Icon(Icons.person_add_rounded, size: 20, color: AppColors.primary),
           ],
         ),
@@ -250,10 +251,10 @@ class WelcomeScreen extends StatelessWidget {
     required Color iconColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: AppColors.shadowLight, blurRadius: 12, offset: const Offset(0, 4))],
@@ -265,7 +266,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(
               icon,
@@ -273,12 +274,12 @@ class WelcomeScreen extends StatelessWidget {
               color: iconColor,
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textPrimaryC(context),
               ),

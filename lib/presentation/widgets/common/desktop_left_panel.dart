@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Dark slate left panel for desktop split-screen layouts (VidPro style).
 ///
@@ -20,9 +21,9 @@ class DesktopLeftPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -86,7 +87,7 @@ class DesktopLeftPanel extends StatelessWidget {
                       height: 36,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: const Icon(
                         Icons.school_rounded,
@@ -94,11 +95,11 @@ class DesktopLeftPanel extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
+                    SizedBox(width: 12.w),
+                    Text(
                       'SchoolPay',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                         letterSpacing: 0.3,
@@ -122,18 +123,18 @@ class DesktopLeftPanel extends StatelessWidget {
                   children: [
                     Text(
                       headline,
-                      style: const TextStyle(
-                        fontSize: 28,
+                      style: TextStyle(
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         color: Colors.white.withValues(alpha: 0.7),
                         height: 1.4,
                       ),

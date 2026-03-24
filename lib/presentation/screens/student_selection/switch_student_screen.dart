@@ -9,6 +9,7 @@ import '../../../data/models/student_model.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwitchStudentScreen extends ConsumerStatefulWidget {
   const SwitchStudentScreen({super.key});
@@ -54,7 +55,7 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
       child: Row(
         children: [
           if (!context.isDesktop)
@@ -72,7 +73,7 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                 margin: const EdgeInsets.only(right: 14),
                 decoration: BoxDecoration(
                   color: AppColors.scaffoldBg(context),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(color: AppColors.borderC(context)),
                 ),
                 child: Icon(
@@ -94,11 +95,11 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Select a different student profile',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.textSecondaryC(context),
                   ),
@@ -114,10 +115,10 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
   Widget _buildStudentList(List<StudentModel> students, StudentModel? currentStudent) {
     return ListView.separated(
       padding: context.isDesktop
-          ? const EdgeInsets.all(24)
-          : const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          ? EdgeInsets.all(24.r)
+          : EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
       itemCount: students.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         final student = students[index];
         final isSelected = _selectedStudentId == student.stuId;
@@ -136,10 +137,10 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.borderC(context),
             width: isSelected ? 2 : 1,
@@ -170,8 +171,8 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                       placeholder: (context, url) => Center(
                         child: Text(
                           _getInitials(student.name),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -180,8 +181,8 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                       errorWidget: (context, url, error) => Center(
                         child: Text(
                           _getInitials(student.name),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -191,15 +192,15 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                   : Center(
                       child: Text(
                         _getInitials(student.name),
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14.w),
             // Student Info
             Expanded(
               child: Column(
@@ -211,7 +212,7 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                         child: Text(
                           student.name,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimaryC(context),
                           ),
@@ -219,15 +220,15 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                       ),
                       if (isCurrent)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
                             color: AppColors.cardGreen,
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
                             'Current',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.w600,
                               color: AppColors.cardGreenDark,
                             ),
@@ -235,11 +236,11 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     'Adm No: ${student.admissionNumber} | Class: ${student.className}',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color: AppColors.textSecondaryC(context),
                     ),
@@ -247,7 +248,7 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Selection indicator
             Container(
               width: 24,
@@ -279,12 +280,12 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
     final isNewSelection = _selectedStudentId != null && _selectedStudentId != currentStudent?.stuId;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
       child: GestureDetector(
         onTap: isNewSelection ? _handleSwitch : null,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           decoration: BoxDecoration(
             gradient: isNewSelection
                 ? const LinearGradient(
@@ -292,7 +293,7 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
                   )
                 : null,
             color: isNewSelection ? null : AppColors.borderC(context),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: isNewSelection
                 ? [
                     BoxShadow(
@@ -309,13 +310,13 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
               Text(
                 isNewSelection ? 'Switch Student' : 'Select a Different Student',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: isNewSelection ? Colors.white : AppColors.textHintC(context),
                 ),
               ),
               if (isNewSelection) ...[
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 const Icon(
                   Icons.swap_horiz_rounded,
                   size: 22,
@@ -348,8 +349,8 @@ class _SwitchStudentScreenState extends ConsumerState<SwitchStudentScreen> {
           content: Text('Switched to ${selectedStudent.name}'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+          margin: EdgeInsets.all(16.r),
         ),
       );
       context.go(Routes.home);

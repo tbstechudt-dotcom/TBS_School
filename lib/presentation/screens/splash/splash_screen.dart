@@ -8,6 +8,7 @@ import '../../../config/routes.dart';
 import '../../widgets/common/desktop_left_panel.dart';
 import '../../providers/auth_provider.dart' show parentAuthStateProvider;
 import '../../providers/student_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -197,7 +198,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildAnimatedLogo(context, 120),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               _buildAnimatedText(context),
             ],
           ),
@@ -213,11 +214,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             child: Column(
               children: [
                 _buildLoadingDots(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'Loading...',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: AppColors.textSecondaryC(context),
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.5,
@@ -239,7 +240,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               'v1.0.0',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: AppColors.textHintC(context),
                 fontWeight: FontWeight.w500,
               ),
@@ -274,29 +275,29 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildLoadingDots(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   Text(
                     'Loading your dashboard...',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       color: AppColors.textSecondaryC(context),
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.3,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     'Please wait while we set things up',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: AppColors.textHintC(context),
                     ),
                   ),
-                  const SizedBox(height: 48),
+                  SizedBox(height: 48.h),
                   Text(
                     'v1.0.0',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: AppColors.textHintC(context),
                       fontWeight: FontWeight.w500,
                     ),
@@ -429,18 +430,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Text(
               'SchoolPay',
               style: TextStyle(
-                fontSize: 36,
+                fontSize: 36.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimaryC(context),
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: AppColors.cardGreen,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -458,11 +459,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
+                  SizedBox(width: 8.w),
+                  Text(
                     'Secure & Easy Fee Payments',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: AppColors.cardGreenDark,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
@@ -488,7 +489,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             final value = (_pulseController.value + delay) % 1.0;
             final opacity = 0.3 + (0.7 * (value < 0.5 ? value * 2 : (1 - value) * 2));
             return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
               width: 8,
               height: 8,
               decoration: BoxDecoration(

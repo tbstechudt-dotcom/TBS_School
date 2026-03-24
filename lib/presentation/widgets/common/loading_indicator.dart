@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final double size;
@@ -29,12 +30,12 @@ class LoadingIndicator extends StatelessWidget {
             ),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               message!,
               style: TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
           ],

@@ -12,6 +12,7 @@ import '../../../data/models/fee_model.dart';
 import '../../providers/student_provider.dart';
 import '../../providers/fee_provider.dart';
 import '../../providers/cart_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeScreenCopy extends ConsumerWidget {
   const HomeScreenCopy({super.key});
@@ -30,45 +31,45 @@ class HomeScreenCopy extends ConsumerWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Header with profile and notification
                 _buildHeader(context, ref, selectedStudent),
 
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // Balance/Outstanding Amount
                 _buildBalanceSection(feeSummaryAsync),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // School name and location
                 _buildSchoolInfo(selectedStudent),
 
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
 
                 // Action Cards Title
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Fees Due',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF1F2933),
                       ),
                     ),
                     GestureDetector(
                       onTap: () => context.push(Routes.allPendingFees),
-                      child: const Text(
+                      child: Text(
                         'See All',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF007DFC),
                         ),
@@ -77,12 +78,12 @@ class HomeScreenCopy extends ConsumerWidget {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // Fee Cards Grid
                 _buildFeeCardsGrid(context, feesByCategory),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
               ],
             ),
           ),
@@ -129,7 +130,7 @@ class HomeScreenCopy extends ConsumerWidget {
           height: 50,
           decoration: BoxDecoration(
             color: const Color(0xFFE5E7EB),
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(25.r),
           ),
           child: const Icon(
             Icons.person,
@@ -137,7 +138,7 @@ class HomeScreenCopy extends ConsumerWidget {
             color: Color(0xFF6B7280),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         // Student Details
         Expanded(
           child: Column(
@@ -145,17 +146,17 @@ class HomeScreenCopy extends ConsumerWidget {
             children: [
               Text(
                 studentName,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1F2933),
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2.h),
               Text(
                 'Admn No: $admNo  |  Class: $className  |  $bloodGroup',
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF6B7280),
                 ),
@@ -164,7 +165,7 @@ class HomeScreenCopy extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         // Notification Icon
         GestureDetector(
           onTap: () => context.go(Routes.notifications),
@@ -217,10 +218,10 @@ class HomeScreenCopy extends ConsumerWidget {
 
   Widget _buildSchoolInfo(dynamic selectedStudent) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
         boxShadow: [
           BoxShadow(
@@ -238,13 +239,13 @@ class HomeScreenCopy extends ConsumerWidget {
             height: 40,
             decoration: BoxDecoration(
               color: const Color(0xFFEBF5FF),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
                 'V',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF007DFC),
                   fontStyle: FontStyle.italic,
@@ -252,25 +253,25 @@ class HomeScreenCopy extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // School Name and Location
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'ABC Higher Secondary School',
                   style: TextStyle(
-                    fontSize: 17,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1F2933),
                   ),
                 ),
-                SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   'No.12, Anna Nagar, 600118',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
                     color: Color(0xFF6B7280),
                   ),
@@ -293,22 +294,22 @@ class HomeScreenCopy extends ConsumerWidget {
         // Amount
         Text(
           NumberFormat('#,##,###.00', 'en_IN').format(totalOutstanding),
-          style: const TextStyle(
-            fontSize: 42,
+          style: TextStyle(
+            fontSize: 42.sp,
             fontWeight: FontWeight.w700,
             color: Color(0xFF1F2933),
             height: 1.1,
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
 
         // Currency indicator
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
             border: Border.all(color: const Color(0xFFE5E7EB)),
           ),
           child: Row(
@@ -321,27 +322,27 @@ class HomeScreenCopy extends ConsumerWidget {
                   color: Color(0xFF007DFC),
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     '₹',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 6),
-              const Text(
+              SizedBox(width: 6.w),
+              Text(
                 'INR',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF1F2933),
                 ),
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: 4.w),
               const Icon(
                 Icons.keyboard_arrow_down,
                 size: 18,
@@ -371,7 +372,7 @@ class HomeScreenCopy extends ConsumerWidget {
                 onTap: () => context.go(Routes.paymentHistory),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: _buildFeeCard(
                 icon: Icons.directions_bus_outlined,
@@ -385,7 +386,7 @@ class HomeScreenCopy extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         // Second Row - Dummy Cards
         Row(
           children: [
@@ -400,7 +401,7 @@ class HomeScreenCopy extends ConsumerWidget {
                 isDummy: true,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: _buildFeeCard(
                 icon: Icons.support_agent_outlined,
@@ -431,10 +432,10 @@ class HomeScreenCopy extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -457,7 +458,7 @@ class HomeScreenCopy extends ConsumerWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     color: backgroundColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Icon(
                     icon,
@@ -468,15 +469,15 @@ class HomeScreenCopy extends ConsumerWidget {
                 // Status Tag (top right)
                 if (statusTag != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: const Color(0xFFDC2626).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
                       statusTag,
-                      style: const TextStyle(
-                        fontSize: 10,
+                      style: TextStyle(
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFFDC2626),
                       ),
@@ -484,22 +485,22 @@ class HomeScreenCopy extends ConsumerWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             // Title
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF1F2933),
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             // Amount or placeholder text
             Text(
               isDummy ? 'View details' : '₹ ${NumberFormat('#,##,###').format(amount.toInt())}',
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
                 color: Color(0xFF6B7280),
               ),
@@ -526,7 +527,7 @@ class HomeScreenCopy extends ConsumerWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -588,7 +589,7 @@ class HomeScreenCopy extends ConsumerWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -598,11 +599,11 @@ class HomeScreenCopy extends ConsumerWidget {
               height: 24,
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 color: color,
               ),
@@ -624,7 +625,7 @@ class HomeScreenCopy extends ConsumerWidget {
       onTap: () => context.go(Routes.cart),
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -641,7 +642,7 @@ class HomeScreenCopy extends ConsumerWidget {
                     top: -6,
                     right: -8,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       constraints: const BoxConstraints(
                         minWidth: 18,
                         minHeight: 18,
@@ -652,9 +653,9 @@ class HomeScreenCopy extends ConsumerWidget {
                       ),
                       child: Text(
                         cartItemCount > 9 ? '9+' : '$cartItemCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -663,11 +664,11 @@ class HomeScreenCopy extends ConsumerWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               'Cart',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 color: color,
               ),

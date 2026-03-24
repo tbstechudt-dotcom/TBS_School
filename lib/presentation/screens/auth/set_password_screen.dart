@@ -6,6 +6,7 @@ import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/auth_desktop_wrapper.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SetPasswordScreen extends ConsumerStatefulWidget {
   final String mobile;
@@ -104,38 +105,38 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     // Header
                     _buildHeader(),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
 
                     // Password Field
                     _buildPasswordField(),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     // Confirm Password Field
                     _buildConfirmPasswordField(),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     // Password Requirements
                     _buildPasswordRequirements(),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
 
                     // Submit Button
                     _buildSubmitButton(),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                   ],
                 ),
               ),
@@ -153,18 +154,18 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
         Text(
           widget.isResetPassword ? 'Reset Password' : 'Set Password',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 28.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Text(
           widget.isResetPassword
               ? 'Create a new password for your account'
               : 'Create a secure password for your account',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
@@ -180,46 +181,46 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
         Text(
           'Password',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: _passwordController,
           obscureText: !_showPassword,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             color: AppColors.textPrimaryC(context),
           ),
           decoration: InputDecoration(
             hintText: 'Enter your password',
             hintStyle: TextStyle(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: AppColors.textHintC(context),
             ),
             filled: true,
             fillColor: AppColors.cardBg(context),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444)),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
             ),
             prefixIcon: Icon(
@@ -269,46 +270,46 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
         Text(
           'Confirm Password',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: _confirmPasswordController,
           obscureText: !_showConfirmPassword,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             color: AppColors.textPrimaryC(context),
           ),
           decoration: InputDecoration(
             hintText: 'Re-enter your password',
             hintStyle: TextStyle(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: AppColors.textHintC(context),
             ),
             filled: true,
             fillColor: AppColors.cardBg(context),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: AppColors.borderC(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFF007DFC), width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444)),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
             ),
             prefixIcon: Icon(
@@ -349,10 +350,10 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
     final hasNumber = RegExp(r'[0-9]').hasMatch(password);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.cardPurple,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,12 +361,12 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
           Text(
             'Password must:',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildRequirement('Be at least 8 characters', hasMinLength),
           _buildRequirement('Include uppercase & lowercase letters', hasUppercase && hasLowercase),
           _buildRequirement('Include at least one number', hasNumber),
@@ -384,11 +385,11 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
             size: 16,
             color: isSatisfied ? AppColors.success : AppColors.cardPurpleDark,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(
             text,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: isSatisfied ? AppColors.success : AppColors.textSecondaryC(context),
             ),
           ),
@@ -402,12 +403,12 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
       onTap: _isLoading ? null : _handleSetPassword,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primary, AppColors.primary600],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.4),
@@ -431,13 +432,13 @@ class _SetPasswordScreenState extends ConsumerState<SetPasswordScreen> {
             else ...[
               Text(
                 widget.isResetPassword ? 'Reset Password' : 'Create Account',
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               const Icon(
                 Icons.arrow_forward_rounded,
                 size: 22,

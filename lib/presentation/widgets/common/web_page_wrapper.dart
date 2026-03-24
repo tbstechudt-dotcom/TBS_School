@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/utils/extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Centers content horizontally with a max-width constraint on desktop (≥1024px).
 /// On mobile/tablet it renders the child directly without modification.

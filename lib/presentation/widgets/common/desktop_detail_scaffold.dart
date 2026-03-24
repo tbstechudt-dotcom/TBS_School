@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A responsive scaffold for detail/sub-screens that renders the
 /// "floating card dashboard" look on desktop and passes through on mobile.
@@ -75,12 +76,12 @@ class DesktopDetailScaffold extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               color: AppColors.cardBg(context),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               boxShadow: AppColors.cardShadow(context),
             ),
             child: header,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
         // Toolbar (outside card, e.g. breadcrumb)
         if (toolbar != null) toolbar!,
@@ -89,7 +90,7 @@ class DesktopDetailScaffold extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.cardBg(context),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               boxShadow: AppColors.cardShadow(context),
             ),
             clipBehavior: Clip.antiAlias,
@@ -101,11 +102,11 @@ class DesktopDetailScaffold extends StatelessWidget {
         ),
         // Bottom bar card (optional)
         if (bottomBar != null) ...[
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Container(
             decoration: BoxDecoration(
               color: AppColors.cardBg(context),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               boxShadow: AppColors.cardShadow(context),
             ),
             child: bottomBar!,
@@ -121,7 +122,7 @@ class DesktopDetailScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: content,
       ),
     );

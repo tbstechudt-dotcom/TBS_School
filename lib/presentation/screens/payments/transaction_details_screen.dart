@@ -18,6 +18,7 @@ import '../../providers/student_provider.dart';
 import '../../../core/utils/extensions.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TransactionDetailsScreen extends ConsumerWidget {
   final String paymentId;
@@ -34,9 +35,9 @@ class TransactionDetailsScreen extends ConsumerWidget {
       isNested: isNested,
       header: Column(
         children: [
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildHeader(context, ref),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
         ],
       ),
       toolbar: BreadcrumbBar(
@@ -55,7 +56,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           final isPaid = payment.status == PaymentStatus.success;
 
           return SingleChildScrollView(
-            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 24),
+            padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
               children: [
                 // Transaction Card
@@ -69,7 +70,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   payment.yrlabel ?? 'Fee Payment',
                   isPaid,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 // Action Buttons
                 _buildActionButtons(context, ref, payment, isPaid),
               ],
@@ -84,7 +85,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
     final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -118,7 +119,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           Text(
             'Transaction Details',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
@@ -144,7 +145,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -153,9 +154,9 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -186,7 +187,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -196,13 +197,13 @@ class TransactionDetailsScreen extends ConsumerWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         child: Column(
           children: [
             // Header (Green for success, Red for failed)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.r),
               color: headerColor,
               child: Column(
                 children: [
@@ -227,23 +228,23 @@ class TransactionDetailsScreen extends ConsumerWidget {
                             ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   // Payment Status Text
                   Text(
                     isPaid ? 'Payment  Successful' : 'Payment  Failed',
-                    style: const TextStyle(
-                      fontSize: 22,
+                    style: TextStyle(
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       height: 1.27,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   // Transaction Status Text
                   Text(
                     isPaid ? 'Transaction Completed' : 'Transaction In-completed',
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
                       height: 1.5,
@@ -255,7 +256,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
             // Details Section
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.r),
               color: AppColors.cardBg(context),
               child: Column(
                 children: [
@@ -263,44 +264,44 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   Text(
                     isPaid ? 'Amount Paid' : 'Amount',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textSecondaryC(context),
                       height: 1.47,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Text(
                     '₹ ${_formatAmount(amount)}',
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 26.sp,
                       fontWeight: FontWeight.w700,
                       color: amountColor,
                       height: 1.38,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   // Divider
                   Container(
                     height: 1,
                     color: AppColors.borderC(context),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   // Transaction Details
                   _buildDetailRow(context, 'Receipt No', payment.paymentNumber),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, 'Student', studentName),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, 'Class', className),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, 'Admission No', admissionNumber),
                   if (payment.payreference != null) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildDetailRow(context, 'Transaction ID', payment.payreference!),
                   ],
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDetailRow(context, 'Payment Method', payment.paymentMethod),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDetailRowWithDot(
                     context,
                     'Date & Time',
@@ -323,7 +324,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
             height: 1.43,
@@ -332,7 +333,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
         Text(
           value,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textPrimaryC(context),
             height: 1.47,
@@ -349,7 +350,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
             height: 1.43,
@@ -360,7 +361,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
             Text(
               '$date ',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 color: AppColors.textPrimaryC(context),
                 height: 1.47,
@@ -377,7 +378,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
             Text(
               ' $time',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 color: AppColors.textPrimaryC(context),
                 height: 1.47,
@@ -403,10 +404,10 @@ class TransactionDetailsScreen extends ConsumerWidget {
               }
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
               decoration: BoxDecoration(
                 color: const Color(0xFF007DFC),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -416,11 +417,11 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     size: 24,
                     color: Colors.white,
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Text(
                     isPaid ? 'Download' : 'Retry',
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -430,7 +431,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         // Share Button
         Expanded(
           child: GestureDetector(
@@ -438,10 +439,10 @@ class TransactionDetailsScreen extends ConsumerWidget {
               await _handleDownloadOrShare(context, ref, payment, isShare: true);
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
               decoration: BoxDecoration(
                 color: Colors.transparent,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(color: AppColors.textSecondaryC(context), width: 1.5),
               ),
               child: Row(
@@ -452,11 +453,11 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     size: 24,
                     color: AppColors.textSecondaryC(context),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Text(
                     'Share',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondaryC(context),
                     ),
@@ -477,16 +478,16 @@ class TransactionDetailsScreen extends ConsumerWidget {
       barrierDismissible: false,
       builder: (_) => Center(
         child: Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.r),
           decoration: BoxDecoration(
             color: AppColors.cardBg(context),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Text('Generating receipt...'),
             ],
           ),
@@ -601,7 +602,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
             icon: const Icon(Icons.check_circle, color: Color(0xFF2DBE60), size: 48),
             title: const Text('Already Paid'),
             content: const Text('All fees from this payment have already been paid.'),

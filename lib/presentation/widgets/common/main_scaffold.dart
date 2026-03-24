@@ -11,6 +11,7 @@ import '../../providers/notification_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/institution_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainScaffold extends ConsumerWidget {
   final Widget child;
@@ -85,12 +86,12 @@ class MainScaffold extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Row(
           children: [
             // Full-height sidebar (floating card)
             _buildDesktopSidebar(context, ref, selectedIndex, isDark),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             // Top bar + content (floating card)
             Expanded(
               child: Column(
@@ -99,12 +100,12 @@ class MainScaffold extends ConsumerWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.cardBg(context),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: AppColors.cardShadow(context),
                     ),
                     child: _buildDesktopTopBar(context, ref, isDark, selectedIndex),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   // Content area
                   Expanded(child: child),
                 ],
@@ -129,19 +130,19 @@ class MainScaffold extends ConsumerWidget {
 
     return Container(
       height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Page title
           Text(
             pageTitle,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimaryC(context),
             ),
           ),
-          const SizedBox(width: 32),
+          SizedBox(width: 32.w),
           // Search bar
           Expanded(
             child: Center(
@@ -151,7 +152,7 @@ class MainScaffold extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 24),
+          SizedBox(width: 24.w),
           // Cart icon with badge
           Stack(
             clipBehavior: Clip.none,
@@ -178,9 +179,9 @@ class MainScaffold extends ConsumerWidget {
                     child: Center(
                       child: Text(
                         cartCount > 9 ? '9+' : '$cartCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -189,7 +190,7 @@ class MainScaffold extends ConsumerWidget {
                 ),
             ],
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4.w),
           // Notification bell with unread badge
           Stack(
             clipBehavior: Clip.none,
@@ -216,9 +217,9 @@ class MainScaffold extends ConsumerWidget {
                     child: Center(
                       child: Text(
                         unreadCount > 9 ? '9+' : '$unreadCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -227,11 +228,11 @@ class MainScaffold extends ConsumerWidget {
                 ),
             ],
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           // User avatar + student name + dropdown menu
           PopupMenuButton<String>(
             offset: const Offset(0, 50),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             color: AppColors.cardBg(context),
             onSelected: (value) {
               if (value == 'switch') {
@@ -247,11 +248,11 @@ class MainScaffold extends ConsumerWidget {
                   child: Row(
                     children: [
                       Icon(Icons.swap_horiz_rounded, size: 20, color: AppColors.textSecondaryC(context)),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       Text(
                         'Switch Account',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.textPrimaryC(context),
                         ),
@@ -264,11 +265,11 @@ class MainScaffold extends ConsumerWidget {
                 child: Row(
                   children: [
                     const Icon(Icons.logout_rounded, size: 20, color: AppColors.error),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     Text(
                       'Logout',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: AppColors.error,
                       ),
@@ -296,8 +297,8 @@ class MainScaffold extends ConsumerWidget {
                           errorWidget: (context, url, error) => Center(
                             child: Text(
                               _getInitials(selectedStudent.name),
-                              style: const TextStyle(
-                                fontSize: 13,
+                              style: TextStyle(
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.primary,
                               ),
@@ -307,15 +308,15 @@ class MainScaffold extends ConsumerWidget {
                       : Center(
                           child: Text(
                             _getInitials(selectedStudent?.name ?? 'U'),
-                            style: const TextStyle(
-                              fontSize: 13,
+                            style: TextStyle(
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w700,
                               color: AppColors.primary,
                             ),
                           ),
                         ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 120),
                   child: Column(
@@ -325,7 +326,7 @@ class MainScaffold extends ConsumerWidget {
                       Text(
                         selectedStudent?.name ?? '—',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimaryC(context),
                         ),
@@ -335,14 +336,14 @@ class MainScaffold extends ConsumerWidget {
                       Text(
                         'Student',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           color: AppColors.textHintC(context),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
                   size: 20,
@@ -378,7 +379,7 @@ class MainScaffold extends ConsumerWidget {
       width: 260,
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
@@ -388,7 +389,7 @@ class MainScaffold extends ConsumerWidget {
           // School Logo + Name (64px to align with top bar)
           Container(
             height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Row(
               children: [
                 Container(
@@ -396,7 +397,7 @@ class MainScaffold extends ConsumerWidget {
                   height: 36,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(color: AppColors.borderC(context).withValues(alpha: 0.3)),
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -418,12 +419,12 @@ class MainScaffold extends ConsumerWidget {
                           child: const Icon(Icons.school_rounded,
                               color: Colors.white, size: 20)),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     schoolName,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimaryC(context),
                     ),
@@ -435,21 +436,21 @@ class MainScaffold extends ConsumerWidget {
             ),
           ),
           Divider(height: 1, color: AppColors.borderC(context)),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           // Menu label
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
               'MENU',
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textHintC(context),
                 letterSpacing: 1.2,
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           // Nav items
           _buildSidebarItem(
             context: context,
@@ -514,14 +515,14 @@ class MainScaffold extends ConsumerWidget {
             ),
           ),
           Divider(height: 1, indent: 16, endIndent: 16, color: AppColors.borderC(context)),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildSidebarBottomItem(
             context,
             Icons.logout_rounded,
             'Logout',
             () => _showLogoutDialog(context, ref),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
     );
@@ -544,13 +545,13 @@ class MainScaffold extends ConsumerWidget {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primary.withValues(alpha: 0.1)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
@@ -559,11 +560,11 @@ class MainScaffold extends ConsumerWidget {
               size: 20,
               color: isSelected ? AppColors.primary : AppColors.textHintC(context),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color:
                     isSelected ? AppColors.primary : AppColors.textHintC(context),
@@ -574,17 +575,17 @@ class MainScaffold extends ConsumerWidget {
               Container(
                 constraints: const BoxConstraints(minWidth: 20, maxWidth: 28),
                 height: 20,
-                padding: const EdgeInsets.symmetric(horizontal: 5),
+                padding: EdgeInsets.symmetric(horizontal: 5.w),
                 decoration: BoxDecoration(
                   color: AppColors.error,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Center(
                   child: Text(
                     badge > 99 ? '99+' : '$badge',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w700,
                       height: 1,
                     ),
@@ -604,20 +605,20 @@ class MainScaffold extends ConsumerWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: AppColors.error.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
             Icon(icon, size: 20, color: AppColors.error),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.error,
               ),
@@ -632,7 +633,7 @@ class MainScaffold extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         title: const Text('Sign Out'),
         content: const Text('Are you sure you want to sign out?'),
         actions: [
@@ -649,7 +650,7 @@ class MainScaffold extends ConsumerWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
             child: const Text('Sign Out'),
           ),
@@ -694,7 +695,7 @@ class MainScaffold extends ConsumerWidget {
           child: SafeArea(
             child: Container(
               height: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -767,11 +768,11 @@ class MainScaffold extends ConsumerWidget {
               size: 24,
               color: isSelected ? AppColors.primary : AppColors.textHintC(context),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color:
                     isSelected ? AppColors.primary : AppColors.textHintC(context),
@@ -849,7 +850,7 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
         color: _hasFocus
             ? AppColors.cardBg(context)
             : AppColors.scaffoldBg(context),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: _hasFocus
               ? AppColors.primary.withValues(alpha: 0.5)
@@ -868,7 +869,7 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
       ),
       child: Row(
         children: [
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
           Icon(
             Icons.search_rounded,
             size: 18,
@@ -876,7 +877,7 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
                 ? AppColors.primary
                 : AppColors.textHintC(context),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: TextField(
               controller: _controller,
@@ -885,16 +886,16 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
               decoration: InputDecoration(
                 hintText: 'Search fees, payments, pages...',
                 hintStyle: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.textHintC(context),
                 ),
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                contentPadding: EdgeInsets.symmetric(vertical: 12.h),
               ),
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textPrimaryC(context),
               ),
@@ -914,7 +915,7 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(
                   color: AppColors.scaffoldBg(context),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   Icons.close_rounded,
@@ -927,10 +928,10 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
             Padding(
               padding: const EdgeInsets.only(right: 12),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: AppColors.scaffoldBg(context),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5.r),
                   border: Border.all(
                     color: AppColors.borderC(context).withValues(alpha: 0.6),
                   ),
@@ -938,7 +939,7 @@ class _TopBarSearchFieldState extends State<_TopBarSearchField> {
                 child: Text(
                   '⏎',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: AppColors.textHintC(context),
                   ),
                 ),

@@ -13,6 +13,7 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../../core/utils/extensions.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FeeDetailsScreen extends ConsumerWidget {
   final String feeId;
@@ -40,7 +41,7 @@ class FeeDetailsScreen extends ConsumerWidget {
           );
 
           return SingleChildScrollView(
-            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 16, vertical: AppSizes.s4),
+            padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.symmetric(horizontal: 16, vertical: AppSizes.s4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,7 +74,7 @@ class FeeDetailsScreen extends ConsumerWidget {
 
   Widget _buildDesktopHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
       child: Row(
         children: [
           GestureDetector(
@@ -88,11 +89,11 @@ class FeeDetailsScreen extends ConsumerWidget {
               child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.primary),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Text(
             'Fee Details',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimaryC(context),
             ),
@@ -233,7 +234,7 @@ class FeeDetailsScreen extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Flexible(
             child: Text(
               value,

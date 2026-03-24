@@ -17,6 +17,7 @@ import '../../providers/student_provider.dart';
 import '../../../core/utils/extensions.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   final bool isStandalone;
@@ -66,9 +67,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context, ref, cartState),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: Row(
@@ -114,10 +115,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     color: _loadingMessage != null ? Colors.white : AppColors.primary,
                   ),
                   if (_loadingMessage != null) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       _loadingMessage!,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(color: Colors.white, fontSize: 16.sp),
                     ),
                   ],
                 ],
@@ -131,7 +132,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildHeader(BuildContext context, WidgetRef ref, CartState cartState) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -168,17 +169,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               Text(
                 'Payment Summary',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
               if (cartState.isNotEmpty) ...[
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   '${cartState.items.length} item${cartState.items.length > 1 ? 's' : ''} selected',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.textSecondaryC(context),
                   ),
@@ -208,7 +209,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ),
             )
           else
-            const SizedBox(width: 44),
+            SizedBox(width: 44.w),
         ],
       ),
     );
@@ -218,7 +219,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
         title: const Text('Clear Queue?'),
         content: const Text('Are you sure you want to remove all items from your queue?'),
         actions: [
@@ -258,36 +259,36 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               child: Icon(Icons.shopping_cart_outlined, size: 48, color: AppColors.textHintC(context)),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Text(
             'Your Queue is Empty',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 40.w),
             child: Text(
               'Select fees from the pending section to add them to your queue',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: AppColors.textSecondaryC(context),
                 height: 1.5,
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           GestureDetector(
             onTap: () => context.go(Routes.home),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.3),
@@ -296,15 +297,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ),
                 ],
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.home_rounded, size: 20, color: Colors.white),
-                  SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     'Go to Home',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -357,7 +358,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       });
 
     return ListView(
-      padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.all(16),
+      padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.all(16.r),
       children: [
         // Fee Category Cards (sequential: can only remove last term first, backward order)
         ...sortedCategories.asMap().entries.map((entry) {
@@ -383,7 +384,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           );
         }),
 
-        const SizedBox(height: 24), // Space for bottom bar
+        SizedBox(height: 24.h), // Space for bottom bar
       ],
     );
   }
@@ -451,7 +452,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.borderC(context)),
         boxShadow: AppColors.cardShadow(context),
       ),
@@ -459,15 +460,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         children: [
           // Category Header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             child: Row(
               children: [
                 // Category Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     color: categoryStyle['color'] as Color,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -481,11 +482,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           BlendMode.srcIn,
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6.w),
                       Text(
                         category,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -498,11 +499,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 Text(
                   '${fees.length} item${fees.length > 1 ? 's' : ''}',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: AppColors.textSecondaryC(context),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 // Remove Button
                 GestureDetector(
                   onTap: canRemove ? () => _showRemoveGroupDialog(context, ref, category, fees) : null,
@@ -513,7 +514,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       height: 28,
                       decoration: BoxDecoration(
                         color: AppColors.error.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: const Icon(
                         Icons.close_rounded,
@@ -532,14 +533,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
           // Table Header
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     'Particular',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryC(context),
                     ),
@@ -548,7 +549,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 Text(
                   'Amount',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimaryC(context),
                   ),
@@ -564,7 +565,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
           // Total Row
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
               color: AppColors.filterBg(context),
               borderRadius: const BorderRadius.only(
@@ -578,7 +579,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 Text(
                   'TOTAL',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
@@ -586,7 +587,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 Text(
                   '₹ ${NumberFormat('#,##,###').format(totalAmount.toInt())}',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
@@ -603,7 +604,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
         title: const Text('Remove Group?'),
         content: Text('Remove all ${fees.length} item${fees.length > 1 ? 's' : ''} from $category?'),
         actions: [
@@ -637,7 +638,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildFeeItem(FeeModel fee, bool showMonth) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -652,18 +653,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 Text(
                   fee.feeTypeName.toUpperCase(),
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textPrimaryC(context),
                     height: 1.4,
                   ),
                 ),
                 if (showMonth) ...[
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(
                     _extractMonthFromDate(fee),
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: AppColors.textHintC(context),
                     ),
                   ),
@@ -674,7 +675,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           Text(
             '₹ ${NumberFormat('#,##,###').format(fee.balancedue.toInt())}',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
@@ -691,7 +692,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _buildBottomBar(BuildContext context, WidgetRef ref, CartState cartState) {
     final bottomContent = Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -702,15 +703,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               Text(
                 'Total Amount',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: AppColors.textSecondaryC(context),
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 '₹ ${NumberFormat('#,##,###').format(cartState.totalAmount.toInt())}',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -720,12 +721,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           GestureDetector(
             onTap: () => _handleProceedToPayment(),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [AppColors.primary, AppColors.primary600],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.4),
@@ -734,18 +735,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ),
                 ],
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Pay Now',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Icon(Icons.arrow_forward_rounded, size: 20, color: Colors.white),
                 ],
               ),

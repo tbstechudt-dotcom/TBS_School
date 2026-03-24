@@ -3,6 +3,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../data/models/student_model.dart';
 import '../common/app_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StudentCard extends StatelessWidget {
   final StudentModel student;

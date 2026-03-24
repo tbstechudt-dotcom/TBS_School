@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A reusable card container for desktop dashboard content sections.
 ///
@@ -31,7 +32,7 @@ class DesktopContentCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
@@ -41,14 +42,14 @@ class DesktopContentCard extends StatelessWidget {
         children: [
           if (title != null) ...[
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+              padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 0.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title!,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimaryC(context),
                     ),
@@ -57,11 +58,11 @@ class DesktopContentCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
           ],
           if (hasPadding)
             Padding(
-              padding: padding ?? const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              padding: padding ?? EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 20.h),
               child: child,
             )
           else

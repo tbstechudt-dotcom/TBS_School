@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Animated Flutter widget-based illustrations for screens.
 /// Replaces GIF/PNG assets that fail to load on Flutter web.
@@ -75,7 +76,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.vpn_key_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             )))),
 
@@ -236,7 +237,7 @@ class ScreenIllustrations {
                   SizedBox(height: size * 0.03),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: List.generate(4, (i) => Container(
                     margin: EdgeInsets.symmetric(horizontal: size * 0.008), width: size * 0.055, height: size * 0.065,
-                    decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.06), border: Border.all(color: i < 3 ? AppColors.primary : AppColors.primary.withValues(alpha: 0.2), width: 1.5), borderRadius: BorderRadius.circular(4)),
+                    decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.06), border: Border.all(color: i < 3 ? AppColors.primary : AppColors.primary.withValues(alpha: 0.2), width: 1.5), borderRadius: BorderRadius.circular(4.r)),
                     child: Center(child: i < 3 ? Text('${i + 3}', style: TextStyle(fontSize: size * 0.032, fontWeight: FontWeight.w700, color: AppColors.primary)) : Container(width: size * 0.015, height: size * 0.002, color: AppColors.primary.withValues(alpha: 0.3))),
                   ))),
                   SizedBox(height: size * 0.035),
@@ -275,7 +276,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.mark_email_read_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             )))),
 
@@ -297,7 +298,7 @@ class ScreenIllustrations {
                   decoration: BoxDecoration(
                     color: i < 3 ? indigo.withValues(alpha: 0.08) : Colors.transparent,
                     border: Border.all(color: i < 3 ? indigo : const Color(0xFFCBD5E1), width: 1.5),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Center(child: i < 3 ? Text('${i + 3}', style: TextStyle(fontSize: size * 0.02, fontWeight: FontWeight.w700, color: indigo)) : null),
                 ))),
@@ -374,7 +375,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.vpn_key_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             ))),
 
@@ -396,9 +397,9 @@ class ScreenIllustrations {
                 // Strength bar
                 Container(margin: EdgeInsets.symmetric(horizontal: size * 0.06), height: size * 0.007,
                   child: Row(children: [
-                    Expanded(flex: 3, child: Container(decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(2)))),
+                    Expanded(flex: 3, child: Container(decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(2.r)))),
                     SizedBox(width: size * 0.004),
-                    Expanded(flex: 1, child: Container(decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(2)))),
+                    Expanded(flex: 1, child: Container(decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(2.r)))),
                   ]),
                 ),
                 const Spacer(),
@@ -473,7 +474,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.lock_open_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             )))),
 
@@ -559,7 +560,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.school_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             ))),
 
@@ -589,9 +590,9 @@ class ScreenIllustrations {
                       ), child: Icon(Icons.person_rounded, size: size * 0.015, color: Colors.white)),
                       SizedBox(width: size * 0.008),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Container(width: size * 0.10 - (i * size * 0.01), height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.10 - (i * size * 0.01), height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1.r))),
                         SizedBox(height: size * 0.003),
-                        Container(width: size * 0.07, height: size * 0.004, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.07, height: size * 0.004, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1.r))),
                       ])),
                       if (i == 0) Icon(Icons.check_circle_rounded, size: size * 0.018, color: purple),
                     ]),
@@ -758,7 +759,7 @@ class ScreenIllustrations {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Icon(Icons.school_rounded, size: size * 0.08, color: Colors.white),
                 SizedBox(height: size * 0.006),
-                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.12, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2.r))),
               ]),
             )))),
 
@@ -770,9 +771,9 @@ class ScreenIllustrations {
                   child: Center(child: Icon(Icons.school_rounded, size: size * 0.025, color: Colors.white))),
                 SizedBox(height: size * 0.015),
                 // Welcome text
-                Container(width: size * 0.16, height: size * 0.008, decoration: BoxDecoration(color: const Color(0xFF1F2937), borderRadius: BorderRadius.circular(2))),
+                Container(width: size * 0.16, height: size * 0.008, decoration: BoxDecoration(color: const Color(0xFF1F2937), borderRadius: BorderRadius.circular(2.r))),
                 SizedBox(height: size * 0.008),
-                Container(width: size * 0.10, height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1))),
+                Container(width: size * 0.10, height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1.r))),
                 SizedBox(height: size * 0.018),
                 // Feature icons row
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -914,7 +915,7 @@ class ScreenIllustrations {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Container(width: size * 0.03, height: size * 0.022, decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFFE5C07B), Color(0xFFD4A259)]), borderRadius: BorderRadius.circular(2))),
+                        Container(width: size * 0.03, height: size * 0.022, decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFFE5C07B), Color(0xFFD4A259)]), borderRadius: BorderRadius.circular(2.r))),
                         const Spacer(),
                         Icon(Icons.wifi_rounded, size: size * 0.025, color: Colors.white.withValues(alpha: 0.5)),
                       ]),
@@ -928,9 +929,9 @@ class ScreenIllustrations {
                       ))),
                       SizedBox(height: size * 0.01),
                       Row(children: [
-                        Container(width: size * 0.06, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.06, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(1.r))),
                         const Spacer(),
-                        Container(width: size * 0.03, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.03, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(1.r))),
                       ]),
                     ],
                   )),
@@ -943,12 +944,12 @@ class ScreenIllustrations {
               color: phoneScreen,
               child: Column(children: [
                 Container(height: size * 0.05, decoration: const BoxDecoration(gradient: LinearGradient(colors: [AppColors.primary, AppColors.primary600])),
-                  child: Center(child: Container(width: size * 0.10, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))))),
+                  child: Center(child: Container(width: size * 0.10, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2.r))))),
                 SizedBox(height: size * 0.018),
                 // Amount
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(Icons.currency_rupee_rounded, size: size * 0.03, color: const Color(0xFF1F2937)),
-                  Container(width: size * 0.06, height: size * 0.012, decoration: BoxDecoration(color: const Color(0xFF1F2937), borderRadius: BorderRadius.circular(2))),
+                  Container(width: size * 0.06, height: size * 0.012, decoration: BoxDecoration(color: const Color(0xFF1F2937), borderRadius: BorderRadius.circular(2.r))),
                 ]),
                 SizedBox(height: size * 0.012),
                 Container(width: size * 0.25, height: 1, color: const Color(0xFFE2E8F0)),
@@ -958,9 +959,9 @@ class ScreenIllustrations {
                   Padding(padding: EdgeInsets.symmetric(horizontal: size * 0.03), child: Row(children: [
                     Container(width: size * 0.012, height: size * 0.012, decoration: BoxDecoration(shape: BoxShape.circle, color: [AppColors.primary, const Color(0xFF3B82F6), const Color(0xFFF59E0B)][i].withValues(alpha: 0.15))),
                     SizedBox(width: size * 0.008),
-                    Container(width: size * 0.08 + (i * size * 0.01), height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1))),
+                    Container(width: size * 0.08 + (i * size * 0.01), height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1.r))),
                     const Spacer(),
-                    Container(width: size * 0.04, height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1))),
+                    Container(width: size * 0.04, height: size * 0.005, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1.r))),
                   ])),
                   SizedBox(height: size * 0.008),
                 ],
@@ -1064,7 +1065,7 @@ class ScreenIllustrations {
                         height: size * 0.004,
                         decoration: BoxDecoration(
                           color: const Color(0xFFCBD5E1),
-                          borderRadius: BorderRadius.circular(1),
+                          borderRadius: BorderRadius.circular(1.r),
                         ),
                       ),
                       SizedBox(height: size * 0.006),
@@ -1073,7 +1074,7 @@ class ScreenIllustrations {
                         height: size * 0.004,
                         decoration: BoxDecoration(
                           color: const Color(0xFFCBD5E1),
-                          borderRadius: BorderRadius.circular(1),
+                          borderRadius: BorderRadius.circular(1.r),
                         ),
                       ),
                       SizedBox(height: size * 0.006),
@@ -1186,7 +1187,7 @@ class ScreenIllustrations {
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.security_rounded, size: size * 0.022, color: Colors.white.withValues(alpha: 0.8)),
                     SizedBox(width: size * 0.008),
-                    Container(width: size * 0.07, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))),
+                    Container(width: size * 0.07, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2.r))),
                   ])),
                 SizedBox(height: size * 0.018),
                 Container(width: size * 0.07, height: size * 0.07, decoration: BoxDecoration(shape: BoxShape.circle, color: purple.withValues(alpha: 0.10)),
@@ -1198,7 +1199,7 @@ class ScreenIllustrations {
                   decoration: BoxDecoration(
                     color: i < 2 ? purple.withValues(alpha: 0.08) : Colors.transparent,
                     border: Border.all(color: i < 2 ? purple : const Color(0xFFD1D5DB), width: 1.5),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Center(child: i < 2 ? Container(width: size * 0.01, height: size * 0.01, decoration: const BoxDecoration(shape: BoxShape.circle, color: purple)) : null),
                 ))),
@@ -1374,7 +1375,7 @@ class ScreenIllustrations {
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.notifications_rounded, size: size * 0.022, color: Colors.white.withValues(alpha: 0.8)),
                     SizedBox(width: size * 0.008),
-                    Container(width: size * 0.07, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))),
+                    Container(width: size * 0.07, height: size * 0.006, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2.r))),
                   ])),
                 SizedBox(height: size * 0.01),
                 // Notification items
@@ -1391,9 +1392,9 @@ class ScreenIllustrations {
                         child: Icon([Icons.payment_rounded, Icons.warning_rounded, Icons.info_rounded][i], size: size * 0.013, color: [amber, red, const Color(0xFF3B82F6)][i])),
                       SizedBox(width: size * 0.008),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Container(width: size * 0.12 - (i * size * 0.01), height: size * 0.004, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.12 - (i * size * 0.01), height: size * 0.004, decoration: BoxDecoration(color: const Color(0xFF94A3B8), borderRadius: BorderRadius.circular(1.r))),
                         SizedBox(height: size * 0.003),
-                        Container(width: size * 0.08, height: size * 0.003, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1))),
+                        Container(width: size * 0.08, height: size * 0.003, decoration: BoxDecoration(color: const Color(0xFFCBD5E1), borderRadius: BorderRadius.circular(1.r))),
                       ])),
                       if (i == 0) Container(width: size * 0.012, height: size * 0.012, decoration: const BoxDecoration(shape: BoxShape.circle, color: red)),
                     ]),
@@ -1409,7 +1410,7 @@ class ScreenIllustrations {
                   child: Row(children: [
                     Icon(Icons.access_time_rounded, size: size * 0.016, color: red),
                     SizedBox(width: size * 0.005),
-                    Container(width: size * 0.07, height: size * 0.004, decoration: BoxDecoration(color: red.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(1))),
+                    Container(width: size * 0.07, height: size * 0.004, decoration: BoxDecoration(color: red.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(1.r))),
                   ]),
                 ),
                 SizedBox(height: size * 0.012),
@@ -1585,7 +1586,7 @@ class ScreenIllustrations {
         Container(
           width: size * 0.65,
           height: size * 0.10,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(2)),
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(2.r)),
         ),
       ],
     );

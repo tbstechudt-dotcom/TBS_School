@@ -10,6 +10,7 @@ import '../../providers/notification_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SupportScreen extends ConsumerStatefulWidget {
   const SupportScreen({super.key});
@@ -51,32 +52,32 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: const BreadcrumbBar(currentLabel: 'Help & Support'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 24),
+          padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               // Contact School Card
               _buildContactCard(institutionAsync),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               // FAQ's Title
               Text(
                 "FAQ's",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               // FAQ Items
               ..._faqs.asMap().entries.map((entry) {
                 final index = entry.key;
@@ -95,7 +96,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   ),
                 );
               }),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
             ],
           ),
         ),
@@ -108,7 +109,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
     final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Back Button - Dark theme
@@ -128,7 +129,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // Title & Subtitle
           Expanded(
             child: Column(
@@ -137,16 +138,16 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 Text(
                   'Help & Support',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Get assistance',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryC(context),
                   ),
@@ -157,7 +158,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           // Student chip (desktop only)
           if (context.isDesktop) ...[
             _buildStudentChip(context),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
           ],
           // Cart Icon - Dark theme
           GestureDetector(
@@ -179,7 +180,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -188,9 +189,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                         ),
                         child: Text(
                           cartItemCount > 9 ? '9+' : '$cartItemCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -201,7 +202,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           // Notification Icon - Dark theme with badge
           GestureDetector(
             onTap: () => context.go(Routes.notifications),
@@ -222,7 +223,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -231,9 +232,9 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -263,11 +264,11 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
               ? NetworkImage(student.photoUrl!) : null,
           child: (student.photoUrl == null || student.photoUrl!.isEmpty)
-              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              ? Text(initials, style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.w700))
               : null,
         ),
-        const SizedBox(width: 8),
-        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+        SizedBox(width: 8.w),
+        Text(student.name, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
       ],
     );
   }
@@ -275,10 +276,10 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
   Widget _buildContactCard(AsyncValue<dynamic> institutionAsync) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Column(
@@ -292,7 +293,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 height: 48,
                 decoration: BoxDecoration(
                   color: AppColors.cardBlue,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
                   Icons.support_agent_rounded,
@@ -300,24 +301,24 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                   color: AppColors.cardBlueDark,
                 ),
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14.w),
               Text(
                 'Contact School',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           // Divider
           Container(
             height: 1,
             color: AppColors.borderC(context),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           // Email Row
           _buildContactRow(
             icon: Icons.email_rounded,
@@ -330,7 +331,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               error: (_, __) => 'N/A',
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Phone Row
           _buildContactRow(
             icon: Icons.phone_rounded,
@@ -362,11 +363,11 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           height: 40,
           decoration: BoxDecoration(
             color: iconBg,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
           child: Icon(icon, size: 20, color: iconColor),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 14.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,16 +375,16 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textHintC(context),
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2.h),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -407,7 +408,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
         width: double.infinity,
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: isOpen
               ? Border.all(color: AppColors.primary, width: 2)
               : null,
@@ -420,7 +421,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           child: Column(
             children: [
               // Question Row
@@ -431,7 +432,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     height: 36,
                     decoration: BoxDecoration(
                       color: isOpen ? AppColors.cardPurple : AppColors.cardCyan,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Icon(
                       Icons.help_outline_rounded,
@@ -439,12 +440,12 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                       color: isOpen ? AppColors.cardPurpleDark : AppColors.cardCyanDark,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       question,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: isOpen ? FontWeight.w600 : FontWeight.w500,
                         color: AppColors.textPrimaryC(context),
                       ),
@@ -455,7 +456,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                     height: 28,
                     decoration: BoxDecoration(
                       color: isOpen ? AppColors.primary : AppColors.filterBg(context),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Icon(
                       isOpen ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
@@ -467,18 +468,18 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
               ),
               // Answer (shown when open)
               if (isOpen) ...[
-                const SizedBox(height: 14),
+                SizedBox(height: 14.h),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.all(14.r),
                   decoration: BoxDecoration(
                     color: AppColors.cardPurple.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Text(
                     answer,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textSecondaryC(context),
                       height: 1.6,

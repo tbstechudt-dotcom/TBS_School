@@ -12,6 +12,7 @@ import '../../providers/cart_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FeesScreen extends ConsumerStatefulWidget {
   const FeesScreen({super.key});
@@ -147,7 +148,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
               child: SafeArea(
                 bottom: false,
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                  padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
                   decoration: BoxDecoration(
                     color: AppColors.headerBg(context),
                     boxShadow: AppColors.cardShadow(context),
@@ -180,7 +181,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                     }
 
                     return SingleChildScrollView(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20.r),
                       child: _buildFeeBreakdownCard(pendingFees, selectedStudent?.name),
                     );
                   },
@@ -204,16 +205,16 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
               Text(
                 'Fees',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 'View and manage all fees',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textSecondaryC(context),
                 ),
@@ -241,7 +242,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                     top: -4,
                     right: -4,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       constraints: const BoxConstraints(
                         minWidth: 18,
                         minHeight: 18,
@@ -253,9 +254,9 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                       ),
                       child: Text(
                         cartItemCount > 9 ? '9+' : '$cartItemCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 9.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -266,7 +267,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         // Notification Icon - Dark theme with badge
         GestureDetector(
           onTap: () => context.go(Routes.notifications),
@@ -287,7 +288,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                     top: -4,
                     right: -4,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                       decoration: BoxDecoration(
                         color: AppColors.error,
@@ -296,9 +297,9 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                       ),
                       child: Text(
                         notificationCount > 9 ? '9+' : '$notificationCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 9.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -333,7 +334,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [
@@ -438,7 +439,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
           ),
           decoration: BoxDecoration(
             color: AppColors.success,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(6.r),
           ),
           child: Text(
             term,
@@ -468,10 +469,10 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
           height: 20,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(2.r),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Text(
           title,
           style: TextStyle(
@@ -524,10 +525,10 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
             if (hasOverdue) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Row(
+                  content: Row(
                     children: [
                       Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
-                      SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       Expanded(
                         child: Text(
                           'Please pay overdue fees first before selecting upcoming fees.',
@@ -538,8 +539,8 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                   ),
                   backgroundColor: AppColors.error,
                   behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  margin: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                  margin: EdgeInsets.all(16.r),
                   duration: const Duration(seconds: 3),
                 ),
               );
@@ -551,10 +552,10 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.accent.withValues(alpha: 0.08) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
             color: isSelected ? AppColors.accent.withValues(alpha: 0.3) : Colors.transparent,
             width: 1,
@@ -590,13 +591,13 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Container(
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.accent : Colors.transparent,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                     border: Border.all(
                       color: isSelected ? AppColors.accent : AppColors.textSecondaryC(context),
                       width: 1.5,
@@ -654,7 +655,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: isEnabled ? AppColors.primary : AppColors.filterBg(context),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         boxShadow: isEnabled
             ? [
                 BoxShadow(
@@ -669,7 +670,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: isEnabled ? () => context.go(Routes.cart) : null,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSizes.s2,
@@ -725,7 +726,7 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -742,21 +743,21 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
                 color: AppColors.cardPurpleDark,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               'No Fees Found',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'There are no fees assigned to this student yet.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: AppColors.textSecondaryC(context),
               ),
             ),

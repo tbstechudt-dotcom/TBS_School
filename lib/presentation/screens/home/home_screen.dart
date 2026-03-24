@@ -16,6 +16,7 @@ import '../../../core/utils/extensions.dart';
 import '../../widgets/common/desktop_content_card.dart';
 import '../../../core/utils/birthday_utils.dart';
 import '../../widgets/common/birthday_dialog.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -97,12 +98,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   child: Column(
                     children: [
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
                         child: _buildHeader(context, selectedStudent, cartItemCount, notificationCount),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                     ],
                   ),
                 ),
@@ -114,34 +115,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: SingleChildScrollView(
               padding: context.isDesktop
                   ? EdgeInsets.zero
-                  : const EdgeInsets.symmetric(horizontal: 24),
+                  : EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!context.isDesktop) const SizedBox(height: 28),
-                  if (context.isDesktop) const SizedBox(height: 4),
+                  if (!context.isDesktop) SizedBox(height: 28.h),
+                  if (context.isDesktop) SizedBox(height: 4.h),
 
                   // Desktop: summary stat cards
                   if (context.isDesktop) ...[
                     _buildDesktopStatCards(context, feeSummaryAsync, overdueGroups, dueSoonGroups),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
 
                   // Mobile only: balance
                   if (!context.isDesktop) ...[
                     _buildBalanceSection(context, feeSummaryAsync),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                   ],
 
                   // Spending/Fee Categories Section
                   _buildSpendingSection(context, feesByGroup),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   // Activity Section - Overdue & Due Soon
                   _buildActivitySection(context, overdueGroups, dueSoonGroups),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                 ],
               ),
             ),
@@ -183,8 +184,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     errorWidget: (context, url, error) => Center(
                       child: Text(
                         _getInitials(studentName),
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
@@ -194,8 +195,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : Center(
                     child: Text(
                       _getInitials(studentName),
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: TextStyle(
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
@@ -203,7 +204,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         // Student Info
         Expanded(
           child: Column(
@@ -213,13 +214,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Text(
                 studentName,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               RichText(
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -228,7 +230,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     TextSpan(
                       text: 'Adm No: ',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                         color: AppColors.textSecondaryC(context),
                       ),
@@ -236,7 +238,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     TextSpan(
                       text: admissionNumber,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimaryC(context),
                       ),
@@ -244,7 +246,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     TextSpan(
                       text: ' | Class: ',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                         color: AppColors.textSecondaryC(context),
                       ),
@@ -252,7 +254,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     TextSpan(
                       text: className,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimaryC(context),
                       ),
@@ -283,7 +285,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     top: -4,
                     right: -4,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       constraints: const BoxConstraints(
                         minWidth: 18,
                         minHeight: 18,
@@ -295,9 +297,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       child: Text(
                         cartItemCount > 9 ? '9+' : '$cartItemCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 9.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -308,7 +310,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         // Notification Icon - Dark theme with badge
         GestureDetector(
           onTap: () => context.go(Routes.notifications),
@@ -329,7 +331,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     top: -4,
                     right: -4,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                       decoration: BoxDecoration(
                         color: AppColors.error,
@@ -338,9 +340,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       child: Text(
                         notificationCount > 9 ? '9+' : '$notificationCount',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 9,
+                          fontSize: 9.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -368,12 +370,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text(
           'Balance Fees Due',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -382,26 +384,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Text(
               '₹${NumberFormat('#,##,###').format(totalPending.clamp(0, double.infinity))}',
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 40.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimaryC(context),
                 letterSpacing: -1,
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               '/',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w400,
                 color: AppColors.textHintC(context),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               academicYear,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textSecondaryC(context),
               ),
@@ -433,7 +435,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Text(
                 'Fees Breakup',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -443,7 +445,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Text(
                   'Show all',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textLink,
                   ),
@@ -451,7 +453,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ],
           ),
-        if (!context.isDesktop) const SizedBox(height: 16),
+        if (!context.isDesktop) SizedBox(height: 16.h),
         if (context.isDesktop)
           DesktopContentCard(
             title: 'Fees Breakup',
@@ -460,7 +462,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Text(
                 'Show all',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textLink,
                 ),
@@ -476,7 +478,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     for (int i = 0; i < clampedCount; i++) ...[
-                      if (i > 0) const SizedBox(width: 12),
+                      if (i > 0) SizedBox(width: 12.w),
                       if (feesByGroup.isEmpty)
                         isSingle
                           ? SizedBox(
@@ -552,7 +554,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
               itemCount: feesByGroup.isEmpty ? categories.length : sortedEntries.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 12),
+              separatorBuilder: (context, index) => SizedBox(width: 12.w),
               itemBuilder: (context, index) {
                 if (feesByGroup.isEmpty) {
                   final cat = categories[index];
@@ -607,10 +609,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onTap: () => context.push('${Routes.allPendingFees}?group=${Uri.encodeComponent(groupName)}'),
       child: Container(
         width: fixedWidth ? 160 : null,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: hasColoredBg ? primaryColor : AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: hasColoredBg
               ? null
               : Border.all(
@@ -643,7 +645,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: hasColoredBg
                         ? Colors.white.withValues(alpha: 0.2)
                         : iconBgColor,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Center(
                     child: svgPath != null
@@ -666,12 +668,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Due badge
                 if (amount > 0)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: hasColoredBg
                           ? Colors.white.withValues(alpha: 0.2)
                           : const Color(0xFFFEF3C7),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -679,14 +681,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Text(
                           'Due',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             fontWeight: FontWeight.w600,
                             color: hasColoredBg
                                 ? Colors.white
                                 : const Color(0xFFF59E0B),
                           ),
                         ),
-                        const SizedBox(width: 2),
+                        SizedBox(width: 2.w),
                         Icon(
                           Icons.arrow_upward_rounded,
                           size: 12,
@@ -704,7 +706,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
                 color: hasColoredBg
                     ? Colors.white.withValues(alpha: 0.8)
@@ -713,7 +715,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             // Amount and arrow row
             Row(
               children: [
@@ -724,7 +726,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: Text(
                       NumberFormat('#,##,###').format(amount.toInt()),
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w700,
                         color: hasColoredBg ? Colors.white : AppColors.textPrimaryC(context),
                       ),
@@ -763,7 +765,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Text(
                 'Fee Status',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -773,7 +775,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Text(
                   'View all',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textLink,
                   ),
@@ -781,7 +783,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
         if (!hasAnyFees)
           _buildEmptyActivity(context)
@@ -793,7 +795,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Text(
                 'View all',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textLink,
                 ),
@@ -811,14 +813,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppColors.error,
               icon: Icons.warning_amber_rounded,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             ...overdueGroups.map((group) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: _buildFeeGroupCard(context, group, AppColors.error, filterStatus: 'overdue'),
             )),
           ],
           if (hasOverdue && hasDueSoon)
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
           // Due Soon Section
           if (hasDueSoon) ...[
             _buildSectionTitle(
@@ -827,7 +829,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppColors.warning,
               icon: Icons.schedule_rounded,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             ...dueSoonGroups.map((group) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: _buildFeeGroupCard(context, group, AppColors.warning, filterStatus: 'dueSoon', isDisabled: hasOverdue),
@@ -839,7 +841,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildDesktopFeeTable(BuildContext context, List<FeeGroupSummary> overdueGroups, List<FeeGroupSummary> dueSoonGroups, bool hasOverdue, bool hasDueSoon) {
-    final headerStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondaryC(context), letterSpacing: 0.5);
+    final headerStyle = TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: AppColors.textSecondaryC(context), letterSpacing: 0.5);
     final allRows = <Widget>[];
 
     if (hasOverdue) {
@@ -860,16 +862,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: [
         // Header row
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           color: AppColors.scaffoldBg(context),
           child: Row(
             children: [
-              const SizedBox(width: 56), // icon (44) + gap (12)
+              SizedBox(width: 56.w), // icon (44) + gap (12)
               Expanded(flex: 3, child: Text('Fee Group', style: headerStyle)),
               Expanded(flex: 2, child: Text('Period', style: headerStyle)),
               SizedBox(width: 140, child: Text('Status', style: headerStyle)),
               SizedBox(width: 100, child: Text('Amount', textAlign: TextAlign.right, style: headerStyle)),
-              const SizedBox(width: 32),
+              SizedBox(width: 32.w),
             ],
           ),
         ),
@@ -920,30 +922,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: InkWell(
         onTap: isDisabled ? null : () => context.push('${Routes.allPendingFees}?group=${Uri.encodeComponent(group.groupName)}&status=$filterStatus'),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           child: Row(
             children: [
               Container(
                 width: 44,
                 height: 44,
-                decoration: BoxDecoration(color: groupBg, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: groupBg, borderRadius: BorderRadius.circular(12.r)),
                 child: Center(
                   child: Icon(groupIcon, size: 22, color: groupIconColor),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 flex: 3,
                 child: Text(
                   _toTitleCase(group.groupName),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context)),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context)),
                 ),
               ),
               Expanded(
                 flex: 2,
                 child: Text(
                   group.periodText,
-                  style: TextStyle(fontSize: 13, color: AppColors.textSecondaryC(context)),
+                  style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondaryC(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -951,14 +953,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 width: 140,
                 child: timeInfo.isNotEmpty
                     ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: statusColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Text(
                           timeInfo,
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
+                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: statusColor),
                           overflow: TextOverflow.ellipsis,
                         ),
                       )
@@ -969,10 +971,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Text(
                   '₹${NumberFormat('#,##,###').format(group.totalAmount.toInt())}',
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimaryC(context)),
+                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700, color: AppColors.textPrimaryC(context)),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.textHintC(context)),
             ],
           ),
@@ -995,7 +997,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           height: 28,
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: Center(
             child: svgPath != null
@@ -1008,11 +1010,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 : Icon(icon, size: 16, color: color),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Text(
           title,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: color,
           ),
@@ -1021,7 +1023,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text(
           '₹${NumberFormat('#,##,###').format(totalAmount.toInt())}',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w700,
             color: color,
           ),
@@ -1074,10 +1076,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: GestureDetector(
       onTap: isDisabled ? null : () => context.push('${Routes.allPendingFees}?group=${Uri.encodeComponent(group.groupName)}&status=$filterStatus'),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
             color: statusColor.withValues(alpha: 0.15),
             width: 1,
@@ -1091,13 +1093,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: groupBg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Center(
                 child: Icon(groupIcon, size: 22, color: groupIconColor),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1105,12 +1107,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Text(
                     _toTitleCase(group.groupName),
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryC(context),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
                       Flexible(
@@ -1118,7 +1120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           group.periodText,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.textSecondaryC(context),
                           ),
@@ -1126,7 +1128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       if (timeInfo.isNotEmpty) ...[
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 6),
+                          margin: EdgeInsets.symmetric(horizontal: 6.w),
                           width: 3,
                           height: 3,
                           decoration: BoxDecoration(
@@ -1137,7 +1139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Text(
                           timeInfo,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                             color: statusColor,
                           ),
@@ -1154,12 +1156,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Text(
                   '₹${NumberFormat('#,##,###').format(group.totalAmount.toInt())}',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 14,
@@ -1176,10 +1178,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEmptyActivity(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 32),
+      padding: EdgeInsets.symmetric(vertical: 32.h),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Column(
@@ -1197,20 +1199,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               color: AppColors.cardGreenDark,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'All caught up!',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             'No overdue or upcoming fees',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: AppColors.textSecondaryC(context),
             ),
           ),
@@ -1299,7 +1301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onTap: () => context.push(Routes.payAllFees),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         Expanded(
           child: _buildStatCard(
             context: context,
@@ -1311,7 +1313,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onTap: () => context.push('${Routes.allPendingFees}?status=overdue'),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         Expanded(
           child: _buildStatCard(
             context: context,
@@ -1323,7 +1325,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onTap: () => context.push(Routes.paidFees),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         Expanded(
           child: _buildStatCard(
             context: context,
@@ -1351,10 +1353,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: AppColors.cardShadow(context),
         ),
         child: Row(
@@ -1364,11 +1366,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               height: 48,
               decoration: BoxDecoration(
                 color: iconBg,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
               child: Icon(icon, size: 24, color: iconColor),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1376,16 +1378,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w500,
                       color: AppColors.textSecondaryC(context),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     '₹${NumberFormat('#,##,###').format(amount.clamp(0, double.infinity).toInt())}',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimaryC(context),
                     ),

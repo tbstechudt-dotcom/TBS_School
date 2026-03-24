@@ -14,6 +14,7 @@ import '../../providers/notification_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AllPendingFeesScreen extends ConsumerStatefulWidget {
   final String? filterGroup;
@@ -146,9 +147,9 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: BreadcrumbBar(currentLabel: _getScreenTitle()),
@@ -165,7 +166,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Back Button - Dark theme
@@ -194,7 +195,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
               _getScreenTitle(),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
@@ -204,7 +205,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           // Student chip (desktop only)
           if (context.isDesktop) ...[
             _buildStudentChip(context),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
           ],
 
           // Notification Button - Dark theme
@@ -227,7 +228,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -236,9 +237,9 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -268,11 +269,11 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
               ? NetworkImage(student.photoUrl!) : null,
           child: (student.photoUrl == null || student.photoUrl!.isEmpty)
-              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              ? Text(initials, style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.w700))
               : null,
         ),
-        const SizedBox(width: 8),
-        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+        SizedBox(width: 8.w),
+        Text(student.name, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
       ],
     );
   }
@@ -452,13 +453,13 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
             }
           },
           child: ListView(
-            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.all(16),
+            padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.all(16.r),
             children: [
               // Sub-Filter Card (shows terms or months based on group type)
               if (subFilterOptions.isNotEmpty)
                 _buildSubFilter(subFilterOptions),
               if (subFilterOptions.isNotEmpty)
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
               // Term Fee Cards (sequential: select forward 1→2→3, unselect backward 3→2→1)
               ...sortedTerms.asMap().entries.map((entry) {
@@ -538,10 +539,10 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     const filterLabel = 'Filter';
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
@@ -552,12 +553,12 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           Text(
             filterLabel,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500,
               color: AppColors.textSecondaryC(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             children: [
               // Dropdown
@@ -569,10 +570,10 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       color: AppColors.filterBg(context),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(color: AppColors.borderC(context)),
                     ),
                     child: Row(
@@ -582,7 +583,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                           child: Text(
                             _selectedSubFilter ?? 'ALL',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimaryC(context),
                             ),
@@ -599,7 +600,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               // Clear Button
               GestureDetector(
                 onTap: hasFilter
@@ -618,10 +619,10 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       }
                     : null,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                   decoration: BoxDecoration(
                     color: hasFilter ? AppColors.iconButtonBg(context) : AppColors.borderC(context),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Row(
                     children: [
@@ -630,11 +631,11 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                         size: 18,
                         color: hasFilter ? Colors.white : AppColors.textHintC(context),
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6.w),
                       Text(
                         'Clear',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: hasFilter ? Colors.white : AppColors.textHintC(context),
                         ),
@@ -691,7 +692,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, 4))],
@@ -740,7 +741,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           } : null,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             color: Colors.transparent,
             child: Row(
               children: [
@@ -748,7 +749,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   child: Text(
                     label,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: !isEnabled
                           ? AppColors.textHintC(context)
@@ -851,7 +852,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           ),
           ...sortedFees.map((fee) => _buildFeeRow(fee)),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
@@ -917,7 +918,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -934,7 +935,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.success.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: const Icon(
                     Icons.receipt_outlined,
@@ -942,7 +943,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     color: AppColors.success,
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,7 +957,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -964,12 +965,12 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -978,17 +979,17 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -1072,7 +1073,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(width: 36),
+              SizedBox(width: 36.w),
             ],
           ),
           Container(
@@ -1098,7 +1099,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
             );
           }),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
@@ -1119,7 +1120,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(width: 36),
+                SizedBox(width: 36.w),
               ],
             ),
           ),
@@ -1159,7 +1160,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     return GestureDetector(
       onTap: () => _toggleSingleFee(fee, isSelected),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1177,7 +1178,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     height: 28,
                     decoration: BoxDecoration(
                       color: AppColors.info.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: const Icon(
                       Icons.menu_book_outlined,
@@ -1185,7 +1186,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       color: AppColors.info,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1199,7 +1200,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             height: 1.47,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Icon(
@@ -1207,27 +1208,27 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                               size: 12,
                               color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
                             ),
                             if (isOverdue) ...[
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6.w),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                                 decoration: BoxDecoration(
                                   color: AppColors.error.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Overdue',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.error,
                                   ),
@@ -1250,14 +1251,14 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Individual checkbox
             Container(
               width: 24,
               height: 24,
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : AppColors.cardBg(context),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.borderC(context),
                   width: 1.5,
@@ -1329,7 +1330,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(width: 36),
+              SizedBox(width: 36.w),
             ],
           ),
           Container(
@@ -1355,7 +1356,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
             );
           }),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
@@ -1376,7 +1377,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(width: 36),
+                SizedBox(width: 36.w),
               ],
             ),
           ),
@@ -1416,7 +1417,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     return GestureDetector(
       onTap: () => _toggleSingleFee(fee, isSelected),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1434,7 +1435,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     height: 28,
                     decoration: BoxDecoration(
                       color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: const Icon(
                       Icons.hotel_outlined,
@@ -1442,7 +1443,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       color: Color(0xFF3B82F6),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1456,7 +1457,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             height: 1.47,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Icon(
@@ -1464,27 +1465,27 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                               size: 12,
                               color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
                             ),
                             if (isOverdue) ...[
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6.w),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                                 decoration: BoxDecoration(
                                   color: AppColors.error.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Overdue',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.error,
                                   ),
@@ -1507,14 +1508,14 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Individual checkbox
             Container(
               width: 24,
               height: 24,
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : AppColors.cardBg(context),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.borderC(context),
                   width: 1.5,
@@ -1590,7 +1591,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(width: 36),
+              SizedBox(width: 36.w),
             ],
           ),
           Container(
@@ -1616,7 +1617,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
             );
           }),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
@@ -1637,7 +1638,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(width: 36),
+                SizedBox(width: 36.w),
               ],
             ),
           ),
@@ -1654,7 +1655,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     return GestureDetector(
       onTap: () => _toggleSingleFee(fee, isSelected),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1672,7 +1673,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     height: 28,
                     decoration: BoxDecoration(
                       color: const Color(0xFF06B6D4).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Center(
                       child: SvgPicture.asset(
@@ -1686,7 +1687,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1700,7 +1701,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             height: 1.47,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Icon(
@@ -1708,27 +1709,27 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                               size: 12,
                               color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
                             ),
                             if (isOverdue) ...[
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6.w),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                                 decoration: BoxDecoration(
                                   color: AppColors.error.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Overdue',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 10.sp,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.error,
                                   ),
@@ -1751,14 +1752,14 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Individual checkbox
             Container(
               width: 24,
               height: 24,
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : AppColors.cardBg(context),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.borderC(context),
                   width: 1.5,
@@ -1830,7 +1831,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   color: AppColors.textPrimaryC(context),
                 ),
               ),
-              const SizedBox(width: 36),
+              SizedBox(width: 36.w),
             ],
           ),
           Container(
@@ -1856,7 +1857,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
             );
           }),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 12.h),
             child: Row(
               children: [
                 Expanded(
@@ -1877,7 +1878,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(width: 36),
+                SizedBox(width: 36.w),
               ],
             ),
           ),
@@ -1915,7 +1916,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
     final isSelected = _localSelectedFeeIds.contains(fee.id);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1933,7 +1934,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   size: 16,
                   color: Color(0xFFF59E0B),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1947,7 +1948,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -1955,12 +1956,12 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -1969,17 +1970,17 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -2002,7 +2003,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
               color: AppColors.textPrimaryC(context),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // Individual checkbox — only the checkbox is tappable
           GestureDetector(
             onTap: () => _toggleSingleFee(fee, isSelected),
@@ -2011,7 +2012,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
               height: 24,
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : AppColors.cardBg(context),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
                   color: isSelected ? AppColors.primary : AppColors.borderC(context),
                   width: 1.5,
@@ -2039,7 +2040,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           GestureDetector(
             onTap: () => context.push(Routes.cart),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: AppColors.borderC(context), width: 0.5),
@@ -2050,12 +2051,12 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   Text(
                     'Queue',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryC(context),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Row(
                       children: [
@@ -2066,7 +2067,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             height: 32,
                             decoration: BoxDecoration(
                               color: icon['bgColor'] as Color,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Center(
                               child: icon['iconData'] != null
@@ -2097,13 +2098,13 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       color: groupIcons.isNotEmpty
                           ? groupIcons[0]['bgColor'] as Color
                           : const Color(0xFFFEF3C7),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Center(
                       child: Text(
                         '${cartState.itemCount}',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: groupIcons.isNotEmpty
                               ? groupIcons[0]['iconColor'] as Color
@@ -2118,7 +2119,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
           ),
         // Bottom action row
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.r),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -2129,15 +2130,15 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                   Text(
                     '$selectedCount fee${selectedCount > 1 ? 's' : ''} selected',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: AppColors.textSecondaryC(context),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '₹ ${NumberFormat('#,##,###').format(selectedAmount.toInt())}',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 28.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimaryC(context),
                     ),
@@ -2149,12 +2150,12 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 GestureDetector(
                   onTap: () => context.push(Routes.cart),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [AppColors.primary, AppColors.primary600],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.primary.withValues(alpha: 0.4),
@@ -2163,18 +2164,18 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                         ),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'View List',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Icon(Icons.arrow_forward_rounded, size: 20, color: Colors.white),
                       ],
                     ),
@@ -2189,14 +2190,14 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                         }
                       : null,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: (selectedAmount > 0 && !hasTermOutOfOrder)
                             ? [AppColors.primary, AppColors.primary600]
                             : [AppColors.primary.withValues(alpha: 0.5), AppColors.primary600.withValues(alpha: 0.5)],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: (selectedAmount > 0 && !hasTermOutOfOrder)
                           ? [
                               BoxShadow(
@@ -2211,11 +2212,11 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
-                        const SizedBox(width: 8),
-                        const Text(
+                        SizedBox(width: 8.w),
+                        Text(
                           'Add to Queue',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -2298,7 +2299,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -2315,7 +2316,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 color: AppColors.success,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               widget.filterStatus == 'dueSoon'
                   ? 'No Upcoming Fees'
@@ -2328,7 +2329,7 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               widget.filterStatus == 'dueSoon'
                   ? 'There are no fees due at this time. We will notify you when a new fee is posted.'
@@ -2374,10 +2375,10 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
   void _showOverdueBlockMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
-            SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: Text(
                 'Please pay overdue fees first before selecting upcoming fees.',
@@ -2388,8 +2389,8 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
         ),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        margin: EdgeInsets.all(16.r),
         duration: const Duration(seconds: 3),
       ),
     );
@@ -2562,14 +2563,14 @@ class _FeeAccordionState extends State<_FeeAccordion>
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.cardBg(context),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             border: Border.all(color: AppColors.borderC(context), width: 1),
             boxShadow: Theme.of(context).brightness == Brightness.dark
                 ? []
                 : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -2588,7 +2589,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                             child: Text(
                               widget.title,
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimaryC(context),
                               ),
@@ -2596,7 +2597,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           // Checkbox — separate tap target
                           GestureDetector(
                             onTap: widget.onToggleAll,
@@ -2605,7 +2606,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                               height: 24,
                               decoration: BoxDecoration(
                                 color: widget.allSelected ? AppColors.primary : AppColors.cardBg(context),
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(6.r),
                                 border: Border.all(
                                   color: widget.allSelected ? AppColors.primary : AppColors.borderC(context),
                                   width: 1.5,
@@ -2616,7 +2617,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                                   : null,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           // Chevron
                           RotationTransition(
                             turns: _rotateAnimation,
@@ -2628,7 +2629,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       // Bottom row: Amount + badge + subtitle
                       Row(
                         children: [
@@ -2637,7 +2638,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                             child: Text(
                               '₹ ${NumberFormat('#,##,###').format(widget.totalAmount.toInt())}',
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.textPrimaryC(context),
                               ),
@@ -2645,25 +2646,25 @@ class _FeeAccordionState extends State<_FeeAccordion>
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           // Badge
                           Flexible(
                             flex: 0,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 color: widget.badgeColor,
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   widget.badgeIcon,
-                                  const SizedBox(width: 4),
+                                  SizedBox(width: 4.w),
                                   Text(
                                     widget.badgeText,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,
                                     ),
@@ -2675,12 +2676,12 @@ class _FeeAccordionState extends State<_FeeAccordion>
                             ),
                           ),
                           if (widget.subtitle.isNotEmpty) ...[
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Flexible(
                               child: Text(
                                 widget.subtitle,
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.textSecondaryC(context),
                                 ),
@@ -2701,7 +2702,7 @@ class _FeeAccordionState extends State<_FeeAccordion>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       widget.content,
                     ],
                   ),

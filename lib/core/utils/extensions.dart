@@ -103,30 +103,8 @@ extension TextStyleExtensions on TextStyle {
   TextStyle get xxxl => copyWith(fontSize: AppSizes.text3xl);
 }
 
-extension SizedBoxExtensions on num {
-  // Vertical spacing (Tailwind: space-y-4)
-  SizedBox get h => SizedBox(height: toDouble());
-
-  // Horizontal spacing (Tailwind: space-x-4)
-  SizedBox get w => SizedBox(width: toDouble());
-
-  // Square box
-  SizedBox get box => SizedBox(height: toDouble(), width: toDouble());
-}
-
-extension EdgeInsetsExtensions on num {
-  EdgeInsets get all => EdgeInsets.all(toDouble());
-  EdgeInsets get horizontal => EdgeInsets.symmetric(horizontal: toDouble());
-  EdgeInsets get vertical => EdgeInsets.symmetric(vertical: toDouble());
-  EdgeInsets get top => EdgeInsets.only(top: toDouble());
-  EdgeInsets get bottom => EdgeInsets.only(bottom: toDouble());
-  EdgeInsets get left => EdgeInsets.only(left: toDouble());
-  EdgeInsets get right => EdgeInsets.only(right: toDouble());
-}
-
-extension BorderRadiusExtensions on num {
-  BorderRadius get rounded => BorderRadius.circular(toDouble());
-}
+// SizedBoxExtensions, EdgeInsetsExtensions, BorderRadiusExtensions
+// removed — replaced by flutter_screenutil (.h, .w, .sp, .r)
 
 extension StringExtensions on String {
   // Currency formatting for Indian Rupees

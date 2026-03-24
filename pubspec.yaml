@@ -3,7 +3,7 @@ description: School Fees Payment Mobile Application
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -60,6 +60,8 @@ dependencies:
 
   # Notifications & Background Tasks
   awesome_notifications: ^0.10.0
+  flutter_screenutil: ^5.9.3
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

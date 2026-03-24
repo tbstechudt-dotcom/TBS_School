@@ -8,6 +8,7 @@ import '../../../config/routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/auth_desktop_wrapper.dart';
 import '../../widgets/common/screen_illustrations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ForgotPasswordOtpScreen extends ConsumerStatefulWidget {
   final String mobile;
@@ -165,30 +166,30 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
                 child: Center(
                   child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
 
                         // Header with title and illustration
                         _buildHeader(),
 
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
 
                         // OTP Input
                         _buildOtpInput(),
 
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
 
                         // OTP Expired Warning
                         if (_isOtpExpired)
                           Container(
                             margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                             decoration: BoxDecoration(
                               color: AppColors.error.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                               border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                             ),
                             child: Row(
@@ -199,11 +200,11 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
                                   size: 18,
                                   color: AppColors.error,
                                 ),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8.w),
                                 Text(
                                   'OTP has expired. Please request a new one.',
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                     fontWeight: FontWeight.w500,
                                     color: AppColors.error,
                                   ),
@@ -215,7 +216,7 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
                         // Resend Timer
                         _buildResendTimer(),
 
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
 
                         // Verify Button
                         _buildVerifyButton(),
@@ -244,16 +245,16 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
         Text(
           'Verify OTP',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 28.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimaryC(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Text(
           'Enter the 6-digit code sent to\n+91 ${widget.mobile}',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryC(context),
           ),
@@ -267,13 +268,13 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
       width: 50,
       height: 56,
       textStyle: TextStyle(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimaryC(context),
       ),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.borderC(context)),
       ),
     );
@@ -311,14 +312,14 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
               text: TextSpan(
                 text: 'Resend OTP in ',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: AppColors.textSecondaryC(context),
                 ),
                 children: [
                   TextSpan(
                     text: '${_resendTimer}s',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
@@ -331,7 +332,7 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
               child: Text(
                 'Resend OTP',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary,
                 ),
@@ -345,12 +346,12 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
       onTap: _isLoading ? null : _handleVerifyOtp,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primary, AppColors.primary600],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.4),
@@ -372,15 +373,15 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
                 ),
               )
             else ...[
-              const Text(
+              Text(
                 'Verify OTP',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               const Icon(
                 Icons.check_circle_outline,
                 size: 22,
@@ -400,17 +401,17 @@ class _ForgotPasswordOtpScreenState extends ConsumerState<ForgotPasswordOtpScree
         Text(
           'Remember your password ?',
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 15.sp,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(width: 4),
+        SizedBox(width: 4.w),
         GestureDetector(
           onTap: () => context.go(Routes.signIn),
           child: Text(
             'Sign In',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
             ),

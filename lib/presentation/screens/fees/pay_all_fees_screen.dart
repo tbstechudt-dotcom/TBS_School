@@ -14,6 +14,7 @@ import '../../providers/notification_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PayAllFeesScreen extends ConsumerStatefulWidget {
   const PayAllFeesScreen({super.key});
@@ -326,9 +327,9 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: const BreadcrumbBar(currentLabel: 'Pay All Fees'),
@@ -356,7 +357,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Back Button
@@ -391,7 +392,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
               'Pay All Fees',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
@@ -401,7 +402,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
           // Student chip (desktop only)
           if (context.isDesktop) ...[
             _buildStudentChip(context),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
           ],
 
           // Notification Icon - Dark theme with badge
@@ -424,7 +425,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -433,9 +434,9 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -465,11 +466,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
           backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
               ? NetworkImage(student.photoUrl!) : null,
           child: (student.photoUrl == null || student.photoUrl!.isEmpty)
-              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              ? Text(initials, style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.w700))
               : null,
         ),
-        const SizedBox(width: 8),
-        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+        SizedBox(width: 8.w),
+        Text(student.name, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
       ],
     );
   }
@@ -519,11 +520,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
             }
           },
           child: ListView(
-            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.all(16),
+            padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.all(16.r),
             children: [
               // Fee Group Filter Card
               _buildFeeGroupFilter(feeGroupOptions, filteredFees),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // Term Fee Cards (sequential: select forward 1→2→3, unselect backward 3→2→1)
               ...sortedTerms.asMap().entries.map((entry) {
@@ -590,10 +591,10 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
   Widget _buildFeeGroupFilter(List<String> options, List<FeeModel> filteredFees) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
@@ -605,12 +606,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
           Text(
             'Fee Group',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500,
               color: AppColors.textSecondaryC(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // Dropdown and Total Amount Row
           Row(
@@ -624,10 +625,10 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       color: AppColors.filterBg(context),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(color: AppColors.borderC(context)),
                     ),
                     child: Row(
@@ -639,7 +640,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                                 ? '$_selectedFeeGroup > $_selectedSubFilter'
                                 : _selectedFeeGroup,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimaryC(context),
                             ),
@@ -656,17 +657,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               // Clear Button
               Builder(builder: (context) {
                 final hasSelection = _localSelectedFeeIds.isNotEmpty || _selectedFeeGroup != 'ALL FEES';
                 return GestureDetector(
                   onTap: hasSelection ? () => _clearAllFees(filteredFees) : null,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     decoration: BoxDecoration(
                       color: hasSelection ? AppColors.iconButtonBg(context) : AppColors.borderC(context),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -676,11 +677,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           size: 18,
                           color: hasSelection ? Colors.white : AppColors.textHintC(context),
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: 6.w),
                         Text(
                           'Clear',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: hasSelection ? Colors.white : AppColors.textHintC(context),
                           ),
@@ -699,18 +700,18 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
   Widget _buildFloatingDropdown(List<String> options, List<FeeModel> allFees, List<FeeModel> filteredFees, CartState cartState) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
       constraints: const BoxConstraints(maxHeight: 400),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: AppColors.borderC(context)),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 20, offset: const Offset(0, 8))],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(15.r),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -754,7 +755,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                                 color: Colors.transparent,
                                 child: Row(
                                   children: [
@@ -762,7 +763,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                                       child: Text(
                                         option,
                                         style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 15.sp,
                                           fontWeight: isGroupActive ? FontWeight.w600 : FontWeight.w500,
                                           color: isGroupActive ? AppColors.primary : AppColors.textPrimaryC(context),
                                         ),
@@ -784,7 +785,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                                 color: Colors.transparent,
                                 child: Icon(
                                   isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
@@ -823,7 +824,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           } : null,
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                             decoration: BoxDecoration(
                               color: isSubSelected
                                   ? AppColors.primary.withValues(alpha: 0.06)
@@ -839,12 +840,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                             child: Row(
                               children: [
-                                const SizedBox(width: 20),
+                                SizedBox(width: 20.w),
                                 Expanded(
                                   child: Text(
                                     sub,
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       fontWeight: isSubSelected ? FontWeight.w600 : FontWeight.w400,
                                       color: !isSubEnabled
                                           ? AppColors.textHintC(context)
@@ -900,13 +901,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
         child: Container(
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: Theme.of(context).brightness == Brightness.dark
               ? []
               : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -921,16 +922,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       Text(
                         term,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimaryC(context),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         monthRange,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.textSecondaryC(context),
                         ),
@@ -938,7 +939,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 // School Badge - color based on fee status
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -947,7 +948,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: badgeColor,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -961,7 +962,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           BlendMode.srcIn,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         academicYear,
                         style: const TextStyle(
@@ -973,7 +974,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 // Select All Checkbox
                 GestureDetector(
                   onTap: () {
@@ -996,7 +997,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     height: 22,
                     decoration: BoxDecoration(
                       color: allSelected ? AppColors.primary : AppColors.cardBg(context),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                       border: Border.all(
                         color: allSelected ? AppColors.primary : AppColors.borderC(context),
                         width: 1.5,
@@ -1010,7 +1011,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
               ],
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // Table Header
             Padding(
@@ -1047,7 +1048,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
             // Total Row
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: Row(
                 children: [
                   Expanded(
@@ -1128,13 +1129,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -1149,16 +1150,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       Text(
                         'TUITION FEES',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimaryC(context),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         monthRange,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.textSecondaryC(context),
                         ),
@@ -1166,7 +1167,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 // Academic Year Badge - color based on fee status
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -1175,7 +1176,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: badgeColor,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1185,7 +1186,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         size: 14,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         academicYear,
                         style: const TextStyle(
@@ -1197,7 +1198,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 // Select All Checkbox
                 GestureDetector(
                   onTap: () {
@@ -1220,7 +1221,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     height: 22,
                     decoration: BoxDecoration(
                       color: allSelected ? AppColors.primary : AppColors.cardBg(context),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                       border: Border.all(
                         color: allSelected ? AppColors.primary : AppColors.borderC(context),
                         width: 1.5,
@@ -1234,7 +1235,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
               ],
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // Table Header
             Padding(
@@ -1287,7 +1288,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
             // Total Row
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: Row(
                 children: [
                   Expanded(
@@ -1345,7 +1346,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1362,7 +1363,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.info.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: const Icon(
                     Icons.menu_book_outlined,
@@ -1370,7 +1371,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     color: AppColors.info,
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1384,7 +1385,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -1392,12 +1393,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -1406,17 +1407,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -1455,7 +1456,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1472,7 +1473,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.success.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: const Icon(
                     Icons.receipt_outlined,
@@ -1480,7 +1481,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     color: AppColors.success,
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1494,7 +1495,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -1502,12 +1503,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -1516,17 +1517,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -1581,13 +1582,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -1602,16 +1603,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       Text(
                         'HOSTEL FEES',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimaryC(context),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         monthRange,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.textSecondaryC(context),
                         ),
@@ -1621,10 +1622,10 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 ),
                 // Academic Year Badge with hotel icon - color based on fee status
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     color: badgeColor,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1634,11 +1635,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         size: 14,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         academicYear,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -1646,7 +1647,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 // Checkbox for all hostel fees
                 GestureDetector(
                   onTap: () {
@@ -1669,7 +1670,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     height: 24,
                     decoration: BoxDecoration(
                       color: allSelected ? AppColors.primary : AppColors.cardBg(context),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                       border: Border.all(
                         color: allSelected ? AppColors.primary : AppColors.borderC(context),
                         width: 1.5,
@@ -1683,7 +1684,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
               ],
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // Table Header
             Padding(
@@ -1736,7 +1737,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
             // Total Row
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: Row(
                 children: [
                   Expanded(
@@ -1794,7 +1795,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -1811,7 +1812,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   height: 28,
                   decoration: BoxDecoration(
                     color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: const Icon(
                     Icons.hotel_outlined,
@@ -1819,7 +1820,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     color: Color(0xFF3B82F6),
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1833,7 +1834,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -1841,12 +1842,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -1855,17 +1856,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -1934,13 +1935,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       child: Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? []
             : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -1954,16 +1955,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       Text(
                         'EXAM FEES',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimaryC(context),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         monthRange,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.textSecondaryC(context),
                         ),
@@ -1972,10 +1973,10 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                   decoration: BoxDecoration(
                     color: badgeColor,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1985,11 +1986,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         size: 14,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         academicYear,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -1997,14 +1998,14 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 // Checkbox
                 Container(
                   width: 22,
                   height: 22,
                   decoration: BoxDecoration(
                     color: allSelected ? AppColors.primary : AppColors.cardBg(context),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(4.r),
                     border: Border.all(
                       color: allSelected ? AppColors.primary : AppColors.borderC(context),
                       width: 1.5,
@@ -2016,7 +2017,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               children: [
                 Expanded(
@@ -2062,7 +2063,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
               );
             }),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: Row(
                 children: [
                   Expanded(
@@ -2113,7 +2114,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -2129,7 +2130,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   height: 28,
                   decoration: BoxDecoration(
                     color: const Color(0xFF06B6D4).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Center(
                     child: SvgPicture.asset(
@@ -2143,7 +2144,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -2157,7 +2158,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -2165,12 +2166,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -2179,17 +2180,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -2251,13 +2252,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: Theme.of(context).brightness == Brightness.dark
               ? []
               : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -2272,16 +2273,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         Text(
                           'Bus Fee Breakdown',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimaryC(context),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Text(
                           'Monthly breakdown',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.textSecondaryC(context),
                           ),
@@ -2289,7 +2290,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   // Bus Badge - color based on fee status
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -2298,7 +2299,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: badgeColor,
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -2312,7 +2313,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             BlendMode.srcIn,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Text(
                           academicYear,
                           style: const TextStyle(
@@ -2324,14 +2325,14 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   // Checkbox
                   Container(
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
                       color: allSelected ? AppColors.primary : AppColors.cardBg(context),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                       border: Border.all(
                         color: allSelected ? AppColors.primary : AppColors.borderC(context),
                         width: 1.5,
@@ -2344,7 +2345,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 ],
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // Table Header
               Padding(
@@ -2397,7 +2398,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
 
               // Total Row
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
                 child: Row(
                   children: [
                     Expanded(
@@ -2434,7 +2435,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
     final isOverdue = dueDate.isBefore(DateTime.now());
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.borderC(context), width: 1),
@@ -2455,7 +2456,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                     BlendMode.srcIn,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -2469,7 +2470,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                           height: 1.47,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -2477,12 +2478,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             size: 12,
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
                               'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                               ),
@@ -2491,17 +2492,17 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             ),
                           ),
                           if (isOverdue) ...[
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Overdue',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.error,
                                 ),
@@ -2541,7 +2542,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
           GestureDetector(
             onTap: () => context.push(Routes.cart),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: AppColors.borderC(context), width: 0.5),
@@ -2552,12 +2553,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   Text(
                     'Queue',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryC(context),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   // Fee group icons
                   Expanded(
                     child: Row(
@@ -2569,7 +2570,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             height: 32,
                             decoration: BoxDecoration(
                               color: icon['bgColor'] as Color,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Center(
                               child: icon['iconData'] != null
@@ -2601,13 +2602,13 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       color: groupIcons.isNotEmpty
                           ? groupIcons[0]['bgColor'] as Color
                           : const Color(0xFFFEF3C7),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Center(
                       child: Text(
                         '${cartState.itemCount}',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: groupIcons.isNotEmpty
                               ? groupIcons[0]['iconColor'] as Color
@@ -2622,7 +2623,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
           ),
         // Bottom action row
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.r),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -2633,15 +2634,15 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                   Text(
                     '$selectedCount fee${selectedCount > 1 ? 's' : ''} selected',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: AppColors.textSecondaryC(context),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '₹ ${NumberFormat('#,##,###').format(selectedAmount.toInt())}',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 28.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimaryC(context),
                     ),
@@ -2653,12 +2654,12 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 GestureDetector(
                   onTap: () => context.push(Routes.cart),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [AppColors.primary, AppColors.primary600],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.primary.withValues(alpha: 0.4),
@@ -2667,18 +2668,18 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         ),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'View List',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Icon(Icons.arrow_forward_rounded, size: 20, color: Colors.white),
                       ],
                     ),
@@ -2693,14 +2694,14 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                         }
                       : null,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 16.h),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: (selectedAmount > 0 && !hasTermOutOfOrder)
                             ? [AppColors.primary, AppColors.primary600]
                             : [AppColors.primary.withValues(alpha: 0.5), AppColors.primary600.withValues(alpha: 0.5)],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: (selectedAmount > 0 && !hasTermOutOfOrder)
                           ? [
                               BoxShadow(
@@ -2715,11 +2716,11 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
-                        const SizedBox(width: 8),
-                        const Text(
+                        SizedBox(width: 8.w),
+                        Text(
                           'Add to Queue',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -2802,7 +2803,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -2819,7 +2820,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 color: AppColors.success,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               'No Pending Fees',
               style: TextStyle(
@@ -2828,7 +2829,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'All your fees are paid. Great job!',
               textAlign: TextAlign.center,

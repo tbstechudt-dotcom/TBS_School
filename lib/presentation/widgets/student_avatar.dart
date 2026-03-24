@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable student avatar widget that displays the student photo
 /// or falls back to first letter of student name with unique colors
@@ -81,7 +82,7 @@ class StudentAvatar extends StatelessWidget {
       studentName: studentName,
       photoUrl: photoUrl,
       size: 40,
-      fontSize: 16,
+      fontSize: 16.sp,
     );
   }
 
@@ -96,7 +97,7 @@ class StudentAvatar extends StatelessWidget {
       studentName: studentName,
       photoUrl: photoUrl,
       size: 50,
-      fontSize: 20,
+      fontSize: 20.sp,
     );
   }
 
@@ -111,7 +112,7 @@ class StudentAvatar extends StatelessWidget {
       studentName: studentName,
       photoUrl: photoUrl,
       size: 80,
-      fontSize: 32,
+      fontSize: 32.sp,
     );
   }
 

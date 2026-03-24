@@ -8,6 +8,7 @@ import '../../../data/models/notification_model.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/fee_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -40,9 +41,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         _buildHeader(context),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                       ],
                     ),
                   ),
@@ -74,7 +75,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     return Container(
                       decoration: BoxDecoration(
                         color: AppColors.cardBg(context),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16.r),
                         boxShadow: AppColors.cardShadow(context),
                       ),
                       clipBehavior: Clip.antiAlias,
@@ -90,7 +91,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   // Mobile: show all notifications in a scrollable list (no pagination)
                   final groupedNotifications = _groupNotificationsByDate(regularNotifications);
                   return ListView.builder(
-                    padding: const EdgeInsets.only(left: 24, right: 24, bottom: 8),
+                    padding: EdgeInsets.only(left: 24.w, right: 24.w, bottom: 8.h),
                     itemCount: groupedNotifications.length,
                     itemBuilder: (context, index) {
                       final group = groupedNotifications[index];
@@ -110,17 +111,17 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       children: [
         // Header row
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
           color: AppColors.scaffoldBg(context),
           child: Row(
             children: [
-              const SizedBox(width: 60), // icon (48) + gap (12)
+              SizedBox(width: 60.w), // icon (48) + gap (12)
               Expanded(
                 flex: 3,
                 child: Text(
                   'Title',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondaryC(context),
                     letterSpacing: 0.5,
@@ -132,7 +133,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 child: Text(
                   'Message',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondaryC(context),
                     letterSpacing: 0.5,
@@ -144,14 +145,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 child: Text(
                   'Date',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondaryC(context),
                     letterSpacing: 0.5,
                   ),
                 ),
               ),
-              const SizedBox(width: 36), // unread indicator column
+              SizedBox(width: 36.w), // unread indicator column
             ],
           ),
         ),
@@ -181,20 +182,20 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         await context.push('/notifications/${notification.id}', extra: notification);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
         color: isUnread
             ? AppColors.primary.withValues(alpha: 0.04)
             : Colors.transparent,
         child: Row(
           children: [
             _buildNotificationIcon(notification.type, isUnread),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               flex: 3,
               child: Text(
                 notification.title,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: isUnread ? FontWeight.w600 : FontWeight.w500,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -207,7 +208,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               child: Text(
                 notification.body,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: AppColors.textSecondaryC(context),
                 ),
                 maxLines: 1,
@@ -219,7 +220,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               child: Text(
                 _getTimestamp(notification.createdAt),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: AppColors.textHintC(context),
                 ),
               ),
@@ -254,7 +255,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget _buildPaginationControls(int totalPages) {
     if (totalPages <= 1) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -263,7 +264,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             enabled: _currentPage > 0,
             onTap: () => setState(() => _currentPage--),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           for (int i = 0; i < totalPages; i++) ...[
             if (i == 0 ||
                 i == totalPages - 1 ||
@@ -273,10 +274,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 child: Container(
                   width: 36,
                   height: 36,
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  margin: EdgeInsets.symmetric(horizontal: 2.w),
                   decoration: BoxDecoration(
                     color: i == _currentPage ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                     border: i != _currentPage
                         ? Border.all(color: AppColors.borderC(context))
                         : null,
@@ -285,7 +286,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     child: Text(
                       '${i + 1}',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: i == _currentPage
                             ? Colors.white
@@ -298,14 +299,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             else if ((i == 1 && _currentPage > 2) ||
                 (i == totalPages - 2 && _currentPage < totalPages - 3))
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
                 child: Text(
                   '…',
                   style: TextStyle(color: AppColors.textHintC(context)),
                 ),
               ),
           ],
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           _buildPageButton(
             icon: Icons.chevron_right,
             enabled: _currentPage < totalPages - 1,
@@ -323,13 +324,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }) {
     return InkWell(
       onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(8.r),
       child: Container(
         width: 36,
         height: 36,
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.borderC(context)),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(
           icon,
@@ -376,7 +377,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final cartItemCount = ref.watch(cartItemCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -388,16 +389,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 Text(
                   'Notifications',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Stay updated with alerts',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryC(context),
                   ),
@@ -425,7 +426,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -434,7 +435,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                         child: Text(
                           cartItemCount > 9 ? '9+' : '$cartItemCount',
-                          style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white, fontSize: 9.sp, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -464,10 +465,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Column(
         children: [
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           if (overdueNotification.isNotEmpty)
             _buildReminderBanner(
               context: context,
@@ -492,7 +493,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               },
             ),
           if (overdueNotification.isNotEmpty && upcomingNotification.isNotEmpty)
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
           if (upcomingNotification.isNotEmpty)
             _buildReminderBanner(
               context: context,
@@ -506,7 +507,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               actionLabel: 'View Fees',
               onAction: () => context.go(Routes.home),
             ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
         ],
       ),
     );
@@ -526,10 +527,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: borderColor, width: 1.5),
       ),
       child: Row(
@@ -540,11 +541,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             height: 42,
             decoration: BoxDecoration(
               color: iconBgColor,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(icon, size: 22, color: iconColor),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,34 +553,34 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   message,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.textSecondaryC(context),
                     height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 GestureDetector(
                   onTap: onAction,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                     decoration: BoxDecoration(
                       color: iconColor,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
                       actionLabel,
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: TextStyle(
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -599,11 +600,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 12),
+          padding: EdgeInsets.only(top: 16.h, bottom: 12.h),
           child: Text(
             group.date,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimaryC(context),
             ),
@@ -628,10 +629,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         await context.push('/notifications/${notification.id}', extra: notification);
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: Theme.of(context).brightness == Brightness.dark
               ? []
               : [
@@ -646,7 +647,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildNotificationIcon(notification.type, isUnread),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -657,7 +658,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         child: Text(
                           notification.title,
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: isUnread ? FontWeight.w600 : FontWeight.w500,
                             color: AppColors.textPrimaryC(context),
                           ),
@@ -680,25 +681,25 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     notification.body,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textSecondaryC(context),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         _getTimestamp(notification.createdAt),
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primary,
                         ),
@@ -764,7 +765,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       height: 48,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Icon(icon, size: 24, color: iconColor),
     );
@@ -788,7 +789,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -805,21 +806,21 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 color: AppColors.cardPurpleDark,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               'No Notifications',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'You\'re all caught up! Check back later for updates.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: AppColors.textSecondaryC(context),
               ),
             ),

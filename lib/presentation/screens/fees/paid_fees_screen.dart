@@ -13,6 +13,7 @@ import '../../providers/payment_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PaidFeesScreen extends ConsumerWidget {
   const PaidFeesScreen({super.key});
@@ -27,9 +28,9 @@ class PaidFeesScreen extends ConsumerWidget {
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context, notificationCount, student),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: const BreadcrumbBar(currentLabel: 'Paid Fees'),
@@ -55,11 +56,11 @@ class PaidFeesScreen extends ConsumerWidget {
               .fold(0.0, (sum, g) => sum + g.payment.transtotalamount);
 
           return ListView(
-            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.fromLTRB(24, 20, 24, 24),
+            padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 24.h),
             children: [
               // Total paid summary
               _buildTotalSummary(context, totalPaid, sortedPayIds.length),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Payment accordion items
               ...sortedPayIds.map((payId) => _PaymentAccordion(
@@ -75,7 +76,7 @@ class PaidFeesScreen extends ConsumerWidget {
 
   Widget _buildHeader(BuildContext context, int notificationCount, StudentModel? student) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Back Button
@@ -109,7 +110,7 @@ class PaidFeesScreen extends ConsumerWidget {
               'Paid Fees',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimaryC(context),
               ),
@@ -118,7 +119,7 @@ class PaidFeesScreen extends ConsumerWidget {
           // Student chip (desktop only)
           if (student != null) ...[
             _buildStudentChip(context, student),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
           ],
           // Notification Icon
           GestureDetector(
@@ -140,7 +141,7 @@ class PaidFeesScreen extends ConsumerWidget {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -149,9 +150,9 @@ class PaidFeesScreen extends ConsumerWidget {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -179,11 +180,11 @@ class PaidFeesScreen extends ConsumerWidget {
           backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
               ? NetworkImage(student.photoUrl!) : null,
           child: (student.photoUrl == null || student.photoUrl!.isEmpty)
-              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              ? Text(initials, style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.w700))
               : null,
         ),
-        const SizedBox(width: 8),
-        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+        SizedBox(width: 8.w),
+        Text(student.name, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
       ],
     );
   }
@@ -194,26 +195,26 @@ class PaidFeesScreen extends ConsumerWidget {
         Text(
           'Total Paid',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: AppColors.textSecondaryC(context),
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           '\u{20B9} ${NumberFormat('#,##,###').format(totalPaid.toInt())}',
           style: TextStyle(
-            fontSize: 32,
+            fontSize: 32.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.cardGreenDark,
             letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Text(
           '$receiptCount ${receiptCount == 1 ? 'receipt' : 'receipts'}',
           style: TextStyle(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.textHintC(context),
           ),
@@ -225,7 +226,7 @@ class PaidFeesScreen extends ConsumerWidget {
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -242,21 +243,21 @@ class PaidFeesScreen extends ConsumerWidget {
                 color: AppColors.cardGreenDark,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               'No Paid Fees Yet',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Your completed fee payments will appear here.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: AppColors.textSecondaryC(context),
               ),
             ),
@@ -365,7 +366,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: AppColors.cardShadow(context),
         ),
         clipBehavior: Clip.antiAlias,
@@ -376,7 +377,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
               onTap: _toggle,
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.r),
                 child: Row(
                   children: [
                     // Green check icon
@@ -385,7 +386,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                       height: 40,
                       decoration: BoxDecoration(
                         color: AppColors.cardGreen,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: const Center(
                         child: Icon(
@@ -395,7 +396,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     // Title & subtitle
                     Expanded(
                       child: Column(
@@ -404,16 +405,16 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                           Text(
                             title,
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
                               color: AppColors.textPrimaryC(context),
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             subtitle,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
                               color: AppColors.textSecondaryC(context),
                             ),
@@ -428,23 +429,23 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                         Text(
                           '\u{20B9} ${NumberFormat('#,##,###').format(totalPaid.toInt())}',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
                             color: AppColors.cardGreenDark,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        SizedBox(height: 2.h),
                         Text(
                           DateFormat('dd MMM yyyy').format(paymentDate),
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.textHintC(context),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     RotationTransition(
                       turns: _rotateAnimation,
                       child: Icon(
@@ -473,12 +474,12 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                   // Receipt info bar
                   if (paymentNumber.isNotEmpty || paymentMethod.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0.h),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                         decoration: BoxDecoration(
                           color: AppColors.scaffoldBg(context),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Row(
                           children: [
@@ -488,12 +489,12 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                                 size: 14,
                                 color: AppColors.textSecondaryC(context),
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Flexible(
                                 child: Text(
                                   paymentNumber,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.textPrimaryC(context),
                                   ),
@@ -505,10 +506,10 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                             const Spacer(),
                             if (paymentMethod.isNotEmpty)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                                 decoration: BoxDecoration(
                                   color: AppColors.cardBg(context),
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(6.r),
                                   border: Border.all(
                                     color: AppColors.borderC(context).withValues(alpha: 0.3),
                                   ),
@@ -516,7 +517,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                                 child: Text(
                                   paymentMethod,
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 11.sp,
                                     fontWeight: FontWeight.w500,
                                     color: AppColors.textSecondaryC(context),
                                   ),
@@ -530,7 +531,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                   // Fee items
                   if (widget.fees.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
                       child: Column(
                         children: widget.fees.map((fee) => _buildFeeItem(context, fee)).toList(),
                       ),
@@ -538,15 +539,15 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
 
                   // View Receipt button
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                    padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 16.h),
                     child: GestureDetector(
                       onTap: () => context.push('${Routes.transactionDetails}/${payment.payId}'),
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -556,11 +557,11 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                               size: 16,
                               color: AppColors.primary,
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Text(
                               'View Receipt',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary,
                               ),
@@ -591,7 +592,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
             size: 16,
             color: AppColors.cardGreenDark,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -599,7 +600,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                 Text(
                   fee.feeTypeName,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textPrimaryC(context),
                   ),
@@ -611,7 +612,7 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                       if (groupName.isNotEmpty) PaidFeesScreen.toTitleCase(groupName),
                     ].join(' \u{2022} '),
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textHintC(context),
                     ),
@@ -621,8 +622,8 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
           ),
           Text(
             '\u{20B9} ${NumberFormat('#,##,###').format(fee.paidamount.toInt())}',
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.cardGreenDark,
             ),

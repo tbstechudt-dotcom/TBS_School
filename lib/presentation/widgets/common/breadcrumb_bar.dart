@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/routes.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// A breadcrumb navigation bar with a back button and path segments.
 ///
@@ -30,7 +31,7 @@ class BreadcrumbBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
       child: Row(
         children: [
           // Back button
@@ -41,7 +42,7 @@ class BreadcrumbBar extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 color: AppColors.textLink.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: const Icon(
                 Icons.arrow_back_ios_new_rounded,
@@ -50,14 +51,14 @@ class BreadcrumbBar extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // Parent label (tappable)
           GestureDetector(
             onTap: () => context.go(parentRoute ?? Routes.home),
             child: Text(
               parentLabel,
-              style: const TextStyle(
-                fontSize: 13,
+              style: TextStyle(
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textLink,
               ),
@@ -66,7 +67,7 @@ class BreadcrumbBar extends StatelessWidget {
           Text(
             '  /  ',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w400,
               color: AppColors.textHintC(context),
             ),
@@ -76,7 +77,7 @@ class BreadcrumbBar extends StatelessWidget {
             child: Text(
               currentLabel,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),

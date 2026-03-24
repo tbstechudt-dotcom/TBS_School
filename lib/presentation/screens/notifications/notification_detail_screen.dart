@@ -13,6 +13,7 @@ import '../../providers/notification_provider.dart';
 import '../../providers/student_provider.dart';
 import '../../widgets/common/breadcrumb_bar.dart';
 import '../../widgets/common/desktop_detail_scaffold.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationDetailScreen extends ConsumerStatefulWidget {
   final String notificationId;
@@ -62,9 +63,9 @@ class _NotificationDetailScreenState
       isNested: true,
       header: Column(
         children: [
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildHeader(context),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
       toolbar: BreadcrumbBar(
@@ -74,25 +75,25 @@ class _NotificationDetailScreenState
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 24),
+          padding: context.isDesktop ? EdgeInsets.all(24.r) : EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               // Type Badge
               _buildTypeBadge(notification.type),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               // Title
               Text(
                 notification.title,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryC(context),
                   height: 1.3,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               // Date & Time
               Row(
                 children: [
@@ -101,25 +102,25 @@ class _NotificationDetailScreenState
                     size: 16,
                     color: AppColors.textHintC(context),
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6.w),
                   Text(
                     _formatDateTime(notification.createdAt),
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textSecondaryC(context),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               // Message Card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 decoration: BoxDecoration(
                   color: AppColors.cardBg(context),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   boxShadow: AppColors.cardShadow(context),
                 ),
                 child: Column(
@@ -127,12 +128,12 @@ class _NotificationDetailScreenState
                   children: [
                     // Icon
                     _buildNotificationIcon(notification.type),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     // Message
                     Text(
                       notification.body,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textPrimaryC(context),
                         height: 1.7,
@@ -141,11 +142,11 @@ class _NotificationDetailScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               // Action Button (if applicable)
               if (_hasAction(notification.type))
                 _buildActionButton(notification),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
             ],
           ),
         ),
@@ -155,7 +156,7 @@ class _NotificationDetailScreenState
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         children: [
           // Back Button - Dark theme
@@ -181,7 +182,7 @@ class _NotificationDetailScreenState
               'Notification',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryC(context),
               ),
@@ -191,7 +192,7 @@ class _NotificationDetailScreenState
           if (context.isDesktop)
             _buildStudentChip(context)
           else
-            const SizedBox(width: 44),
+            SizedBox(width: 44.w),
         ],
       ),
     );
@@ -199,7 +200,7 @@ class _NotificationDetailScreenState
 
   Widget _buildStudentChip(BuildContext context) {
     final student = ref.watch(selectedStudentProvider);
-    if (student == null) return const SizedBox(width: 44);
+    if (student == null) return SizedBox(width: 44.w);
     final parts = student.name.trim().split(' ').where((p) => p.isNotEmpty).toList();
     final initials = parts.take(2).map((p) => p[0]).join().toUpperCase();
     return Row(
@@ -211,11 +212,11 @@ class _NotificationDetailScreenState
           backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
               ? NetworkImage(student.photoUrl!) : null,
           child: (student.photoUrl == null || student.photoUrl!.isEmpty)
-              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              ? Text(initials, style: TextStyle(color: Colors.white, fontSize: 11.sp, fontWeight: FontWeight.w700))
               : null,
         ),
-        const SizedBox(width: 8),
-        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+        SizedBox(width: 8.w),
+        Text(student.name, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
       ],
     );
   }
@@ -235,7 +236,7 @@ class _NotificationDetailScreenState
       title: Text(
         'Notification',
         style: TextStyle(
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryC(context),
         ),
@@ -287,7 +288,7 @@ class _NotificationDetailScreenState
       height: 56,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       child: Icon(
         icon,
@@ -336,15 +337,15 @@ class _NotificationDetailScreenState
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 13,
+          fontSize: 13.sp,
           fontWeight: FontWeight.w600,
           color: textColor,
         ),
@@ -433,7 +434,7 @@ class _NotificationDetailScreenState
           context: context,
           builder: (context) => AlertDialog(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
             icon: const Icon(Icons.check_circle,
                 color: Color(0xFF2DBE60), size: 48),
             title: const Text('Already Paid'),
@@ -529,7 +530,7 @@ class _NotificationDetailScreenState
           context: context,
           builder: (context) => AlertDialog(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
             icon: const Icon(Icons.check_circle,
                 color: Color(0xFF2DBE60), size: 48),
             title: const Text('All Paid'),
@@ -626,18 +627,18 @@ class _NotificationDetailScreenState
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(buttonIcon, size: 20),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Text(
               buttonText,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

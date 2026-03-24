@@ -11,6 +11,7 @@ import '../../providers/student_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/institution_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -29,7 +30,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showDialog(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         title: const Text('Sign Out'),
         content: const Text('Are you sure you want to sign out?'),
         actions: [
@@ -46,7 +47,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
             child: const Text('Sign Out'),
           ),
@@ -107,9 +108,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildHeader(context),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                   ],
                 ),
               ),
@@ -120,19 +121,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildStudentCard(studentData),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildSchoolInfoWidget(context),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildQuickActionsSection(context, hasMultipleStudents),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildSectionTitle('Personal Information'),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildInfoCard([
                         _InfoItem(icon: Icons.badge_outlined, label: 'Admission No', value: studentData['adminNo']!),
                         _InfoItem(icon: Icons.school_outlined, label: 'Class', value: studentData['class']!),
@@ -148,25 +149,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         _InfoItem(icon: Icons.cake_outlined, label: 'Date of Birth', value: studentData['dob']!),
                         _InfoItem(icon: Icons.water_drop_outlined, label: 'Blood Group', value: studentData['blood']!),
                       ]),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildSectionTitle('Contact Information'),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildInfoCard([
                         _InfoItem(icon: Icons.person_outline_rounded, label: 'Student In-Charge', value: studentData['parentName']!),
                         _InfoItem(icon: Icons.phone_android_rounded, label: 'Mobile', value: studentData['mobile']!, isNotProvided: studentData['mobile'] == 'N/A'),
                         _InfoItem(icon: Icons.email_outlined, label: 'Email', value: studentData['email']!),
                         _InfoItem(icon: Icons.location_on_outlined, label: 'Address', value: studentData['address']!, isNotProvided: studentData['address'] == 'N/A'),
                       ]),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28.h),
                       // Sign Out button — mobile only (desktop has sidebar logout)
                       GestureDetector(
                         onTap: () => _showLogoutDialog(context),
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
                           decoration: BoxDecoration(
                             color: AppColors.error,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.error.withValues(alpha: 0.4),
@@ -175,24 +176,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ),
                             ],
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Sign Out',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              SizedBox(width: 10.w),
                               Icon(Icons.logout_rounded, size: 22, color: Colors.white),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                     ],
                   ),
                 ),
@@ -206,7 +207,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildDesktopProfile(
       BuildContext context, Map<String, String> studentData, bool hasMultipleStudents) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(0),
+      padding: EdgeInsets.all(0.r),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -216,9 +217,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildStudentCard(studentData),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 _buildDesktopQuickActions(context, hasMultipleStudents),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 _buildDesktopSectionCard(
                   context,
                   title: 'Personal Information',
@@ -238,18 +239,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     _InfoItem(icon: Icons.water_drop_outlined, label: 'Blood Group', value: studentData['blood']!),
                   ]),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           // Right column: School card → Contact Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildDesktopSchoolCard(context),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 _buildDesktopSectionCard(
                   context,
                   title: 'Contact Information',
@@ -260,7 +261,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     _InfoItem(icon: Icons.location_on_outlined, label: 'Address', value: studentData['address']!, isNotProvided: studentData['address'] == 'N/A'),
                   ]),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
               ],
             ),
           ),
@@ -274,26 +275,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+            padding: EdgeInsets.fromLTRB(20.w, 18.h, 20.w, 0.h),
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+            padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 18.h),
             child: child,
           ),
         ],
@@ -312,12 +313,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             _buildInfoRow(item),
             if (!isLast) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Container(
                 height: 1,
                 color: AppColors.borderC(context),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
             ],
           ],
         );
@@ -330,7 +331,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final notificationCount = ref.watch(notificationCountProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -342,16 +343,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Text(
                   'Profile',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Manage your account',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                     color: AppColors.textSecondaryC(context),
                   ),
@@ -379,7 +380,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -388,10 +389,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         child: Text(
                           cartItemCount > 9 ? '9+' : '$cartItemCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Inter',
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -402,7 +403,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           // Notification Icon - Dark theme
           GestureDetector(
             onTap: () => context.go(Routes.notifications),
@@ -423,7 +424,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       top: -4,
                       right: -4,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
                         decoration: BoxDecoration(
                           color: AppColors.error,
@@ -432,9 +433,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         child: Text(
                           notificationCount > 9 ? '9+' : '$notificationCount',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 9,
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -454,23 +455,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Quick Actions',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               children: [
                 if (hasMultipleStudents) ...[
@@ -485,17 +486,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
-                          textStyle: const TextStyle(
-                            fontSize: 14,
+                          textStyle: TextStyle(
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                 ],
                 Expanded(
                   child: SizedBox(
@@ -508,10 +509,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         foregroundColor: AppColors.primary,
                         side: const BorderSide(color: AppColors.primary, width: 1.5),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
-                        textStyle: const TextStyle(
-                          fontSize: 14,
+                        textStyle: TextStyle(
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -540,11 +541,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -555,11 +556,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   height: 56,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(color: AppColors.borderC(context).withValues(alpha: 0.3)),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     child: hasLogo
                         ? CachedNetworkImage(
                             imageUrl: logoUrl,
@@ -569,8 +570,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             placeholder: (context, url) => Center(
                               child: Text(
                                 schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: TextStyle(
+                                  fontSize: 24.sp,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
@@ -579,8 +580,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             errorWidget: (context, url, error) => Center(
                               child: Text(
                                 schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: TextStyle(
+                                  fontSize: 24.sp,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
@@ -590,8 +591,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         : Center(
                             child: Text(
                               schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                              style: const TextStyle(
-                                fontSize: 24,
+                              style: TextStyle(
+                                fontSize: 24.sp,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
@@ -599,7 +600,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                   ),
                 ),
-                const SizedBox(width: 14),
+                SizedBox(width: 14.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -607,12 +608,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       Text(
                         schoolName,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimaryC(context),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         children: [
                           Icon(
@@ -620,12 +621,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             size: 14,
                             color: AppColors.textSecondaryC(context),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Expanded(
                             child: Text(
                               schoolAddress,
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondaryC(context),
                               ),
@@ -640,13 +641,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ],
             ),
             if (schoolMotto != null && schoolMotto.isNotEmpty) ...[
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
                     color: AppColors.primary.withValues(alpha: 0.12),
                   ),
@@ -658,12 +659,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       size: 18,
                       color: AppColors.primary.withValues(alpha: 0.5),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         schoolMotto,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w500,
                           fontStyle: FontStyle.italic,
                           color: AppColors.textSecondaryC(context),
@@ -675,9 +676,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ],
             if (schoolEmail != null || schoolPhone != null) ...[
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Container(height: 1, color: AppColors.borderC(context)),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               if (schoolEmail != null && schoolEmail.isNotEmpty)
                 Padding(
                   padding: EdgeInsets.only(bottom: schoolPhone != null && schoolPhone.isNotEmpty ? 12 : 0),
@@ -688,7 +689,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: AppColors.bgSecondary,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Center(
                           child: Icon(
@@ -698,7 +699,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -706,16 +707,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             Text(
                               'Email',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.textHintC(context),
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2.h),
                             Text(
                               schoolEmail,
                               style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textPrimaryC(context),
                               ),
@@ -734,7 +735,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       height: 40,
                       decoration: BoxDecoration(
                         color: AppColors.bgSecondary,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Center(
                         child: Icon(
@@ -744,7 +745,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -752,16 +753,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           Text(
                             'Phone',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
                               color: AppColors.textHintC(context),
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             schoolPhone,
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
                               color: AppColors.textPrimaryC(context),
                             ),
@@ -783,10 +784,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final hasPhoto = selectedStudent != null && selectedStudent.photoUrl != null && selectedStudent.photoUrl!.isNotEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Row(
@@ -828,8 +829,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       placeholder: (context, url) => Center(
                         child: Text(
                           _getInitials(studentData['name']!),
-                          style: const TextStyle(
-                            fontSize: 26,
+                          style: TextStyle(
+                            fontSize: 26.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -846,8 +847,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         child: Center(
                           child: Text(
                             _getInitials(studentData['name']!),
-                            style: const TextStyle(
-                              fontSize: 26,
+                            style: TextStyle(
+                              fontSize: 26.sp,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                             ),
@@ -858,8 +859,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   : Center(
                       child: Text(
                         _getInitials(studentData['name']!),
-                        style: const TextStyle(
-                          fontSize: 26,
+                        style: TextStyle(
+                          fontSize: 26.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
@@ -867,7 +868,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           // Student Info
           Expanded(
             child: Column(
@@ -876,30 +877,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Text(
                   studentData['name']!,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6.h),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: AppColors.cardGreen,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.check_circle, size: 14, color: AppColors.cardGreenDark),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Flexible(
                         child: Text(
                           'Active Student',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                             color: AppColors.cardGreenDark,
                           ),
@@ -923,12 +926,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         Text(
           'Quick Actions',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimaryC(context),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Column(
           children: [
             // Switch Student
@@ -940,7 +943,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 iconColor: AppColors.cardBlueDark,
                 onTap: () => context.push(Routes.switchStudent),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
             ],
             // Get Support
             _buildActionCard(
@@ -967,10 +970,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: AppColors.cardBg(context),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: AppColors.cardShadow(context),
         ),
         child: Row(
@@ -980,7 +983,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: bgColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Center(
                 child: svgPath != null
@@ -993,12 +996,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     : Icon(icon, size: 22, color: iconColor),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimaryC(context),
                 ),
@@ -1019,7 +1022,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 18,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimaryC(context),
       ),
@@ -1030,11 +1033,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           children: items.asMap().entries.map((entry) {
             final index = entry.key;
@@ -1044,12 +1047,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               children: [
                 _buildInfoRow(item),
                 if (!isLast) ...[
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Container(
                     height: 1,
                     color: AppColors.borderC(context),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                 ],
               ],
             );
@@ -1067,7 +1070,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           height: 40,
           decoration: BoxDecoration(
             color: AppColors.bgSecondary,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
           child: Center(
             child: item.svgPath != null
@@ -1087,7 +1090,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1095,16 +1098,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               Text(
                 item.label,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.textHintC(context),
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2.h),
               Text(
                 item.isNotProvided ? 'Not provided' : item.value,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                   color: item.isNotProvided
                       ? AppColors.textDisabled
@@ -1128,10 +1131,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final hasLogo = logoUrl != null && logoUrl.isNotEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: AppColors.cardShadow(context),
       ),
       child: Row(
@@ -1141,11 +1144,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             height: 56,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: AppColors.borderC(context).withValues(alpha: 0.3)),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: hasLogo
                   ? CachedNetworkImage(
                       imageUrl: logoUrl,
@@ -1155,8 +1158,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       placeholder: (context, url) => Center(
                         child: Text(
                           schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: TextStyle(
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -1165,8 +1168,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       errorWidget: (context, url, error) => Center(
                         child: Text(
                           schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: TextStyle(
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -1176,8 +1179,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   : Center(
                       child: Text(
                         schoolName.isNotEmpty ? schoolName[0].toUpperCase() : 'S',
-                        style: const TextStyle(
-                          fontSize: 24,
+                        style: TextStyle(
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
@@ -1185,7 +1188,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1193,12 +1196,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Text(
                   schoolName,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimaryC(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
                     Icon(
@@ -1206,12 +1209,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       size: 14,
                       color: AppColors.textSecondaryC(context),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Expanded(
                       child: Text(
                         schoolAddress,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.textSecondaryC(context),
                         ),
@@ -1258,7 +1261,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             // Profile image
             Container(
               width: 200,
@@ -1298,8 +1301,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         child: Center(
                           child: Text(
                             _getInitials(name),
-                            style: const TextStyle(
-                              fontSize: 64,
+                            style: TextStyle(
+                              fontSize: 64.sp,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                             ),
@@ -1310,20 +1313,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   : Center(
                       child: Text(
                         _getInitials(name),
-                        style: const TextStyle(
-                          fontSize: 64,
+                        style: TextStyle(
+                          fontSize: 64.sp,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             // Student name
             Text(
               name,
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),

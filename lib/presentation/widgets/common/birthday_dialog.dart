@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BirthdayDialog extends StatefulWidget {
   final String studentName;
@@ -63,13 +64,13 @@ class _BirthdayDialogState extends State<BirthdayDialog>
             scale: _scaleAnimation,
             child: Dialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
               ),
               backgroundColor: AppColors.cardBg(context),
-              insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+              insetPadding: EdgeInsets.symmetric(horizontal: 32.w),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -81,47 +82,47 @@ class _BirthdayDialogState extends State<BirthdayDialog>
                         color: AppColors.cardOrange,
                         shape: BoxShape.circle,
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           '\u{1F382}',
-                          style: TextStyle(fontSize: 44),
+                          style: TextStyle(fontSize: 44.sp),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // "Happy Birthday!" heading
                     Text(
                       'Happy Birthday! \u{1F389}',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimaryC(context),
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
 
                     // Personalized message
                     Text(
                       'Wishing you a wonderful birthday, ${widget.studentName}! '
                       'May this year bring you great success and happiness.',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textSecondaryC(context),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
 
                     // Party emoji row
-                    const Text(
+                    Text(
                       '\u{1F388}\u{1F381}\u{1F38A}',
-                      style: TextStyle(fontSize: 28),
+                      style: TextStyle(fontSize: 28.sp),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
 
                     // Close button
                     SizedBox(
@@ -133,14 +134,14 @@ class _BirthdayDialogState extends State<BirthdayDialog>
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Thank You! \u{1F973}',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

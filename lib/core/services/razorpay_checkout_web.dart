@@ -1,5 +1,12 @@
-import 'dart:js' as js;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'package:flutter/foundation.dart';
+
+@JS('Razorpay')
+extension type _Razorpay._(JSObject _) implements JSObject {
+  external factory _Razorpay(JSObject options);
+  external void open();
+}
 
 /// Opens Razorpay checkout using the JavaScript SDK (for web platform).
 /// Requires <script src="https://checkout.razorpay.com/v1/checkout.js"> in index.html.
@@ -12,42 +19,32 @@ void openRazorpayWebCheckout({
     final fullOptions = Map<String, dynamic>.from(options);
 
     // Add success handler.
-    // dart:js's allowInterop returns a JsFunction (JsObject subtype), which
-    // JsObject.jsify passes through unchanged — so this IS called by Razorpay.
-    // Use dart:js bracket notation [(response as JsObject)['key']] to read the
-    // response, NOT dart:js_util.getProperty — mixing the two interop systems
-    // causes property reads to silently return null.
-    fullOptions['handler'] = js.allowInterop((dynamic response) {
+    fullOptions['handler'] = ((JSObject response) {
       String paymentId = '';
       try {
-        final jsResponse = response as js.JsObject;
-        paymentId = jsResponse['razorpay_payment_id']?.toString() ?? '';
-        debugPrint(
-            'Razorpay Web: response type=${response.runtimeType}, paymentId=$paymentId');
+        final id = response.getProperty<JSAny?>('razorpay_payment_id'.toJS);
+        paymentId = id.isA<JSString>() ? (id as JSString).toDart : '';
+        debugPrint('Razorpay Web: paymentId=$paymentId');
       } catch (e) {
         debugPrint('Razorpay Web: Error reading razorpay_payment_id: $e');
       }
       debugPrint('Razorpay Web Success: paymentId=$paymentId');
       onSuccess(paymentId);
-    });
+    }).toJS;
 
     // Add modal dismiss handler.
     fullOptions['modal'] = {
-      'ondismiss': js.allowInterop((dynamic reason) {
+      'ondismiss': ((JSAny? reason) {
         debugPrint(
             'Razorpay Web: Checkout dismissed by user (reason: $reason)');
         onError(2, 'Payment cancelled by user');
-      }),
+      }).toJS,
     };
 
-    // Convert entire options (including JsFunction values) to a JS object.
-    // jsify handles JsObject/JsFunction values by passing them through as-is.
-    final jsOptions = js.JsObject.jsify(fullOptions);
-
-    // Create Razorpay instance and open checkout
-    final razorpayConstructor = js.context['Razorpay'] as js.JsFunction;
-    final rzp = js.JsObject(razorpayConstructor, [jsOptions]);
-    rzp.callMethod('open');
+    // Convert options map to a JS object and open checkout.
+    final jsOptions = fullOptions.jsify() as JSObject;
+    final rzp = _Razorpay(jsOptions);
+    rzp.open();
 
     debugPrint('Razorpay Web: Checkout opened successfully');
   } catch (e) {

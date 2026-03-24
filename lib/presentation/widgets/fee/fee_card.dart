@@ -4,6 +4,7 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../data/models/fee_model.dart';
 import '../common/app_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FeeCard extends StatelessWidget {
   final FeeModel fee;

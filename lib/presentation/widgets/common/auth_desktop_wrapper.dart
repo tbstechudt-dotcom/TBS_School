@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/extensions.dart';
 import 'desktop_left_panel.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Wraps auth screen content with a desktop split-screen layout.
 ///
@@ -71,13 +72,13 @@ class AuthDesktopWrapper extends StatelessWidget {
                     label: Text(
                       'Back',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                         color: AppColors.textSecondaryC(context),
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
