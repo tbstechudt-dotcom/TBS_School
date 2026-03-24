@@ -908,7 +908,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header
               Row(
@@ -1136,7 +1136,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Header
             Row(
@@ -1393,12 +1393,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -1499,12 +1503,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -1581,7 +1589,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Header
             Row(
@@ -1834,12 +1842,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -1930,7 +1942,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -2154,12 +2166,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -2243,7 +2259,7 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header
               Row(
@@ -2462,12 +2478,16 @@ class _PayAllFeesScreenState extends ConsumerState<PayAllFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[

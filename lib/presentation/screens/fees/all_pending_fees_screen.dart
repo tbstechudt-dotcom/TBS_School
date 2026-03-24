@@ -965,12 +965,16 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -1952,12 +1956,16 @@ class _AllPendingFeesScreenState extends ConsumerState<AllPendingFeesScreen> {
                             color: isOverdue ? AppColors.error : AppColors.textHintC(context),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                          Flexible(
+                            child: Text(
+                              'Due: ${DateFormat('dd MMM yyyy').format(dueDate)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isOverdue ? AppColors.error : AppColors.textHintC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isOverdue) ...[
@@ -2563,104 +2571,125 @@ class _FeeAccordionState extends State<_FeeAccordion>
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header row — tap to expand/collapse
                 GestureDetector(
                   onTap: _toggle,
                   behavior: HitTestBehavior.opaque,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Title + subtitle
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
+                      // Top row: Title + checkbox + chevron
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
                               widget.title,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimaryC(context),
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            if (widget.subtitle.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(
+                          ),
+                          const SizedBox(width: 8),
+                          // Checkbox — separate tap target
+                          GestureDetector(
+                            onTap: widget.onToggleAll,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: widget.allSelected ? AppColors.primary : AppColors.cardBg(context),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: widget.allSelected ? AppColors.primary : AppColors.borderC(context),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: widget.allSelected
+                                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // Chevron
+                          RotationTransition(
+                            turns: _rotateAnimation,
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 22,
+                              color: AppColors.textSecondaryC(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      // Bottom row: Amount + badge + subtitle
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 0,
+                            child: Text(
+                              '₹ ${NumberFormat('#,##,###').format(widget.totalAmount.toInt())}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimaryC(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          // Badge
+                          Flexible(
+                            flex: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: widget.badgeColor,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  widget.badgeIcon,
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    widget.badgeText,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (widget.subtitle.isNotEmpty) ...[
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: Text(
                                 widget.subtitle,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
                                   color: AppColors.textSecondaryC(context),
                                 ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      // Total amount in collapsed state
-                      Text(
-                        '₹ ${NumberFormat('#,##,###').format(widget.totalAmount.toInt())}',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimaryC(context),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: widget.badgeColor,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            widget.badgeIcon,
-                            const SizedBox(width: 4),
-                            Text(
-                              widget.badgeText,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Checkbox — separate tap target
-                      GestureDetector(
-                        onTap: widget.onToggleAll,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: widget.allSelected ? AppColors.primary : AppColors.cardBg(context),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: widget.allSelected ? AppColors.primary : AppColors.borderC(context),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: widget.allSelected
-                              ? const Icon(Icons.check, size: 16, color: Colors.white)
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Chevron
-                      RotationTransition(
-                        turns: _rotateAnimation,
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 22,
-                          color: AppColors.textSecondaryC(context),
-                        ),
+                        ],
                       ),
                     ],
                   ),

@@ -5,6 +5,32 @@ import '../../data/models/fee_model.dart';
 import 'auth_provider.dart';
 import 'student_provider.dart';
 
+/// Fetch active year label from Supabase 'year' table
+final yearLabelProvider = FutureProvider<String>((ref) async {
+  final student = ref.watch(selectedStudentProvider);
+  final client = ref.watch(supabaseClientProvider);
+
+  if (student == null) return '';
+
+  try {
+    final response = await client
+        .from('year')
+        .select('yrlabel')
+        .eq('ins_id', student.insId)
+        .eq('activestatus', 1)
+        .limit(1)
+        .maybeSingle();
+
+    if (response != null) {
+      return response['yrlabel'] as String? ?? '';
+    }
+    return '';
+  } catch (e) {
+    debugPrint('Year Provider: Error fetching year label: $e');
+    return '';
+  }
+});
+
 /// Fetch fees for currently selected student from Supabase 'feedemand' table
 final feesProvider = FutureProvider<List<FeeModel>>((ref) async {
   final student = ref.watch(selectedStudentProvider);

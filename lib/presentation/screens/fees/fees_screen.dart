@@ -321,8 +321,9 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
     final selectedFees = fees.where((f) => cartState.containsFee(f.id)).toList();
     final totalAmount = selectedFees.fold(0.0, (sum, f) => sum + f.balanceAmount);
 
-    // Get academic year and term from first fee (if available)
-    const academicYear = 'Academic Year 2025-2026';
+    // Get academic year from year table
+    final yearLabel = ref.watch(yearLabelProvider).valueOrNull ?? '';
+    final academicYear = yearLabel.isNotEmpty ? 'Academic Year $yearLabel' : 'Academic Year';
     final term = fees.isNotEmpty ? fees.first.term : 'Term 1';
 
     // Separate mandatory and secondary fees
@@ -577,15 +578,19 @@ class _FeesScreenState extends ConsumerState<FeesScreen> {
             // Amount and checkbox
             Row(
               children: [
-                Text(
-                  '₹ ${_formatAmount(fee.balanceAmount)}',
-                  style: TextStyle(
-                    fontSize: AppSizes.textBase,
-                    fontWeight: AppSizes.fontSemibold,
-                    color: isSelected ? AppColors.accent : AppColors.textPrimaryC(context),
+                Flexible(
+                  child: Text(
+                    '₹ ${_formatAmount(fee.balanceAmount)}',
+                    style: TextStyle(
+                      fontSize: AppSizes.textBase,
+                      fontWeight: AppSizes.fontSemibold,
+                      color: isSelected ? AppColors.accent : AppColors.textPrimaryC(context),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 30),
+                const SizedBox(width: 12),
                 Container(
                   width: 24,
                   height: 24,

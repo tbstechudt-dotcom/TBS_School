@@ -489,12 +489,16 @@ class _PaymentAccordionState extends State<_PaymentAccordion>
                                 color: AppColors.textSecondaryC(context),
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                paymentNumber,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimaryC(context),
+                              Flexible(
+                                child: Text(
+                                  paymentNumber,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimaryC(context),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],

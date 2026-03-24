@@ -359,11 +359,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final feeSummary = feeSummaryAsync.valueOrNull;
     final totalPending = feeSummary?.totalPending ?? 0;
 
-    // Get current academic year
-    final now = DateTime.now();
-    final academicYear = now.month >= 6
-        ? '${now.year}-${now.year + 1}'
-        : '${now.year - 1}-${now.year}';
+    // Get academic year from year table
+    final academicYear = ref.watch(yearLabelProvider).valueOrNull ?? '';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,

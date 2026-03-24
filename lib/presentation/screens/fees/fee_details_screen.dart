@@ -221,20 +221,30 @@ class FeeDetailsScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppSizes.textSm,
-              color: AppColors.textSecondaryC(context),
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: AppSizes.textSm,
+                color: AppColors.textSecondaryC(context),
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: AppSizes.textSm,
-              color: valueColor ?? AppColors.textPrimaryC(context),
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: AppSizes.textSm,
+                color: valueColor ?? AppColors.textPrimaryC(context),
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+              ),
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

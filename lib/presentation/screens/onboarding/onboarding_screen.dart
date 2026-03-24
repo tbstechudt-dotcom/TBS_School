@@ -579,8 +579,8 @@ class _OnboardingPage extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  SizedBox(
-                    width: 261,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 300),
                     child: Text(
                       data.description,
                       textAlign: TextAlign.center,
