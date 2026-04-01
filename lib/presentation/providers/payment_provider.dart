@@ -427,6 +427,7 @@ Future<bool> handlePaymentSuccess({
       'p_pay_method': paymethod,
       'p_pay_reference': payreference,
       'p_items': itemsJson,
+      'p_ins_id': items.first.insId,
     });
 
     debugPrint('Payment completed atomically: pay_id=$payId, paynumber=$payNumber');
