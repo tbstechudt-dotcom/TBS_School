@@ -1,151 +1,763 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import '../../../config/routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../data/models/fee_model.dart';
 import '../../providers/fee_provider.dart';
 import '../../providers/student_provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/common/error_widget.dart';
-import '../../widgets/fee/fee_card.dart';
 
-class FeesScreen extends ConsumerWidget {
+class FeesScreen extends ConsumerStatefulWidget {
   const FeesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FeesScreen> createState() => _FeesScreenState();
+}
+
+class _FeesScreenState extends ConsumerState<FeesScreen> {
+  // Mock data for preview (remove this when real data is available)
+  List<FeeModel> get _mockFees => [
+    // Mandatory Fees
+    FeeModel(
+      demId: 1,
+      demno: 'DEM001',
+      insId: 1,
+      inscode: 'INS001',
+      yrId: 1,
+      demseqtype: 'T',
+      stuId: 1,
+      stuadmno: 'ADM001',
+      stuclass: 'Grade 5',
+      demfeeyear: '2025-2026',
+      demfeeterm: 'Term 1',
+      demfeetype: 'Term Fee',
+      demfeecategory: 'Mandatory',
+      feeamount: 25000,
+      conId: 1,
+      balancedue: 25000,
+      paidstatus: 'U',
+      createdby: 'system',
+      createdat: DateTime.now(),
+    ),
+    FeeModel(
+      demId: 2,
+      demno: 'DEM002',
+      insId: 1,
+      inscode: 'INS001',
+      yrId: 1,
+      demseqtype: 'T',
+      stuId: 1,
+      stuadmno: 'ADM001',
+      stuclass: 'Grade 5',
+      demfeeyear: '2025-2026',
+      demfeeterm: 'Term 1',
+      demfeetype: 'Bus Fee',
+      demfeecategory: 'Mandatory',
+      feeamount: 8000,
+      conId: 1,
+      balancedue: 8000,
+      paidstatus: 'U',
+      createdby: 'system',
+      createdat: DateTime.now(),
+    ),
+    // Secondary Fees
+    FeeModel(
+      demId: 3,
+      demno: 'DEM003',
+      insId: 1,
+      inscode: 'INS001',
+      yrId: 1,
+      demseqtype: 'T',
+      stuId: 1,
+      stuadmno: 'ADM001',
+      stuclass: 'Grade 5',
+      demfeeyear: '2025-2026',
+      demfeeterm: 'Term 1',
+      demfeetype: 'Uniform & Text Book',
+      demfeecategory: 'Secondary',
+      feeamount: 4500,
+      conId: 1,
+      balancedue: 4500,
+      paidstatus: 'U',
+      createdby: 'system',
+      createdat: DateTime.now(),
+    ),
+    FeeModel(
+      demId: 4,
+      demno: 'DEM004',
+      insId: 1,
+      inscode: 'INS001',
+      yrId: 1,
+      demseqtype: 'T',
+      stuId: 1,
+      stuadmno: 'ADM001',
+      stuclass: 'Grade 5',
+      demfeeyear: '2025-2026',
+      demfeeterm: 'Term 1',
+      demfeetype: 'Extracurricular',
+      demfeecategory: 'Secondary',
+      feeamount: 3500,
+      conId: 1,
+      balancedue: 3500,
+      paidstatus: 'U',
+      createdby: 'system',
+      createdat: DateTime.now(),
+    ),
+    FeeModel(
+      demId: 5,
+      demno: 'DEM005',
+      insId: 1,
+      inscode: 'INS001',
+      yrId: 1,
+      demseqtype: 'T',
+      stuId: 1,
+      stuadmno: 'ADM001',
+      stuclass: 'Grade 5',
+      demfeeyear: '2025-2026',
+      demfeeterm: 'Term 1',
+      demfeetype: 'Lab Fee',
+      demfeecategory: 'Secondary',
+      feeamount: 2000,
+      conId: 1,
+      balancedue: 2000,
+      paidstatus: 'U',
+      createdby: 'system',
+      createdat: DateTime.now(),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     final feesAsync = ref.watch(feesProvider);
     final selectedStudent = ref.watch(selectedStudentProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgSecondary,
-      appBar: AppBar(
-        title: Text(selectedStudent?.name ?? 'Fees'),
-        centerTitle: true,
-      ),
-      body: feesAsync.when(
-        loading: () => const LoadingIndicator(),
-        error: (error, stack) => AppErrorWidget(
-          message: error.toString(),
-          onRetry: () => ref.refresh(feesProvider),
+      backgroundColor: AppColors.scaffoldBg(context),
+      body: Column(
+          children: [
+            // Fixed Header with white SafeArea and subtle shadow
+            Container(
+              color: AppColors.headerBg(context),
+              child: SafeArea(
+                bottom: false,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.headerBg(context),
+                    boxShadow: AppColors.cardShadow(context),
+                  ),
+                  child: _buildHeader(context),
+                ),
+              ),
+            ),
+            // Content
+            Expanded(
+                child: feesAsync.when(
+                  loading: () => const LoadingIndicator(),
+                  error: (error, stack) => AppErrorWidget(
+                    message: error.toString(),
+                    onRetry: () => ref.refresh(feesProvider),
+                  ),
+                  data: (fees) {
+                    // Use mock data if no real fees exist (for preview)
+                    final displayFees = fees.isEmpty ? _mockFees : fees;
+
+                    // Filter pending/overdue fees for selection (exclude zero amounts)
+                    final pendingFees = displayFees
+                        .where((f) =>
+                            (f.status == FeeStatus.pending || f.status == FeeStatus.overdue) &&
+                            f.balanceAmount > 0)
+                        .toList();
+
+                    if (pendingFees.isEmpty) {
+                      return _buildEmptyState();
+                    }
+
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: _buildFeeBreakdownCard(pendingFees, selectedStudent?.name),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final cartItemCount = ref.watch(cartItemCountProvider);
+    final notificationCount = ref.watch(notificationCountProvider);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Fees',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimaryC(context),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'View and manage all fees',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondaryC(context),
+                ),
+              ),
+            ],
+          ),
         ),
-        data: (fees) {
-          if (fees.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          final pendingFees = fees.where((f) =>
-            f.status == FeeStatus.pending || f.status == FeeStatus.overdue
-          ).toList();
-          final paidFees = fees.where((f) => f.status == FeeStatus.paid).toList();
-
-          return DefaultTabController(
-            length: 2,
-            child: Column(
+        // Cart Icon - Dark theme
+        GestureDetector(
+          onTap: () => context.push(Routes.cart),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.iconButtonBg(context),
+              shape: BoxShape.circle,
+            ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
               children: [
-                Container(
-                  color: AppColors.bgPrimary,
-                  child: const TabBar(
-                    labelColor: AppColors.primary,
-                    unselectedLabelColor: AppColors.textSecondary,
-                    indicatorColor: AppColors.primary,
-                    tabs: [
-                      Tab(text: 'Pending'),
-                      Tab(text: 'Paid'),
-                    ],
+                const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
+                if (cartItemCount > 0)
+                  Positioned(
+                    top: -4,
+                    right: -4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      constraints: const BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
+                      ),
+                      child: Text(
+                        cartItemCount > 9 ? '9+' : '$cartItemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      _buildFeesList(context, pendingFees),
-                      _buildFeesList(context, paidFees),
-                    ],
-                  ),
-                ),
               ],
             ),
-          );
-        },
+          ),
+        ),
+        const SizedBox(width: 10),
+        // Notification Icon - Dark theme with badge
+        GestureDetector(
+          onTap: () => context.go(Routes.notifications),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.iconButtonBg(context),
+              shape: BoxShape.circle,
+            ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                const Icon(Icons.notifications_outlined, size: 20, color: Colors.white),
+                if (notificationCount > 0)
+                  Positioned(
+                    top: -4,
+                    right: -4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
+                      ),
+                      child: Text(
+                        notificationCount > 9 ? '9+' : '$notificationCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeeBreakdownCard(List<FeeModel> fees, String? studentName) {
+    // Get cart state for selected fees
+    final cartState = ref.watch(cartProvider);
+
+    // Calculate total of selected fees from this screen
+    final selectedFees = fees.where((f) => cartState.containsFee(f.id)).toList();
+    final totalAmount = selectedFees.fold(0.0, (sum, f) => sum + f.balanceAmount);
+
+    // Get academic year from year table
+    final yearLabel = ref.watch(yearLabelProvider).valueOrNull ?? '';
+    final academicYear = yearLabel.isNotEmpty ? 'Academic Year $yearLabel' : 'Academic Year';
+    final term = fees.isNotEmpty ? fees.first.term : 'Term 1';
+
+    // Separate mandatory and secondary fees
+    final mandatoryFees = fees.where((f) => f.demfeecategory == 'Mandatory').toList();
+    final secondaryFees = fees.where((f) => f.demfeecategory != 'Mandatory').toList();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBg(context),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: Theme.of(context).brightness == Brightness.dark
+            ? []
+            : [
+                BoxShadow(
+                  color: AppColors.shadowPurple,
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSizes.s4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Section
+            _buildCardHeader(academicYear, term),
+
+            const SizedBox(height: AppSizes.s4),
+
+            // Divider
+            _buildDivider(),
+
+            const SizedBox(height: AppSizes.s4),
+
+            // Mandatory Fees Section
+            if (mandatoryFees.isNotEmpty) ...[
+              _buildSectionHeader('Mandatory Fees', AppColors.error),
+              const SizedBox(height: AppSizes.s3),
+              ...mandatoryFees.map((fee) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSizes.s2),
+                child: _buildFeeItem(fee),
+              )),
+              const SizedBox(height: AppSizes.s4),
+            ],
+
+            // Secondary Fees Section
+            if (secondaryFees.isNotEmpty) ...[
+              _buildSectionHeader('Secondary Fees', AppColors.primary),
+              const SizedBox(height: AppSizes.s3),
+              ...secondaryFees.map((fee) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSizes.s2),
+                child: _buildFeeItem(fee),
+              )),
+              const SizedBox(height: AppSizes.s4),
+            ],
+
+            // Divider before total
+            _buildDivider(),
+
+            const SizedBox(height: AppSizes.s4),
+
+            // Total Amount
+            _buildTotalRow(totalAmount),
+
+            const SizedBox(height: AppSizes.s4),
+
+            // Divider before button
+            _buildDivider(),
+
+            const SizedBox(height: AppSizes.s4),
+
+            // View Cart Button
+            _buildViewCartButton(totalAmount),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildFeesList(BuildContext context, List<FeeModel> fees) {
-    if (fees.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildCardHeader(String academicYear, String term) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.check_circle_outline_rounded,
-              size: 64,
-              color: AppColors.gray300,
-            ),
-            const SizedBox(height: AppSizes.s4),
-            const Text(
-              'No fees found',
+            Text(
+              'Fee Breakdown',
               style: TextStyle(
-                fontSize: AppSizes.textBase,
-                color: AppColors.textSecondary,
+                fontSize: AppSizes.sectionTitle,
+                fontWeight: AppSizes.fontSemibold,
+                color: AppColors.textPrimaryC(context),
+              ),
+            ),
+            const SizedBox(height: AppSizes.s1),
+            Text(
+              academicYear,
+              style: TextStyle(
+                fontSize: AppSizes.textXs,
+                fontWeight: AppSizes.fontNormal,
+                color: AppColors.textSecondaryC(context),
               ),
             ),
           ],
         ),
-      );
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.s3,
+            vertical: AppSizes.s1 + 2,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.success,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            term,
+            style: const TextStyle(
+              fontSize: AppSizes.textXs,
+              fontWeight: AppSizes.fontSemibold,
+              color: AppColors.textInverse,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      height: 1,
+      color: AppColors.borderC(context),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: AppSizes.textBase,
+            fontWeight: AppSizes.fontSemibold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeeItem(FeeModel fee) {
+    final isSelected = ref.watch(cartProvider).containsFee(fee.id);
+
+    // Determine subtitle based on fee type
+    final isVanFee = fee.feeTypeName.toUpperCase().contains('VAN');
+    String subtitle;
+
+    if (isVanFee) {
+      // For VAN FEES, show month from due date
+      final month = fee.duedate != null
+          ? DateFormat('MMMM yyyy').format(fee.duedate!)
+          : fee.demfeeterm;
+      final dueDate = fee.duedate != null
+          ? DateFormat('dd MMM').format(fee.duedate!)
+          : '';
+      subtitle = dueDate.isNotEmpty ? '$month • Due: $dueDate' : month;
+    } else {
+      // For other fees, show term and due date
+      final dueDate = fee.duedate != null
+          ? DateFormat('dd MMM yyyy').format(fee.duedate!)
+          : '';
+      subtitle = dueDate.isNotEmpty
+          ? '${fee.demfeeterm} • Due: $dueDate'
+          : fee.demfeeterm;
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.all(AppSizes.s4),
-      itemCount: fees.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSizes.s3),
-      itemBuilder: (context, index) {
-        final fee = fees[index];
-        return FeeCard(
-          fee: fee,
-          onTap: () => context.push('/fees/${fee.id}'),
-        );
+    return GestureDetector(
+      onTap: () {
+        final isSelected = ref.read(cartProvider).containsFee(fee.id);
+        if (!isSelected) {
+          // Block upcoming/due-today fees when overdue fees exist
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          final feeIsOverdue = fee.dueDate.isBefore(today);
+          if (!feeIsOverdue) {
+            final pendingFees = ref.read(pendingFeesProvider);
+            final hasOverdue = pendingFees.any((f) => f.dueDate.isBefore(today));
+            if (hasOverdue) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Please pay overdue fees first before selecting upcoming fees.',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: AppColors.error,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  margin: const EdgeInsets.all(16),
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+              return;
+            }
+          }
+        }
+        ref.read(cartProvider.notifier).toggleFee(fee);
       },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.accent.withValues(alpha: 0.08) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.accent.withValues(alpha: 0.3) : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Fee details
+            Expanded(
+              child: Text(
+                fee.feeTypeName,
+                style: TextStyle(
+                  fontSize: AppSizes.bodyText,
+                  fontWeight: isSelected ? AppSizes.fontMedium : AppSizes.fontNormal,
+                  color: isSelected ? AppColors.textPrimaryC(context) : AppColors.textSecondaryC(context),
+                  height: 1.47,
+                ),
+              ),
+            ),
+            // Amount and checkbox
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    '₹ ${_formatAmount(fee.balanceAmount)}',
+                    style: TextStyle(
+                      fontSize: AppSizes.textBase,
+                      fontWeight: AppSizes.fontSemibold,
+                      color: isSelected ? AppColors.accent : AppColors.textPrimaryC(context),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.accent : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSelected ? AppColors.accent : AppColors.textSecondaryC(context),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: isSelected
+                      ? const Icon(
+                          Icons.check,
+                          size: 16,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Widget _buildTotalRow(double totalAmount) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Total Amount',
+          style: TextStyle(
+            fontSize: AppSizes.sectionTitle,
+            fontWeight: AppSizes.fontSemibold,
+            color: AppColors.textPrimaryC(context),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: AppSizes.s2),
+          child: Text(
+            '₹ ${_formatAmount(totalAmount)}',
+            style: TextStyle(
+              fontSize: AppSizes.sectionTitle,
+              fontWeight: AppSizes.fontSemibold,
+              color: AppColors.textPrimaryC(context),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildViewCartButton(double totalAmount) {
+    final isEnabled = totalAmount > 0;
+    final cartItemCount = ref.watch(cartItemCountProvider);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isEnabled ? AppColors.primary : AppColors.filterBg(context),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: isEnabled
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isEnabled ? () => context.go(Routes.cart) : null,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.s2,
+              vertical: AppSizes.s3,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
+                const SizedBox(width: AppSizes.s2),
+                Text(
+                  'View Cart ($cartItemCount)',
+                  style: TextStyle(
+                    fontSize: AppSizes.textBase,
+                    fontWeight: AppSizes.fontSemibold,
+                    color: isEnabled ? Colors.white : AppColors.textSecondaryC(context),
+                  ),
+                ),
+                const SizedBox(width: AppSizes.s3),
+                Icon(
+                  Icons.arrow_forward,
+                  size: 24,
+                  color: isEnabled ? Colors.white : AppColors.textSecondaryC(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatAmount(double amount) {
+    // Format with Indian number system (commas)
+    if (amount == 0) return '0';
+
+    final parts = amount.toStringAsFixed(0).split('');
+    final result = <String>[];
+
+    for (int i = 0; i < parts.length; i++) {
+      if (i > 0) {
+        final posFromEnd = parts.length - i;
+        if (posFromEnd == 3 || (posFromEnd > 3 && (posFromEnd - 3) % 2 == 0)) {
+          result.add(',');
+        }
+      }
+      result.add(parts[i]);
+    }
+
+    return result.join('');
   }
 
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.s6),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: 100,
               height: 100,
-              decoration: const BoxDecoration(
-                color: AppColors.gray100,
+              decoration: BoxDecoration(
+                color: AppColors.cardPurple,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.receipt_long_rounded,
                 size: 48,
-                color: AppColors.gray400,
+                color: AppColors.cardPurpleDark,
               ),
             ),
-            const SizedBox(height: AppSizes.s6),
-            const Text(
+            const SizedBox(height: 24),
+            Text(
               'No Fees Found',
               style: TextStyle(
-                fontSize: AppSizes.textLg,
+                fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: AppColors.textPrimaryC(context),
               ),
             ),
-            const SizedBox(height: AppSizes.s2),
-            const Text(
+            const SizedBox(height: 8),
+            Text(
               'There are no fees assigned to this student yet.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: AppSizes.textSm,
-                color: AppColors.textSecondary,
+                fontSize: 14,
+                color: AppColors.textSecondaryC(context),
               ),
             ),
           ],

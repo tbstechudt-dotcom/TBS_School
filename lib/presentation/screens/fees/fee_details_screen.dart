@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/utils/formatters.dart';
+import '../../../config/routes.dart';
 import '../../../data/models/fee_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../providers/fee_provider.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/loading_indicator.dart';
+import '../../../core/utils/extensions.dart';
+import '../../widgets/common/breadcrumb_bar.dart';
+import '../../widgets/common/desktop_detail_scaffold.dart';
 
 class FeeDetailsScreen extends ConsumerWidget {
   final String feeId;
@@ -17,11 +23,13 @@ class FeeDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feesAsync = ref.watch(feesProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.bgSecondary,
-      appBar: AppBar(
+    return DesktopDetailScaffold(
+      isNested: true,
+      mobileAppBar: AppBar(
         title: const Text('Fee Details'),
       ),
+      header: _buildDesktopHeader(context),
+      toolbar: const BreadcrumbBar(currentLabel: 'Fee Details'),
       body: feesAsync.when(
         loading: () => const LoadingIndicator(),
         error: (error, _) => Center(child: Text('Error: $error')),
@@ -32,21 +40,25 @@ class FeeDetailsScreen extends ConsumerWidget {
           );
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.s4),
+            padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 16, vertical: AppSizes.s4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFeeHeader(fee),
+                _buildFeeHeader(context, fee),
                 const SizedBox(height: AppSizes.s4),
-                _buildFeeDetails(fee),
+                _buildFeeDetails(context, fee),
                 const SizedBox(height: AppSizes.s4),
-                _buildPaymentBreakdown(fee),
+                _buildPaymentBreakdown(context, fee),
                 if (fee.status != FeeStatus.paid) ...[
                   const SizedBox(height: AppSizes.s6),
                   AppButton(
                     text: 'Pay Now - ${Formatters.currency(fee.balanceAmount)}',
                     onPressed: () {
-                      // TODO: Implement payment
+                      final cart = ref.read(cartProvider.notifier);
+                      if (!ref.read(cartProvider).containsFee(fee.id)) {
+                        cart.addFee(fee);
+                      }
+                      context.go(Routes.cart);
                     },
                     isFullWidth: true,
                   ),
@@ -59,13 +71,44 @@ class FeeDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeeHeader(FeeModel fee) {
+  Widget _buildDesktopHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.primary),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            'Fee Details',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimaryC(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeeHeader(BuildContext context, FeeModel fee) {
     return Container(
       padding: const EdgeInsets.all(AppSizes.s4),
       decoration: BoxDecoration(
-        color: AppColors.bgPrimary,
+        color: AppColors.cardBg(context),
         borderRadius: BorderRadius.circular(AppSizes.roundedXl),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderC(context)),
       ),
       child: Row(
         children: [
@@ -89,18 +132,18 @@ class FeeDetailsScreen extends ConsumerWidget {
               children: [
                 Text(
                   fee.feeTypeName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppSizes.textLg,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: AppColors.textPrimaryC(context),
                   ),
                 ),
                 const SizedBox(height: AppSizes.s1),
                 Text(
                   fee.term,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: AppSizes.textSm,
-                    color: AppColors.textSecondary,
+                    color: AppColors.textSecondaryC(context),
                   ),
                 ),
               ],
@@ -112,86 +155,96 @@ class FeeDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeeDetails(FeeModel fee) {
+  Widget _buildFeeDetails(BuildContext context, FeeModel fee) {
     return Container(
       padding: const EdgeInsets.all(AppSizes.s4),
       decoration: BoxDecoration(
-        color: AppColors.bgPrimary,
+        color: AppColors.cardBg(context),
         borderRadius: BorderRadius.circular(AppSizes.roundedXl),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderC(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Fee Details',
             style: TextStyle(
               fontSize: AppSizes.textBase,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppColors.textPrimaryC(context),
             ),
           ),
           const SizedBox(height: AppSizes.s4),
-          _buildDetailRow('Due Date', Formatters.date(fee.dueDate)),
-          _buildDetailRow('Base Amount', Formatters.currency(fee.amount)),
+          _buildDetailRow(context, 'Due Date', Formatters.date(fee.dueDate)),
+          _buildDetailRow(context, 'Base Amount', Formatters.currency(fee.amount)),
           if (fee.discountAmount > 0)
-            _buildDetailRow('Discount', '- ${Formatters.currency(fee.discountAmount)}', valueColor: AppColors.success),
+            _buildDetailRow(context, 'Discount', '- ${Formatters.currency(fee.discountAmount)}', valueColor: AppColors.success),
           if (fee.lateFee > 0)
-            _buildDetailRow('Late Fee', '+ ${Formatters.currency(fee.lateFee)}', valueColor: AppColors.error),
+            _buildDetailRow(context, 'Late Fee', '+ ${Formatters.currency(fee.lateFee)}', valueColor: AppColors.error),
           const Divider(height: AppSizes.s6),
-          _buildDetailRow('Total Amount', Formatters.currency(fee.totalAmount), isBold: true),
+          _buildDetailRow(context, 'Total Amount', Formatters.currency(fee.totalAmount), isBold: true),
         ],
       ),
     );
   }
 
-  Widget _buildPaymentBreakdown(FeeModel fee) {
+  Widget _buildPaymentBreakdown(BuildContext context, FeeModel fee) {
     return Container(
       padding: const EdgeInsets.all(AppSizes.s4),
       decoration: BoxDecoration(
-        color: AppColors.bgPrimary,
+        color: AppColors.cardBg(context),
         borderRadius: BorderRadius.circular(AppSizes.roundedXl),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderC(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Payment Summary',
             style: TextStyle(
               fontSize: AppSizes.textBase,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppColors.textPrimaryC(context),
             ),
           ),
           const SizedBox(height: AppSizes.s4),
-          _buildDetailRow('Amount Paid', Formatters.currency(fee.paidAmount), valueColor: AppColors.success),
-          _buildDetailRow('Balance Due', Formatters.currency(fee.balanceAmount), valueColor: fee.balanceAmount > 0 ? AppColors.error : AppColors.success),
+          _buildDetailRow(context, 'Amount Paid', Formatters.currency(fee.paidAmount), valueColor: AppColors.success),
+          _buildDetailRow(context, 'Balance Due', Formatters.currency(fee.balanceAmount), valueColor: fee.balanceAmount > 0 ? AppColors.error : AppColors.success),
         ],
       ),
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {Color? valueColor, bool isBold = false}) {
+  Widget _buildDetailRow(BuildContext context, String label, String value, {Color? valueColor, bool isBold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSizes.s2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppSizes.textSm,
-              color: AppColors.textSecondary,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: AppSizes.textSm,
+                color: AppColors.textSecondaryC(context),
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: AppSizes.textSm,
-              color: valueColor ?? AppColors.textPrimary,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: AppSizes.textSm,
+                color: valueColor ?? AppColors.textPrimaryC(context),
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.w500,
+              ),
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

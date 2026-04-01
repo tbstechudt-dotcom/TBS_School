@@ -1,0 +1,82 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/institution_model.dart';
+import 'auth_provider.dart' show supabaseClientProvider;
+import 'student_provider.dart' show selectedStudentProvider;
+
+/// Fetch institution by ID with city join
+final institutionByIdProvider = FutureProvider.family<InstitutionModel?, int>((ref, insId) async {
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    final response = await client
+        .from('institution')
+        .select('*, city:cit_id(citname)')
+        .eq('ins_id', insId)
+        .eq('activestatus', 1)
+        .maybeSingle();
+
+    if (response != null) {
+      return InstitutionModel.fromJson(response);
+    }
+    return null;
+  } catch (e) {
+    debugPrint('Error fetching institution by ID: $e');
+    return null;
+  }
+});
+
+/// Fetch institution for selected student with city join
+final selectedStudentInstitutionProvider = FutureProvider<InstitutionModel?>((ref) async {
+  final selectedStudent = ref.watch(selectedStudentProvider);
+
+  if (selectedStudent == null) {
+    debugPrint('Institution Provider: No student selected');
+    return null;
+  }
+
+  debugPrint('Institution Provider: Fetching institution for ins_id=${selectedStudent.insId}');
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    // Simple query - removed activestatus filter for testing
+    final response = await client
+        .from('institution')
+        .select('*')
+        .eq('ins_id', selectedStudent.insId)
+        .maybeSingle();
+
+    debugPrint('Institution Provider: Response = $response');
+
+    if (response != null) {
+      final institution = InstitutionModel.fromJson(response);
+      debugPrint('Institution Provider: Parsed name = ${institution.name}');
+      return institution;
+    }
+    debugPrint('Institution Provider: No institution found');
+    return null;
+  } catch (e) {
+    debugPrint('Error fetching institution for student: $e');
+    return null;
+  }
+});
+
+/// Fetch all active institutions with city join
+final institutionsProvider = FutureProvider<List<InstitutionModel>>((ref) async {
+  final client = ref.watch(supabaseClientProvider);
+
+  try {
+    final response = await client
+        .from('institution')
+        .select('*, city:cit_id(citname)')
+        .eq('activestatus', 1)
+        .order('insname', ascending: true);
+
+    return (response as List<dynamic>)
+        .map((e) => InstitutionModel.fromJson(e))
+        .toList();
+  } catch (e) {
+    debugPrint('Error fetching institutions: $e');
+    return [];
+  }
+});

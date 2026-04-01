@@ -1,0 +1,495 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../config/routes.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/extensions.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/institution_provider.dart';
+import '../../providers/notification_provider.dart';
+import '../../providers/student_provider.dart';
+import '../../widgets/common/breadcrumb_bar.dart';
+import '../../widgets/common/desktop_detail_scaffold.dart';
+
+class SupportScreen extends ConsumerStatefulWidget {
+  const SupportScreen({super.key});
+
+  @override
+  ConsumerState<SupportScreen> createState() => _SupportScreenState();
+}
+
+class _SupportScreenState extends ConsumerState<SupportScreen> {
+  int _openFaqIndex = 0;
+
+  final List<Map<String, String>> _faqs = [
+    {
+      'question': "How do I pay my child's fees online?",
+      'answer':
+          "Go to the \"Fee Details\" page, review the pending dues, and click on the 'Pay Now' button. Choose your preferred payment method and complete the transaction.",
+    },
+    {
+      'question': 'What payment methods are accepted?',
+      'answer':
+          'We accept various payment methods including credit/debit cards, net banking, UPI, and digital wallets.',
+    },
+    {
+      'question': 'Will I receive a receipt after payment?',
+      'answer':
+          'Yes, you can download and share the payment receipt from the payment history section after successful payment.',
+    },
+    {
+      'question': 'What happens if I miss a payment due date?',
+      'answer':
+          'Late fees may apply if payment is not received by the due date. Please contact the school administration for assistance.',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final institutionAsync = ref.watch(selectedStudentInstitutionProvider);
+    return DesktopDetailScaffold(
+      isNested: true,
+      header: Column(
+        children: [
+          const SizedBox(height: 16),
+          _buildHeader(context),
+          const SizedBox(height: 16),
+        ],
+      ),
+      toolbar: const BreadcrumbBar(currentLabel: 'Help & Support'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: context.isDesktop ? const EdgeInsets.all(24) : const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              // Contact School Card
+              _buildContactCard(institutionAsync),
+              const SizedBox(height: 24),
+              // FAQ's Title
+              Text(
+                "FAQ's",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimaryC(context),
+                ),
+              ),
+              const SizedBox(height: 12),
+              // FAQ Items
+              ..._faqs.asMap().entries.map((entry) {
+                final index = entry.key;
+                final faq = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildFaqItem(
+                    question: faq['question']!,
+                    answer: faq['answer']!,
+                    isOpen: _openFaqIndex == index,
+                    onToggle: () {
+                      setState(() {
+                        _openFaqIndex = _openFaqIndex == index ? -1 : index;
+                      });
+                    },
+                  ),
+                );
+              }),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final cartItemCount = ref.watch(cartItemCountProvider);
+    final notificationCount = ref.watch(notificationCountProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          // Back Button - Dark theme
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Title & Subtitle
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Help & Support',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimaryC(context),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Get assistance',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondaryC(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Student chip (desktop only)
+          if (context.isDesktop) ...[
+            _buildStudentChip(context),
+            const SizedBox(width: 12),
+          ],
+          // Cart Icon - Dark theme
+          GestureDetector(
+            onTap: () => context.push(Routes.cart),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
+                shape: BoxShape.circle,
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  const Icon(Icons.shopping_cart_outlined, size: 20, color: Colors.white),
+                  if (cartItemCount > 0)
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                        decoration: BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
+                        ),
+                        child: Text(
+                          cartItemCount > 9 ? '9+' : '$cartItemCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Notification Icon - Dark theme with badge
+          GestureDetector(
+            onTap: () => context.go(Routes.notifications),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.iconButtonBg(context),
+                shape: BoxShape.circle,
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  const Icon(Icons.notifications_outlined, size: 20, color: Colors.white),
+                  if (notificationCount > 0)
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                        decoration: BoxDecoration(
+                          color: AppColors.error,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.iconButtonBg(context), width: 2),
+                        ),
+                        child: Text(
+                          notificationCount > 9 ? '9+' : '$notificationCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStudentChip(BuildContext context) {
+    final student = ref.watch(selectedStudentProvider);
+    if (student == null) return const SizedBox.shrink();
+    final parts = student.name.trim().split(' ').where((p) => p.isNotEmpty).toList();
+    final initials = parts.take(2).map((p) => p[0]).join().toUpperCase();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: AppColors.primary,
+          backgroundImage: (student.photoUrl != null && student.photoUrl!.isNotEmpty)
+              ? NetworkImage(student.photoUrl!) : null,
+          child: (student.photoUrl == null || student.photoUrl!.isEmpty)
+              ? Text(initials, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700))
+              : null,
+        ),
+        const SizedBox(width: 8),
+        Text(student.name, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimaryC(context))),
+      ],
+    );
+  }
+
+  Widget _buildContactCard(AsyncValue<dynamic> institutionAsync) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg(context),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: AppColors.cardShadow(context),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with Icon
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.cardBlue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.support_agent_rounded,
+                  size: 26,
+                  color: AppColors.cardBlueDark,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                'Contact School',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimaryC(context),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Divider
+          Container(
+            height: 1,
+            color: AppColors.borderC(context),
+          ),
+          const SizedBox(height: 20),
+          // Email Row
+          _buildContactRow(
+            icon: Icons.email_rounded,
+            iconBg: AppColors.cardPurple,
+            iconColor: AppColors.cardPurpleDark,
+            label: 'Email',
+            value: institutionAsync.when(
+              data: (inst) => inst?.email ?? 'N/A',
+              loading: () => 'Loading...',
+              error: (_, __) => 'N/A',
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Phone Row
+          _buildContactRow(
+            icon: Icons.phone_rounded,
+            iconBg: AppColors.cardGreen,
+            iconColor: AppColors.cardGreenDark,
+            label: 'Phone',
+            value: institutionAsync.when(
+              data: (inst) => inst?.phone ?? 'N/A',
+              loading: () => 'Loading...',
+              error: (_, __) => 'N/A',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactRow({
+    required IconData icon,
+    required Color iconBg,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: iconBg,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 20, color: iconColor),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textHintC(context),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimaryC(context),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFaqItem({
+    required String question,
+    required String answer,
+    required bool isOpen,
+    required VoidCallback onToggle,
+  }) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.cardBg(context),
+          borderRadius: BorderRadius.circular(16),
+          border: isOpen
+              ? Border.all(color: AppColors.primary, width: 2)
+              : null,
+          boxShadow: [
+            BoxShadow(
+              color: isOpen ? AppColors.shadowPurple : AppColors.shadowLight,
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Question Row
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: isOpen ? AppColors.cardPurple : AppColors.cardCyan,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.help_outline_rounded,
+                      size: 20,
+                      color: isOpen ? AppColors.cardPurpleDark : AppColors.cardCyanDark,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      question,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: isOpen ? FontWeight.w600 : FontWeight.w500,
+                        color: AppColors.textPrimaryC(context),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: isOpen ? AppColors.primary : AppColors.filterBg(context),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      isOpen ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                      size: 20,
+                      color: isOpen ? Colors.white : AppColors.textHintC(context),
+                    ),
+                  ),
+                ],
+              ),
+              // Answer (shown when open)
+              if (isOpen) ...[
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardPurple.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    answer,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textSecondaryC(context),
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

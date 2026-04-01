@@ -1,119 +1,373 @@
+/// Payment status based on paystatus field
+/// 'I' = Initiated, 'C' = Complete, 'F' = Failed, 'R' = Refunded
 enum PaymentStatus { pending, success, failed, refunded }
 
+/// Payment model matching Supabase 'payment' table
 class PaymentModel {
-  final String id;
-  final String paymentNumber;
-  final String studentId;
-  final String parentId;
-  final double amount;
-  final String? paymentMethod;
-  final String? transactionId;
-  final PaymentStatus status;
-  final DateTime? paidAt;
-  final String? receiptUrl;
-  final String? notes;
-  final DateTime createdAt;
-  final List<PaymentDetailModel> details;
+  final int payId;
+  final int insId;
+  final String? inscode;
+  final int stuId;
+  final int yrId;
+  final String? yrlabel;
+  final double transtotalamount;
+  final String transcurrency;
+  final DateTime? paydate;
+  final String? paystatus;
+  final String? paymethod;
+  final String? payreference;
+  final String? paynumber;
+  final int? paygwresponse;
+  final String? createdby;
+  final DateTime createdat;
+  final int activestatus;
 
   PaymentModel({
-    required this.id,
-    required this.paymentNumber,
-    required this.studentId,
-    required this.parentId,
-    required this.amount,
-    this.paymentMethod,
-    this.transactionId,
-    required this.status,
-    this.paidAt,
-    this.receiptUrl,
-    this.notes,
-    required this.createdAt,
-    this.details = const [],
+    required this.payId,
+    required this.insId,
+    this.inscode,
+    this.stuId = 0,
+    this.yrId = 0,
+    this.yrlabel,
+    this.transtotalamount = 0,
+    this.transcurrency = 'INR',
+    this.paydate,
+    this.paystatus,
+    this.paymethod,
+    this.payreference,
+    this.paynumber,
+    this.paygwresponse,
+    this.createdby,
+    required this.createdat,
+    this.activestatus = 1,
   });
 
+  /// Create from Supabase JSON response
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
-      id: json['id'],
-      paymentNumber: json['payment_number'],
-      studentId: json['student_id'],
-      parentId: json['parent_id'],
-      amount: (json['amount'] as num).toDouble(),
-      paymentMethod: json['payment_method'],
-      transactionId: json['transaction_id'],
-      status: _parseStatus(json['status']),
-      paidAt: json['paid_at'] != null ? DateTime.parse(json['paid_at']) : null,
-      receiptUrl: json['receipt_url'],
-      notes: json['notes'],
-      createdAt: DateTime.parse(json['created_at']),
-      details: (json['payment_details'] as List<dynamic>?)
-              ?.map((e) => PaymentDetailModel.fromJson(e))
-              .toList() ??
-          [],
+      payId: json['pay_id'] is int ? json['pay_id'] : int.parse(json['pay_id'].toString()),
+      insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
+      inscode: json['inscode'],
+      stuId: json['stu_id'] != null
+          ? (json['stu_id'] is int ? json['stu_id'] : int.parse(json['stu_id'].toString()))
+          : 0,
+      yrId: json['yr_id'] != null
+          ? (json['yr_id'] is int ? json['yr_id'] : int.parse(json['yr_id'].toString()))
+          : 0,
+      yrlabel: json['yrlabel'],
+      transtotalamount: (json['transtotalamount'] as num?)?.toDouble() ?? 0,
+      transcurrency: json['transcurrency'] ?? 'INR',
+      paydate: json['paydate'] != null ? DateTime.parse(json['paydate']) : null,
+      paystatus: json['paystatus'],
+      paymethod: json['paymethod'],
+      payreference: json['payreference'],
+      paynumber: json['paynumber'],
+      paygwresponse: json['paygwresponse'] != null
+          ? (json['paygwresponse'] is int ? json['paygwresponse'] : int.parse(json['paygwresponse'].toString()))
+          : null,
+      createdby: json['createdby'],
+      createdat: json['createdat'] != null
+          ? DateTime.parse(json['createdat'])
+          : DateTime.now(),
+      activestatus: json['activestatus'] ?? 1,
     );
   }
 
-  static PaymentStatus _parseStatus(String status) {
-    switch (status) {
-      case 'success':
+  /// Convert to JSON for Supabase insert/update
+  Map<String, dynamic> toJson() {
+    return {
+      'pay_id': payId,
+      'ins_id': insId,
+      'inscode': inscode,
+      'stu_id': stuId,
+      'yr_id': yrId,
+      'yrlabel': yrlabel,
+      'transtotalamount': transtotalamount,
+      'transcurrency': transcurrency,
+      'paydate': paydate?.toIso8601String(),
+      'paystatus': paystatus,
+      'paymethod': paymethod,
+      'payreference': payreference,
+      'paynumber': paynumber,
+      'paygwresponse': paygwresponse,
+      'createdby': createdby,
+      'activestatus': activestatus,
+    };
+  }
+
+  /// Helper getters for UI display (backward compatible with old model)
+  String get id => payId.toString();
+  String get paymentNumber => paynumber ?? 'PAY${payId.toString().padLeft(6, '0')}';
+  DateTime get createdAt => createdat;
+
+  /// Total payment amount
+  double get amount => transtotalamount;
+
+  /// Details - empty list as placeholder, would need to fetch from shoppingcartdetails
+  List<dynamic> get details => [];
+
+  PaymentStatus get status {
+    switch (paystatus) {
+      case 'C':
         return PaymentStatus.success;
-      case 'failed':
+      case 'F':
         return PaymentStatus.failed;
-      case 'refunded':
+      case 'R':
         return PaymentStatus.refunded;
       default:
         return PaymentStatus.pending;
     }
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'payment_number': paymentNumber,
-      'student_id': studentId,
-      'parent_id': parentId,
-      'amount': amount,
-      'payment_method': paymentMethod,
-      'transaction_id': transactionId,
-      'status': status.name,
-      'paid_at': paidAt?.toIso8601String(),
-      'receipt_url': receiptUrl,
-      'notes': notes,
-      'created_at': createdAt.toIso8601String(),
-    };
+  String get statusText {
+    switch (paystatus) {
+      case 'C':
+        return 'Completed';
+      case 'F':
+        return 'Failed';
+      case 'R':
+        return 'Refunded';
+      case 'I':
+        return 'Initiated';
+      default:
+        return 'Pending';
+    }
+  }
+
+  String get paymentMethod => paymethod ?? 'Unknown';
+  String get transactionId => payreference ?? '';
+  DateTime? get paidAt => paydate;
+  bool get isActive => activestatus == 1;
+  bool get isSuccess => paystatus == 'C';
+
+  PaymentModel copyWith({
+    int? payId,
+    int? insId,
+    String? inscode,
+    int? stuId,
+    int? yrId,
+    String? yrlabel,
+    double? transtotalamount,
+    String? transcurrency,
+    DateTime? paydate,
+    String? paystatus,
+    String? paymethod,
+    String? payreference,
+    String? paynumber,
+    int? paygwresponse,
+    String? createdby,
+    DateTime? createdat,
+    int? activestatus,
+  }) {
+    return PaymentModel(
+      payId: payId ?? this.payId,
+      insId: insId ?? this.insId,
+      inscode: inscode ?? this.inscode,
+      stuId: stuId ?? this.stuId,
+      yrId: yrId ?? this.yrId,
+      yrlabel: yrlabel ?? this.yrlabel,
+      transtotalamount: transtotalamount ?? this.transtotalamount,
+      transcurrency: transcurrency ?? this.transcurrency,
+      paydate: paydate ?? this.paydate,
+      paystatus: paystatus ?? this.paystatus,
+      paymethod: paymethod ?? this.paymethod,
+      payreference: payreference ?? this.payreference,
+      paynumber: paynumber ?? this.paynumber,
+      paygwresponse: paygwresponse ?? this.paygwresponse,
+      createdby: createdby ?? this.createdby,
+      createdat: createdat ?? this.createdat,
+      activestatus: activestatus ?? this.activestatus,
+    );
   }
 }
 
-class PaymentDetailModel {
-  final String id;
-  final String paymentId;
-  final String studentFeeId;
-  final double amount;
-  final String? feeName;
+/// Shopping cart model matching Supabase 'shoppingcart' table
+class ShoppingCartModel {
+  final int carId;
+  final int yrId;
+  final String? yrlabel;
+  final int insId;
+  final int stuId;
+  final String transtype;
+  final DateTime transdate;
+  final String transcurrency;
+  final double transtotalamount;
+  final String carinitiated;
+  final String createdby;
+  final DateTime createdon;
+  final int activestatus;
 
-  PaymentDetailModel({
-    required this.id,
-    required this.paymentId,
-    required this.studentFeeId,
-    required this.amount,
-    this.feeName,
+  ShoppingCartModel({
+    required this.carId,
+    required this.yrId,
+    this.yrlabel,
+    required this.insId,
+    required this.stuId,
+    required this.transtype,
+    required this.transdate,
+    required this.transcurrency,
+    required this.transtotalamount,
+    required this.carinitiated,
+    required this.createdby,
+    required this.createdon,
+    this.activestatus = 1,
   });
 
-  factory PaymentDetailModel.fromJson(Map<String, dynamic> json) {
-    return PaymentDetailModel(
-      id: json['id'],
-      paymentId: json['payment_id'],
-      studentFeeId: json['student_fee_id'],
-      amount: (json['amount'] as num).toDouble(),
-      feeName: json['student_fees']?['fee_types']?['name'],
+  factory ShoppingCartModel.fromJson(Map<String, dynamic> json) {
+    return ShoppingCartModel(
+      carId: json['car_id'] is int ? json['car_id'] : int.parse(json['car_id'].toString()),
+      yrId: json['yr_id'] is int ? json['yr_id'] : int.parse(json['yr_id'].toString()),
+      yrlabel: json['yrlabel'],
+      insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
+      stuId: json['stu_id'] is int ? json['stu_id'] : int.parse(json['stu_id'].toString()),
+      transtype: json['transtype'] ?? '',
+      transdate: json['transdate'] != null
+          ? DateTime.parse(json['transdate'])
+          : DateTime.now(),
+      transcurrency: json['transcurrency'] ?? 'INR',
+      transtotalamount: (json['transtotalamount'] as num?)?.toDouble() ?? 0,
+      carinitiated: json['carinitiated'] ?? 'N',
+      createdby: json['createdby'] ?? '',
+      createdon: json['createdon'] != null
+          ? DateTime.parse(json['createdon'])
+          : DateTime.now(),
+      activestatus: json['activestatus'] ?? 1,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'payment_id': paymentId,
-      'student_fee_id': studentFeeId,
-      'amount': amount,
+      'yr_id': yrId,
+      'yrlabel': yrlabel,
+      'ins_id': insId,
+      'stu_id': stuId,
+      'transtype': transtype,
+      'transdate': transdate.toIso8601String().split('T')[0],
+      'transcurrency': transcurrency,
+      'transtotalamount': transtotalamount,
+      'carinitiated': carinitiated,
+      'createdby': createdby,
+      'activestatus': activestatus,
     };
   }
+
+  double get amount => transtotalamount;
+  String get currency => transcurrency;
+  bool get isActive => activestatus == 1;
+}
+
+/// Shopping cart details model matching Supabase 'shoppingcartdetails' table
+class ShoppingCartDetailModel {
+  final int cdId;
+  final int carId;
+  final int yrId;
+  final String? yrlabel;
+  final int insId;
+  final int demId;
+  final int? transdetailId;
+  final String transcurrency;
+  final double transtotalamount;
+  final int activestatus;
+
+  ShoppingCartDetailModel({
+    required this.cdId,
+    required this.carId,
+    required this.yrId,
+    this.yrlabel,
+    required this.insId,
+    required this.demId,
+    this.transdetailId,
+    required this.transcurrency,
+    required this.transtotalamount,
+    this.activestatus = 1,
+  });
+
+  factory ShoppingCartDetailModel.fromJson(Map<String, dynamic> json) {
+    return ShoppingCartDetailModel(
+      cdId: json['cd_id'] is int ? json['cd_id'] : int.parse(json['cd_id'].toString()),
+      carId: json['car_id'] is int ? json['car_id'] : int.parse(json['car_id'].toString()),
+      yrId: json['yr_id'] is int ? json['yr_id'] : int.parse(json['yr_id'].toString()),
+      yrlabel: json['yrlabel'],
+      insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
+      demId: json['dem_id'] is int ? json['dem_id'] : int.parse(json['dem_id'].toString()),
+      transdetailId: json['transdetail_id'] != null
+          ? (json['transdetail_id'] is int ? json['transdetail_id'] : int.parse(json['transdetail_id'].toString()))
+          : null,
+      transcurrency: json['transcurrency'] ?? 'INR',
+      transtotalamount: (json['transtotalamount'] as num?)?.toDouble() ?? 0,
+      activestatus: json['activestatus'] ?? 1,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'car_id': carId,
+      'yr_id': yrId,
+      'yrlabel': yrlabel,
+      'ins_id': insId,
+      'dem_id': demId,
+      'transdetail_id': transdetailId,
+      'transcurrency': transcurrency,
+      'transtotalamount': transtotalamount,
+      'activestatus': activestatus,
+    };
+  }
+
+  double get amount => transtotalamount;
+  bool get isActive => activestatus == 1;
+}
+
+/// Payment detail model matching Supabase 'paymentdetails' table
+class PaymentDetailModel {
+  final int pydId;
+  final int payId;
+  final int demId;
+  final int yrId;
+  final String? yrlabel;
+  final int insId;
+  final String transcurrency;
+  final double transtotalamount;
+  final int activestatus;
+
+  PaymentDetailModel({
+    required this.pydId,
+    required this.payId,
+    required this.demId,
+    required this.yrId,
+    this.yrlabel,
+    required this.insId,
+    this.transcurrency = 'INR',
+    required this.transtotalamount,
+    this.activestatus = 1,
+  });
+
+  factory PaymentDetailModel.fromJson(Map<String, dynamic> json) {
+    return PaymentDetailModel(
+      pydId: json['pyd_id'] is int ? json['pyd_id'] : int.parse(json['pyd_id'].toString()),
+      payId: json['pay_id'] is int ? json['pay_id'] : int.parse(json['pay_id'].toString()),
+      demId: json['dem_id'] is int ? json['dem_id'] : int.parse(json['dem_id'].toString()),
+      yrId: json['yr_id'] is int ? json['yr_id'] : int.parse(json['yr_id'].toString()),
+      yrlabel: json['yrlabel'],
+      insId: json['ins_id'] is int ? json['ins_id'] : int.parse(json['ins_id'].toString()),
+      transcurrency: json['transcurrency'] ?? 'INR',
+      transtotalamount: (json['transtotalamount'] as num?)?.toDouble() ?? 0,
+      activestatus: json['activestatus'] ?? 1,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'pay_id': payId,
+      'dem_id': demId,
+      'yr_id': yrId,
+      'yrlabel': yrlabel,
+      'ins_id': insId,
+      'transcurrency': transcurrency,
+      'transtotalamount': transtotalamount,
+      'activestatus': activestatus,
+    };
+  }
+
+  double get amount => transtotalamount;
+  bool get isActive => activestatus == 1;
 }
